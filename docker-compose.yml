@@ -1,4 +1,65 @@
 services:
+  api:
+    container_name: api_core
+    restart: unless-stopped
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    ports:
+      - 0.0.0.0:3030:3030
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - football
+    volumes:
+      - ./core/internal/config/test.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/main api"
+
+  migrate-up:
+    container_name: migrate-up
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - football
+    volumes:
+      - ./core/internal/config/test.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/main migration --action up --cfg /app/config.toml"
+
+  migrate-down:
+    container_name: migrate-up
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - football
+    volumes:
+      - ./core/internal/config/test.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/main migration --action down --cfg /app/config.toml"
+
+
   postgres:
     container_name: bridge_postgres
     image: postgres:14.1-alpine
