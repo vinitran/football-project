@@ -2,5 +2,4 @@
 /redisdata
 /docker-compose.override.yml
 /.env
-/.idea
 /core/.idea
