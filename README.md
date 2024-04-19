@@ -37,7 +37,7 @@ go run cmd/*.go migration --action down // action down to revert database
 Generate bob
 ```
 cd backend
-go run github.com/stephenafamo/bob/gen/bobgen-psql@latest -c ./config/bobgen.yaml
+go run github.com/stephenafamo/bob/gen/bobgen-psql@v0.21.1 -c ./internal/config/bobgen.yaml
 ```
 
 Clean and lint code command

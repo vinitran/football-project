@@ -2,8 +2,12 @@ package datastore
 
 import (
 	"context"
+	"core/internal/content"
+	b "core/internal/content/bob"
 	"database/sql"
 	"database/sql/driver"
+	"github.com/google/uuid"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/stephenafamo/scan"
@@ -55,3 +59,21 @@ func (v *BobExecutorPgx) ExecContext(ctx context.Context, query string, args ...
 
 	return driver.RowsAffected(tag.RowsAffected()), err
 }
+
+func PoolTeamToRaw(v *b.Team) *content.Team {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.Team{
+		ID:        v.ID,
+		Name:      v.Name,
+		ShortName: v.ShortName.MustGet().,
+		Gender:    "",
+		NameCode:  "",
+		Logo:      "",
+		Slug:      "",
+		IDSync:    "",
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+	}
