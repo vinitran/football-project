@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+.header {
+  display: flex;
+  height: 10rem;
+}
+
+.header-item {
+  margin-right: 3rem;
+  cursor: pointer;
+  padding: 2rem;
+  font-weight: 700;
+}
