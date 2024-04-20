@@ -1,3 +1,7 @@
+# Frontend
+Tech
+> Node: 20.12.2
+
 ## Requirements
 
 - go version: 1.22
