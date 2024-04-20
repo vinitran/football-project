@@ -15,7 +15,7 @@ class AxiosConfiguration {
       function (config) {
         // Thực hiện các tác vụ trước khi gửi yêu cầu
         // Ví dụ: Thêm tiêu đề xác thực vào yêu cầu
-        config.headers.Authorization = 'Bearer token123';
+        // config.headers.Authorization = 'Bearer token123';
         return config;
       },
       function (error) {
@@ -59,7 +59,7 @@ class AxiosConfiguration {
 
   deleteAxiosToken = () => {
     delete axios.defaults.headers.common.Authorization;
-  }
+  };
 }
 
 export const axiosConfiguration = new AxiosConfiguration();
