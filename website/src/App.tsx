@@ -1,23 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { TestRoute } from './modules/test/const/route.const';
+import { Outlet } from 'react-router';
+import 'react-toastify/dist/ReactToastify.css';
+import './assets/css/global.scss';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { router } from './routes';
+import { NarBar } from './components/nav-bar';
 
-function App() {
-  const routes = [TestRoute];
-  const router = createBrowserRouter(routes);
-
+export const App = () => {
   return (
-    <div className="App">
-      <div className="header">
-        {routes.map((ele) => (
-          <div className="header-item">{ele.navName}</div>
-        ))}
-      </div>
-      <RouterProvider router={router} />
-    </div>
+    <>
+      <BrowserRouter>
+        <ToastContainer />
+        <NarBar />
+        <Routes>
+          {router.map((route: any, index: number) => {
+            return (
+              <>
+                <Route path={route.path} element={<route.element />} />
+              </>
+            );
+          })}
+        </Routes>
+      </BrowserRouter>
+    </>
   );
-}
-
-export default App;
+};
