@@ -12,7 +12,7 @@ const walletSlice = createSlice({
     name: 'wallet',
     initialState: defaultState,
     reducers: {
-        setWalletAddress: (state, action) => {
+        setWalletAddress: (state: any, action: any) => {
             state.address = action.payload
         }
     }
