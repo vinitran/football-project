@@ -2,8 +2,9 @@ package auth
 
 import (
 	"context"
-	"core/pkg/jwtx"
 	"errors"
+
+	"core/pkg/jwtx"
 
 	"github.com/MicahParks/keyfunc"
 	"github.com/golang-jwt/jwt/v4"

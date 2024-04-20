@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"core/internal/content"
 	"core/internal/db"
-	"fmt"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
-	"time"
 )
 
 type ServiceTeam struct {

@@ -1,12 +1,14 @@
 package httpx
 
 import (
-	"core/pkg/errorx"
 	"errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strings"
+
+	"core/pkg/errorx"
+
+	"github.com/go-playground/validator/v10"
 
 	"github.com/labstack/echo/v4"
 )

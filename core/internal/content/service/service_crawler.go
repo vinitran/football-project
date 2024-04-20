@@ -2,19 +2,21 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"log"
+	"net/http"
+	"time"
+
 	"core/internal/content"
 	b "core/internal/content/bob"
 	"core/internal/db"
 	"core/pkg/arr"
-	"encoding/json"
+
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 	"github.com/stephenafamo/bob/types"
-	"log"
-	"net/http"
-	"time"
 )
 
 type ServiceCrawler struct {

@@ -2,8 +2,9 @@ package auth
 
 import (
 	"context"
-	"core/pkg/jwtx"
 	"errors"
+
+	"core/pkg/jwtx"
 
 	"github.com/google/uuid"
 )

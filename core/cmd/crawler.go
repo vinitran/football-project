@@ -1,13 +1,15 @@
 package main
 
 import (
-	"core/internal/content/service"
 	"errors"
-	"github.com/samber/do"
-	"github.com/urfave/cli/v2"
 	"log"
 	"os"
 	"os/signal"
+
+	"core/internal/content/service"
+
+	"github.com/samber/do"
+	"github.com/urfave/cli/v2"
 )
 
 func startCrawler(c *cli.Context) error {
