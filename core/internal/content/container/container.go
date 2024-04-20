@@ -1,6 +1,9 @@
 package container
 
 import (
+	"core/internal/content"
+	"core/internal/content/datastore"
+	"core/internal/content/service"
 	"net/http"
 
 	"core/internal/config"
@@ -25,6 +28,16 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	})
 
 	do.Provide(injector, ProvideRouter)
+
+	do.Provide(injector, ProvideDatastoreMatch)
+	do.Provide(injector, ProvideDatastoreTeam)
+	do.Provide(injector, ProvideDatastoreTournament)
+
+	do.Provide(injector, ProvideServiceMatch)
+	do.Provide(injector, ProvideServiceTeam)
+	do.Provide(injector, ProvideServiceTournament)
+	do.Provide(injector, ProvideServiceCrawler)
+
 	return injector
 }
 
@@ -33,4 +46,47 @@ func ProvideRouter(i *do.Injector) (http.Handler, error) {
 		Container: i,
 		Origins:   []string{"*"},
 	})
+}
+
+func ProvideDatastoreMatch(i *do.Injector) (content.DatastoreMatch, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreMatch(pool)
+}
+
+func ProvideDatastoreTeam(i *do.Injector) (content.DatastoreTeam, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreTeam(pool)
+}
+
+func ProvideDatastoreTournament(i *do.Injector) (content.DatastoreTournament, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreTournament(pool)
+}
+
+func ProvideServiceMatch(i *do.Injector) (*service.ServiceMatch, error) {
+	return service.NewServiceMatch(i)
+}
+
+func ProvideServiceTeam(i *do.Injector) (*service.ServiceTeam, error) {
+	return service.NewServiceTeam(i)
+}
+
+func ProvideServiceCrawler(i *do.Injector) (*service.ServiceCrawler, error) {
+	return service.NewServiceCrawler(i)
+}
+
+func ProvideServiceTournament(i *do.Injector) (*service.ServiceTournament, error) {
+	return service.NewServiceTournament(i)
 }

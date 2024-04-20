@@ -14,7 +14,6 @@ import (
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
-	"github.com/google/uuid"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/clause"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -27,17 +26,16 @@ import (
 
 // Match is an object representing the database table.
 type Match struct {
-	ID           uuid.UUID                   `db:"id,pk" `
-	IDSync       string                      `db:"id_sync" `
+	ID           string                      `db:"id,pk" `
 	Name         string                      `db:"name" `
 	Slug         string                      `db:"slug" `
 	Date         string                      `db:"date" `
-	Timestamp    int                         `db:"timestamp" `
+	Timestamp    int64                       `db:"timestamp" `
 	HomeRedCards int                         `db:"home_red_cards" `
 	AwayRedCards int                         `db:"away_red_cards" `
-	HomeID       uuid.UUID                   `db:"home_id" `
-	AwayID       uuid.UUID                   `db:"away_id" `
-	TournamentID uuid.UUID                   `db:"tournament_id" `
+	HomeID       string                      `db:"home_id" `
+	AwayID       string                      `db:"away_id" `
+	TournamentID string                      `db:"tournament_id" `
 	Scores       types.JSON[json.RawMessage] `db:"scores" `
 	WinCode      null.Val[int]               `db:"win_code" `
 	MatchStatus  MatchStatus                 `db:"match_status" `
@@ -46,7 +44,6 @@ type Match struct {
 	HasTracker   null.Val[bool]              `db:"has_tracker" `
 	IsFeatured   null.Val[bool]              `db:"is_featured" `
 	ThumbnailURL null.Val[string]            `db:"thumbnail_url" `
-	Commentators null.Val[string]            `db:"commentators" `
 	IsLive       null.Val[bool]              `db:"is_live" `
 	LiveTracker  null.Val[string]            `db:"live_tracker" `
 	CreatedAt    time.Time                   `db:"created_at" `
@@ -79,17 +76,16 @@ type matchR struct {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type MatchSetter struct {
-	ID           omit.Val[uuid.UUID]                   `db:"id,pk"`
-	IDSync       omit.Val[string]                      `db:"id_sync"`
+	ID           omit.Val[string]                      `db:"id,pk"`
 	Name         omit.Val[string]                      `db:"name"`
 	Slug         omit.Val[string]                      `db:"slug"`
 	Date         omit.Val[string]                      `db:"date"`
-	Timestamp    omit.Val[int]                         `db:"timestamp"`
+	Timestamp    omit.Val[int64]                       `db:"timestamp"`
 	HomeRedCards omit.Val[int]                         `db:"home_red_cards"`
 	AwayRedCards omit.Val[int]                         `db:"away_red_cards"`
-	HomeID       omit.Val[uuid.UUID]                   `db:"home_id"`
-	AwayID       omit.Val[uuid.UUID]                   `db:"away_id"`
-	TournamentID omit.Val[uuid.UUID]                   `db:"tournament_id"`
+	HomeID       omit.Val[string]                      `db:"home_id"`
+	AwayID       omit.Val[string]                      `db:"away_id"`
+	TournamentID omit.Val[string]                      `db:"tournament_id"`
 	Scores       omit.Val[types.JSON[json.RawMessage]] `db:"scores"`
 	WinCode      omitnull.Val[int]                     `db:"win_code"`
 	MatchStatus  omit.Val[MatchStatus]                 `db:"match_status"`
@@ -98,7 +94,6 @@ type MatchSetter struct {
 	HasTracker   omitnull.Val[bool]                    `db:"has_tracker"`
 	IsFeatured   omitnull.Val[bool]                    `db:"is_featured"`
 	ThumbnailURL omitnull.Val[string]                  `db:"thumbnail_url"`
-	Commentators omitnull.Val[string]                  `db:"commentators"`
 	IsLive       omitnull.Val[bool]                    `db:"is_live"`
 	LiveTracker  omitnull.Val[string]                  `db:"live_tracker"`
 	CreatedAt    omit.Val[time.Time]                   `db:"created_at"`
@@ -107,7 +102,6 @@ type MatchSetter struct {
 
 type matchColumnNames struct {
 	ID           string
-	IDSync       string
 	Name         string
 	Slug         string
 	Date         string
@@ -125,7 +119,6 @@ type matchColumnNames struct {
 	HasTracker   string
 	IsFeatured   string
 	ThumbnailURL string
-	Commentators string
 	IsLive       string
 	LiveTracker  string
 	CreatedAt    string
@@ -156,7 +149,6 @@ func matchsJoin[Q dialect.Joinable](ctx context.Context) joinSet[matchRelationsh
 
 var MatchColumns = struct {
 	ID           psql.Expression
-	IDSync       psql.Expression
 	Name         psql.Expression
 	Slug         psql.Expression
 	Date         psql.Expression
@@ -174,14 +166,12 @@ var MatchColumns = struct {
 	HasTracker   psql.Expression
 	IsFeatured   psql.Expression
 	ThumbnailURL psql.Expression
-	Commentators psql.Expression
 	IsLive       psql.Expression
 	LiveTracker  psql.Expression
 	CreatedAt    psql.Expression
 	UpdatedAt    psql.Expression
 }{
 	ID:           psql.Quote("matchs", "id"),
-	IDSync:       psql.Quote("matchs", "id_sync"),
 	Name:         psql.Quote("matchs", "name"),
 	Slug:         psql.Quote("matchs", "slug"),
 	Date:         psql.Quote("matchs", "date"),
@@ -199,7 +189,6 @@ var MatchColumns = struct {
 	HasTracker:   psql.Quote("matchs", "has_tracker"),
 	IsFeatured:   psql.Quote("matchs", "is_featured"),
 	ThumbnailURL: psql.Quote("matchs", "thumbnail_url"),
-	Commentators: psql.Quote("matchs", "commentators"),
 	IsLive:       psql.Quote("matchs", "is_live"),
 	LiveTracker:  psql.Quote("matchs", "live_tracker"),
 	CreatedAt:    psql.Quote("matchs", "created_at"),
@@ -207,17 +196,16 @@ var MatchColumns = struct {
 }
 
 type matchWhere[Q psql.Filterable] struct {
-	ID           psql.WhereMod[Q, uuid.UUID]
-	IDSync       psql.WhereMod[Q, string]
+	ID           psql.WhereMod[Q, string]
 	Name         psql.WhereMod[Q, string]
 	Slug         psql.WhereMod[Q, string]
 	Date         psql.WhereMod[Q, string]
-	Timestamp    psql.WhereMod[Q, int]
+	Timestamp    psql.WhereMod[Q, int64]
 	HomeRedCards psql.WhereMod[Q, int]
 	AwayRedCards psql.WhereMod[Q, int]
-	HomeID       psql.WhereMod[Q, uuid.UUID]
-	AwayID       psql.WhereMod[Q, uuid.UUID]
-	TournamentID psql.WhereMod[Q, uuid.UUID]
+	HomeID       psql.WhereMod[Q, string]
+	AwayID       psql.WhereMod[Q, string]
+	TournamentID psql.WhereMod[Q, string]
 	Scores       psql.WhereMod[Q, types.JSON[json.RawMessage]]
 	WinCode      psql.WhereNullMod[Q, int]
 	MatchStatus  psql.WhereMod[Q, MatchStatus]
@@ -226,7 +214,6 @@ type matchWhere[Q psql.Filterable] struct {
 	HasTracker   psql.WhereNullMod[Q, bool]
 	IsFeatured   psql.WhereNullMod[Q, bool]
 	ThumbnailURL psql.WhereNullMod[Q, string]
-	Commentators psql.WhereNullMod[Q, string]
 	IsLive       psql.WhereNullMod[Q, bool]
 	LiveTracker  psql.WhereNullMod[Q, string]
 	CreatedAt    psql.WhereMod[Q, time.Time]
@@ -235,17 +222,16 @@ type matchWhere[Q psql.Filterable] struct {
 
 func MatchWhere[Q psql.Filterable]() matchWhere[Q] {
 	return matchWhere[Q]{
-		ID:           psql.Where[Q, uuid.UUID](MatchColumns.ID),
-		IDSync:       psql.Where[Q, string](MatchColumns.IDSync),
+		ID:           psql.Where[Q, string](MatchColumns.ID),
 		Name:         psql.Where[Q, string](MatchColumns.Name),
 		Slug:         psql.Where[Q, string](MatchColumns.Slug),
 		Date:         psql.Where[Q, string](MatchColumns.Date),
-		Timestamp:    psql.Where[Q, int](MatchColumns.Timestamp),
+		Timestamp:    psql.Where[Q, int64](MatchColumns.Timestamp),
 		HomeRedCards: psql.Where[Q, int](MatchColumns.HomeRedCards),
 		AwayRedCards: psql.Where[Q, int](MatchColumns.AwayRedCards),
-		HomeID:       psql.Where[Q, uuid.UUID](MatchColumns.HomeID),
-		AwayID:       psql.Where[Q, uuid.UUID](MatchColumns.AwayID),
-		TournamentID: psql.Where[Q, uuid.UUID](MatchColumns.TournamentID),
+		HomeID:       psql.Where[Q, string](MatchColumns.HomeID),
+		AwayID:       psql.Where[Q, string](MatchColumns.AwayID),
+		TournamentID: psql.Where[Q, string](MatchColumns.TournamentID),
 		Scores:       psql.Where[Q, types.JSON[json.RawMessage]](MatchColumns.Scores),
 		WinCode:      psql.WhereNull[Q, int](MatchColumns.WinCode),
 		MatchStatus:  psql.Where[Q, MatchStatus](MatchColumns.MatchStatus),
@@ -254,7 +240,6 @@ func MatchWhere[Q psql.Filterable]() matchWhere[Q] {
 		HasTracker:   psql.WhereNull[Q, bool](MatchColumns.HasTracker),
 		IsFeatured:   psql.WhereNull[Q, bool](MatchColumns.IsFeatured),
 		ThumbnailURL: psql.WhereNull[Q, string](MatchColumns.ThumbnailURL),
-		Commentators: psql.WhereNull[Q, string](MatchColumns.Commentators),
 		IsLive:       psql.WhereNull[Q, bool](MatchColumns.IsLive),
 		LiveTracker:  psql.WhereNull[Q, string](MatchColumns.LiveTracker),
 		CreatedAt:    psql.Where[Q, time.Time](MatchColumns.CreatedAt),
@@ -269,7 +254,7 @@ func Matchs(ctx context.Context, exec bob.Executor, mods ...bob.Mod[*dialect.Sel
 
 // FindMatch retrieves a single record by primary key
 // If cols is empty Find will return all columns.
-func FindMatch(ctx context.Context, exec bob.Executor, IDPK uuid.UUID, cols ...string) (*Match, error) {
+func FindMatch(ctx context.Context, exec bob.Executor, IDPK string, cols ...string) (*Match, error) {
 	if len(cols) == 0 {
 		return MatchsTable.Query(
 			ctx, exec,
@@ -285,7 +270,7 @@ func FindMatch(ctx context.Context, exec bob.Executor, IDPK uuid.UUID, cols ...s
 }
 
 // MatchExists checks the presence of a single record by primary key
-func MatchExists(ctx context.Context, exec bob.Executor, IDPK uuid.UUID) (bool, error) {
+func MatchExists(ctx context.Context, exec bob.Executor, IDPK string) (bool, error) {
 	return MatchsTable.Query(
 		ctx, exec,
 		SelectWhere.Matchs.ID.EQ(IDPK),
@@ -338,7 +323,7 @@ func (o MatchSlice) UpdateAll(ctx context.Context, exec bob.Executor, vals Match
 func (o MatchSlice) ReloadAll(ctx context.Context, exec bob.Executor) error {
 	var mods []bob.Mod[*dialect.SelectQuery]
 
-	IDPK := make([]uuid.UUID, len(o))
+	IDPK := make([]string, len(o))
 
 	for i, o := range o {
 		IDPK[i] = o.ID

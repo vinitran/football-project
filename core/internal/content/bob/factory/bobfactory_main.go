@@ -11,7 +11,6 @@ import (
 
 	models "core/internal/content/bob"
 	"github.com/aarondl/opt/null"
-	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
 	"github.com/stephenafamo/bob/types"
 )
@@ -161,9 +160,6 @@ func random[T any](f *faker.Faker) T {
 		return val
 
 	case time.Time:
-		return val
-
-	case uuid.UUID:
 		return val
 
 	case types.JSON[json.RawMessage]:

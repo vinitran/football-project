@@ -13,7 +13,6 @@ import (
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
-	"github.com/google/uuid"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/clause"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -24,14 +23,13 @@ import (
 
 // Team is an object representing the database table.
 type Team struct {
-	ID        uuid.UUID        `db:"id,pk" `
+	ID        string           `db:"id,pk" `
 	Name      string           `db:"name" `
 	ShortName null.Val[string] `db:"short_name" `
-	Gender    string           `db:"gender" `
-	NameCode  string           `db:"name_code" `
+	Gender    null.Val[string] `db:"gender" `
+	NameCode  null.Val[string] `db:"name_code" `
 	Logo      string           `db:"logo" `
-	Slug      string           `db:"slug" `
-	IDSync    string           `db:"id_sync" `
+	Slug      null.Val[string] `db:"slug" `
 	CreatedAt time.Time        `db:"created_at" `
 	UpdatedAt time.Time        `db:"updated_at" `
 
@@ -61,14 +59,13 @@ type teamR struct {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type TeamSetter struct {
-	ID        omit.Val[uuid.UUID]  `db:"id,pk"`
+	ID        omit.Val[string]     `db:"id,pk"`
 	Name      omit.Val[string]     `db:"name"`
 	ShortName omitnull.Val[string] `db:"short_name"`
-	Gender    omit.Val[string]     `db:"gender"`
-	NameCode  omit.Val[string]     `db:"name_code"`
+	Gender    omitnull.Val[string] `db:"gender"`
+	NameCode  omitnull.Val[string] `db:"name_code"`
 	Logo      omit.Val[string]     `db:"logo"`
-	Slug      omit.Val[string]     `db:"slug"`
-	IDSync    omit.Val[string]     `db:"id_sync"`
+	Slug      omitnull.Val[string] `db:"slug"`
 	CreatedAt omit.Val[time.Time]  `db:"created_at"`
 	UpdatedAt omit.Val[time.Time]  `db:"updated_at"`
 }
@@ -81,7 +78,6 @@ type teamColumnNames struct {
 	NameCode  string
 	Logo      string
 	Slug      string
-	IDSync    string
 	CreatedAt string
 	UpdatedAt string
 }
@@ -114,7 +110,6 @@ var TeamColumns = struct {
 	NameCode  psql.Expression
 	Logo      psql.Expression
 	Slug      psql.Expression
-	IDSync    psql.Expression
 	CreatedAt psql.Expression
 	UpdatedAt psql.Expression
 }{
@@ -125,34 +120,31 @@ var TeamColumns = struct {
 	NameCode:  psql.Quote("teams", "name_code"),
 	Logo:      psql.Quote("teams", "logo"),
 	Slug:      psql.Quote("teams", "slug"),
-	IDSync:    psql.Quote("teams", "id_sync"),
 	CreatedAt: psql.Quote("teams", "created_at"),
 	UpdatedAt: psql.Quote("teams", "updated_at"),
 }
 
 type teamWhere[Q psql.Filterable] struct {
-	ID        psql.WhereMod[Q, uuid.UUID]
+	ID        psql.WhereMod[Q, string]
 	Name      psql.WhereMod[Q, string]
 	ShortName psql.WhereNullMod[Q, string]
-	Gender    psql.WhereMod[Q, string]
-	NameCode  psql.WhereMod[Q, string]
+	Gender    psql.WhereNullMod[Q, string]
+	NameCode  psql.WhereNullMod[Q, string]
 	Logo      psql.WhereMod[Q, string]
-	Slug      psql.WhereMod[Q, string]
-	IDSync    psql.WhereMod[Q, string]
+	Slug      psql.WhereNullMod[Q, string]
 	CreatedAt psql.WhereMod[Q, time.Time]
 	UpdatedAt psql.WhereMod[Q, time.Time]
 }
 
 func TeamWhere[Q psql.Filterable]() teamWhere[Q] {
 	return teamWhere[Q]{
-		ID:        psql.Where[Q, uuid.UUID](TeamColumns.ID),
+		ID:        psql.Where[Q, string](TeamColumns.ID),
 		Name:      psql.Where[Q, string](TeamColumns.Name),
 		ShortName: psql.WhereNull[Q, string](TeamColumns.ShortName),
-		Gender:    psql.Where[Q, string](TeamColumns.Gender),
-		NameCode:  psql.Where[Q, string](TeamColumns.NameCode),
+		Gender:    psql.WhereNull[Q, string](TeamColumns.Gender),
+		NameCode:  psql.WhereNull[Q, string](TeamColumns.NameCode),
 		Logo:      psql.Where[Q, string](TeamColumns.Logo),
-		Slug:      psql.Where[Q, string](TeamColumns.Slug),
-		IDSync:    psql.Where[Q, string](TeamColumns.IDSync),
+		Slug:      psql.WhereNull[Q, string](TeamColumns.Slug),
 		CreatedAt: psql.Where[Q, time.Time](TeamColumns.CreatedAt),
 		UpdatedAt: psql.Where[Q, time.Time](TeamColumns.UpdatedAt),
 	}
@@ -165,7 +157,7 @@ func Teams(ctx context.Context, exec bob.Executor, mods ...bob.Mod[*dialect.Sele
 
 // FindTeam retrieves a single record by primary key
 // If cols is empty Find will return all columns.
-func FindTeam(ctx context.Context, exec bob.Executor, IDPK uuid.UUID, cols ...string) (*Team, error) {
+func FindTeam(ctx context.Context, exec bob.Executor, IDPK string, cols ...string) (*Team, error) {
 	if len(cols) == 0 {
 		return TeamsTable.Query(
 			ctx, exec,
@@ -181,7 +173,7 @@ func FindTeam(ctx context.Context, exec bob.Executor, IDPK uuid.UUID, cols ...st
 }
 
 // TeamExists checks the presence of a single record by primary key
-func TeamExists(ctx context.Context, exec bob.Executor, IDPK uuid.UUID) (bool, error) {
+func TeamExists(ctx context.Context, exec bob.Executor, IDPK string) (bool, error) {
 	return TeamsTable.Query(
 		ctx, exec,
 		SelectWhere.Teams.ID.EQ(IDPK),
@@ -234,7 +226,7 @@ func (o TeamSlice) UpdateAll(ctx context.Context, exec bob.Executor, vals TeamSe
 func (o TeamSlice) ReloadAll(ctx context.Context, exec bob.Executor) error {
 	var mods []bob.Mod[*dialect.SelectQuery]
 
-	IDPK := make([]uuid.UUID, len(o))
+	IDPK := make([]string, len(o))
 
 	for i, o := range o {
 		IDPK[i] = o.ID

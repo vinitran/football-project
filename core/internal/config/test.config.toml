@@ -4,8 +4,8 @@ Environment = "development" # "production" or "development"
     User = "postgres"
     Password = "123456"
     Name = "postgres"
-    Host = "postgres"
-    Port = "5432"
+    Host = "localhost"
+    Port = "5433"
 
 [Redis]
     Password = ""
