@@ -1,14 +1,19 @@
 import { NewPage } from '../pages/new-page';
 import { HomePage } from '../pages/home-page';
-
-export const router = [
+import { TestPage } from '../pages/test-page';
+import { createBrowserRouter } from 'react-router-dom';
+export const router = createBrowserRouter([
   {
     path: '/',
-    element: HomePage,
-    children: [{ path: '/home', element: HomePage }]
+    Component: HomePage,
+    children: [{ path: '/home', Component: HomePage }]
   },
   {
     path: '/new',
-    element: NewPage
+    Component: NewPage
+  },
+  {
+    path: '/test',
+    Component: TestPage
   }
-];
+]);
