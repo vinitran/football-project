@@ -1,10 +1,11 @@
 package container
 
 import (
+	"net/http"
+
 	"core/internal/content"
 	"core/internal/content/datastore"
 	"core/internal/content/service"
-	"net/http"
 
 	"core/internal/config"
 	"core/internal/content/handler"

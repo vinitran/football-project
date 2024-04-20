@@ -12,7 +12,7 @@ import (
 
 const (
 	appName = "football-core"
-	//cfgPath = "/app/config.toml"
+	// cfgPath = "/app/config.toml"
 	cfgPath = "./internal/config/test.config.toml"
 )
 

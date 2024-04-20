@@ -2,10 +2,12 @@ package datastore
 
 import (
 	"context"
-	"core/internal/content"
-	b "core/internal/content/bob"
 	"database/sql"
 	"database/sql/driver"
+
+	"core/internal/content"
+	b "core/internal/content/bob"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/stephenafamo/scan"
 )

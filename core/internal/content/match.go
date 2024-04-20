@@ -1,9 +1,10 @@
 package content
 
 import (
-	models "core/internal/content/bob"
 	"encoding/json"
 	"time"
+
+	models "core/internal/content/bob"
 )
 
 type Match struct {

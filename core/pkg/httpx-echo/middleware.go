@@ -2,15 +2,16 @@ package httpx
 
 import (
 	"context"
-	"core/pkg/auth"
-	"core/pkg/errorx"
-	"core/pkg/jwtx"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"core/pkg/auth"
+	"core/pkg/errorx"
+	"core/pkg/jwtx"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
