@@ -6,9 +6,6 @@ import (
 	b "core/internal/content/bob"
 	"database/sql"
 	"database/sql/driver"
-	"github.com/google/uuid"
-	"time"
-
 	"github.com/jackc/pgx/v5"
 	"github.com/stephenafamo/scan"
 )
@@ -60,20 +57,73 @@ func (v *BobExecutorPgx) ExecContext(ctx context.Context, query string, args ...
 	return driver.RowsAffected(tag.RowsAffected()), err
 }
 
-func PoolTeamToRaw(v *b.Team) *content.Team {
+func TeamBobToRaw(v *b.Team) *content.Team {
 	if v == nil {
 		return nil
 	}
 
 	item := &content.Team{
-		ID:        v.ID,
 		Name:      v.Name,
-		ShortName: v.ShortName.MustGet().,
-		Gender:    "",
-		NameCode:  "",
-		Logo:      "",
-		Slug:      "",
-		IDSync:    "",
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
+		ShortName: v.ShortName.Ptr(),
+		Gender:    v.Gender.GetOrZero(),
+		NameCode:  v.NameCode.GetOrZero(),
+		Logo:      v.Logo,
+		Slug:      v.Slug.GetOrZero(),
+		CreatedAt: v.CreatedAt,
+		UpdatedAt: v.UpdatedAt,
 	}
+
+	return item
+}
+
+func TournamentBobToRaw(v *b.Tournament) *content.Tournament {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.Tournament{
+		Name:       v.Name,
+		Slug:       v.Slug,
+		Logo:       v.Logo,
+		IsFeatured: v.IsFeatured,
+		Priority:   v.Priority,
+		CreatedAt:  v.CreatedAt,
+		UpdatedAt:  v.UpdatedAt,
+	}
+
+	return item
+}
+
+func MatchBobToRaw(v *b.Match) *content.Match {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.Match{
+		ID:           v.ID,
+		Name:         v.Name,
+		Slug:         v.Slug,
+		Date:         v.Date,
+		Timestamp:    v.Timestamp,
+		HomeRedCards: v.HomeRedCards,
+		AwayRedCards: v.AwayRedCards,
+		Scores:       v.Scores.Val,
+		WinCode:      v.WinCode.Ptr(),
+		MatchStatus:  v.MatchStatus,
+		SportType:    v.SportType.Ptr(),
+		HasLineup:    v.HasLineup.Ptr(),
+		HasTracker:   v.HasTracker.Ptr(),
+		IsFeatured:   v.IsFeatured.Ptr(),
+		ThumbnailURL: v.ThumbnailURL.Ptr(),
+		IsLive:       v.IsLive.Ptr(),
+		LiveTracker:  v.LiveTracker.Ptr(),
+		CreatedAt:    v.CreatedAt,
+		UpdatedAt:    v.UpdatedAt,
+
+		Tournament: TournamentBobToRaw(v.R.Tournament),
+		Home:       TeamBobToRaw(v.R.HomeTeam),
+		Away:       TeamBobToRaw(v.R.AwayTeam),
+	}
+
+	return item
+}

@@ -1,6 +1,10 @@
 package handler
 
 import (
+	"core/pkg/auth"
+	"core/pkg/errorx"
+	"core/pkg/httpx-echo"
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -38,5 +42,26 @@ func New(cfg *Config) (http.Handler, error) {
 		routesAPIv1.Use(cors)
 	}
 
+	groupMatch := &GroupMatch{cfg}
+	{
+		routesAPIv1.GET("/matchs/:id", groupMatch.Show)
+	}
+
 	return r, nil
+}
+
+func restAbort(c echo.Context, v any, err error) error {
+	if errors.Is(err, auth.ErrInvalidSession) {
+		return httpx.Abort(c, errorx.Wrap(err, errorx.Authn))
+	}
+
+	if _, ok := err.(*errorx.Error); ok {
+		return httpx.Abort(c, err)
+	}
+
+	if err != nil {
+		return httpx.Abort(c, errorx.Wrap(err, errorx.Service))
+	}
+
+	return httpx.Abort(c, v)
 }

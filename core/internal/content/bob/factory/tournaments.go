@@ -9,7 +9,6 @@ import (
 
 	models "core/internal/content/bob"
 	"github.com/aarondl/opt/omit"
-	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
 	"github.com/stephenafamo/bob"
 )
@@ -35,13 +34,12 @@ func (mods TournamentModSlice) Apply(n *TournamentTemplate) {
 // TournamentTemplate is an object representing the database table.
 // all columns are optional and should be set by mods
 type TournamentTemplate struct {
-	ID         func() uuid.UUID
+	ID         func() string
 	Name       func() string
 	Slug       func() string
 	Logo       func() string
 	IsFeatured func() bool
 	Priority   func() int
-	IDSync     func() string
 	CreatedAt  func() time.Time
 	UpdatedAt  func() time.Time
 
@@ -87,9 +85,6 @@ func (o TournamentTemplate) toModel() *models.Tournament {
 	}
 	if o.Priority != nil {
 		m.Priority = o.Priority()
-	}
-	if o.IDSync != nil {
-		m.IDSync = o.IDSync()
 	}
 	if o.CreatedAt != nil {
 		m.CreatedAt = o.CreatedAt()
@@ -154,9 +149,6 @@ func (o TournamentTemplate) BuildSetter() *models.TournamentSetter {
 	if o.Priority != nil {
 		m.Priority = omit.From(o.Priority())
 	}
-	if o.IDSync != nil {
-		m.IDSync = omit.From(o.IDSync())
-	}
 	if o.CreatedAt != nil {
 		m.CreatedAt = omit.From(o.CreatedAt())
 	}
@@ -204,7 +196,7 @@ func (o TournamentTemplate) BuildMany(number int) models.TournamentSlice {
 
 func ensureCreatableTournament(m *models.TournamentSetter) {
 	if m.ID.IsUnset() {
-		m.ID = omit.From(random[uuid.UUID](nil))
+		m.ID = omit.From(random[string](nil))
 	}
 	if m.Name.IsUnset() {
 		m.Name = omit.From(random[string](nil))
@@ -214,9 +206,6 @@ func ensureCreatableTournament(m *models.TournamentSetter) {
 	}
 	if m.Logo.IsUnset() {
 		m.Logo = omit.From(random[string](nil))
-	}
-	if m.IDSync.IsUnset() {
-		m.IDSync = omit.From(random[string](nil))
 	}
 	if m.CreatedAt.IsUnset() {
 		m.CreatedAt = omit.From(random[time.Time](nil))
@@ -312,21 +301,20 @@ func (m tournamentMods) RandomizeAllColumns(f *faker.Faker) TournamentMod {
 		TournamentMods.RandomLogo(f),
 		TournamentMods.RandomIsFeatured(f),
 		TournamentMods.RandomPriority(f),
-		TournamentMods.RandomIDSync(f),
 		TournamentMods.RandomCreatedAt(f),
 		TournamentMods.RandomUpdatedAt(f),
 	}
 }
 
 // Set the model columns to this value
-func (m tournamentMods) ID(val uuid.UUID) TournamentMod {
+func (m tournamentMods) ID(val string) TournamentMod {
 	return TournamentModFunc(func(o *TournamentTemplate) {
-		o.ID = func() uuid.UUID { return val }
+		o.ID = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m tournamentMods) IDFunc(f func() uuid.UUID) TournamentMod {
+func (m tournamentMods) IDFunc(f func() string) TournamentMod {
 	return TournamentModFunc(func(o *TournamentTemplate) {
 		o.ID = f
 	})
@@ -343,8 +331,8 @@ func (m tournamentMods) UnsetID() TournamentMod {
 // if faker is nil, a default faker is used
 func (m tournamentMods) RandomID(f *faker.Faker) TournamentMod {
 	return TournamentModFunc(func(o *TournamentTemplate) {
-		o.ID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.ID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -355,8 +343,8 @@ func (m tournamentMods) ensureID(f *faker.Faker) TournamentMod {
 			return
 		}
 
-		o.ID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.ID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -572,49 +560,6 @@ func (m tournamentMods) ensurePriority(f *faker.Faker) TournamentMod {
 
 		o.Priority = func() int {
 			return random[int](f)
-		}
-	})
-}
-
-// Set the model columns to this value
-func (m tournamentMods) IDSync(val string) TournamentMod {
-	return TournamentModFunc(func(o *TournamentTemplate) {
-		o.IDSync = func() string { return val }
-	})
-}
-
-// Set the Column from the function
-func (m tournamentMods) IDSyncFunc(f func() string) TournamentMod {
-	return TournamentModFunc(func(o *TournamentTemplate) {
-		o.IDSync = f
-	})
-}
-
-// Clear any values for the column
-func (m tournamentMods) UnsetIDSync() TournamentMod {
-	return TournamentModFunc(func(o *TournamentTemplate) {
-		o.IDSync = nil
-	})
-}
-
-// Generates a random value for the column using the given faker
-// if faker is nil, a default faker is used
-func (m tournamentMods) RandomIDSync(f *faker.Faker) TournamentMod {
-	return TournamentModFunc(func(o *TournamentTemplate) {
-		o.IDSync = func() string {
-			return random[string](f)
-		}
-	})
-}
-
-func (m tournamentMods) ensureIDSync(f *faker.Faker) TournamentMod {
-	return TournamentModFunc(func(o *TournamentTemplate) {
-		if o.IDSync != nil {
-			return
-		}
-
-		o.IDSync = func() string {
-			return random[string](f)
 		}
 	})
 }

@@ -12,7 +12,6 @@ import (
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
-	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/types"
@@ -39,17 +38,16 @@ func (mods MatchModSlice) Apply(n *MatchTemplate) {
 // MatchTemplate is an object representing the database table.
 // all columns are optional and should be set by mods
 type MatchTemplate struct {
-	ID           func() uuid.UUID
-	IDSync       func() string
+	ID           func() string
 	Name         func() string
 	Slug         func() string
 	Date         func() string
-	Timestamp    func() int
+	Timestamp    func() int64
 	HomeRedCards func() int
 	AwayRedCards func() int
-	HomeID       func() uuid.UUID
-	AwayID       func() uuid.UUID
-	TournamentID func() uuid.UUID
+	HomeID       func() string
+	AwayID       func() string
+	TournamentID func() string
 	Scores       func() types.JSON[json.RawMessage]
 	WinCode      func() null.Val[int]
 	MatchStatus  func() MatchStatus
@@ -58,7 +56,6 @@ type MatchTemplate struct {
 	HasTracker   func() null.Val[bool]
 	IsFeatured   func() null.Val[bool]
 	ThumbnailURL func() null.Val[string]
-	Commentators func() null.Val[string]
 	IsLive       func() null.Val[bool]
 	LiveTracker  func() null.Val[string]
 	CreatedAt    func() time.Time
@@ -98,9 +95,6 @@ func (o MatchTemplate) toModel() *models.Match {
 
 	if o.ID != nil {
 		m.ID = o.ID()
-	}
-	if o.IDSync != nil {
-		m.IDSync = o.IDSync()
 	}
 	if o.Name != nil {
 		m.Name = o.Name()
@@ -152,9 +146,6 @@ func (o MatchTemplate) toModel() *models.Match {
 	}
 	if o.ThumbnailURL != nil {
 		m.ThumbnailURL = o.ThumbnailURL()
-	}
-	if o.Commentators != nil {
-		m.Commentators = o.Commentators()
 	}
 	if o.IsLive != nil {
 		m.IsLive = o.IsLive()
@@ -218,9 +209,6 @@ func (o MatchTemplate) BuildSetter() *models.MatchSetter {
 	if o.ID != nil {
 		m.ID = omit.From(o.ID())
 	}
-	if o.IDSync != nil {
-		m.IDSync = omit.From(o.IDSync())
-	}
 	if o.Name != nil {
 		m.Name = omit.From(o.Name())
 	}
@@ -271,9 +259,6 @@ func (o MatchTemplate) BuildSetter() *models.MatchSetter {
 	}
 	if o.ThumbnailURL != nil {
 		m.ThumbnailURL = omitnull.FromNull(o.ThumbnailURL())
-	}
-	if o.Commentators != nil {
-		m.Commentators = omitnull.FromNull(o.Commentators())
 	}
 	if o.IsLive != nil {
 		m.IsLive = omitnull.FromNull(o.IsLive())
@@ -328,10 +313,7 @@ func (o MatchTemplate) BuildMany(number int) models.MatchSlice {
 
 func ensureCreatableMatch(m *models.MatchSetter) {
 	if m.ID.IsUnset() {
-		m.ID = omit.From(random[uuid.UUID](nil))
-	}
-	if m.IDSync.IsUnset() {
-		m.IDSync = omit.From(random[string](nil))
+		m.ID = omit.From(random[string](nil))
 	}
 	if m.Name.IsUnset() {
 		m.Name = omit.From(random[string](nil))
@@ -343,16 +325,16 @@ func ensureCreatableMatch(m *models.MatchSetter) {
 		m.Date = omit.From(random[string](nil))
 	}
 	if m.Timestamp.IsUnset() {
-		m.Timestamp = omit.From(random[int](nil))
+		m.Timestamp = omit.From(random[int64](nil))
 	}
 	if m.HomeID.IsUnset() {
-		m.HomeID = omit.From(random[uuid.UUID](nil))
+		m.HomeID = omit.From(random[string](nil))
 	}
 	if m.AwayID.IsUnset() {
-		m.AwayID = omit.From(random[uuid.UUID](nil))
+		m.AwayID = omit.From(random[string](nil))
 	}
 	if m.TournamentID.IsUnset() {
-		m.TournamentID = omit.From(random[uuid.UUID](nil))
+		m.TournamentID = omit.From(random[string](nil))
 	}
 	if m.Scores.IsUnset() {
 		m.Scores = omit.From(random[types.JSON[json.RawMessage]](nil))
@@ -486,7 +468,6 @@ type matchMods struct{}
 func (m matchMods) RandomizeAllColumns(f *faker.Faker) MatchMod {
 	return MatchModSlice{
 		MatchMods.RandomID(f),
-		MatchMods.RandomIDSync(f),
 		MatchMods.RandomName(f),
 		MatchMods.RandomSlug(f),
 		MatchMods.RandomDate(f),
@@ -504,7 +485,6 @@ func (m matchMods) RandomizeAllColumns(f *faker.Faker) MatchMod {
 		MatchMods.RandomHasTracker(f),
 		MatchMods.RandomIsFeatured(f),
 		MatchMods.RandomThumbnailURL(f),
-		MatchMods.RandomCommentators(f),
 		MatchMods.RandomIsLive(f),
 		MatchMods.RandomLiveTracker(f),
 		MatchMods.RandomCreatedAt(f),
@@ -513,14 +493,14 @@ func (m matchMods) RandomizeAllColumns(f *faker.Faker) MatchMod {
 }
 
 // Set the model columns to this value
-func (m matchMods) ID(val uuid.UUID) MatchMod {
+func (m matchMods) ID(val string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.ID = func() uuid.UUID { return val }
+		o.ID = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m matchMods) IDFunc(f func() uuid.UUID) MatchMod {
+func (m matchMods) IDFunc(f func() string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
 		o.ID = f
 	})
@@ -537,8 +517,8 @@ func (m matchMods) UnsetID() MatchMod {
 // if faker is nil, a default faker is used
 func (m matchMods) RandomID(f *faker.Faker) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.ID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.ID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -549,50 +529,7 @@ func (m matchMods) ensureID(f *faker.Faker) MatchMod {
 			return
 		}
 
-		o.ID = func() uuid.UUID {
-			return random[uuid.UUID](f)
-		}
-	})
-}
-
-// Set the model columns to this value
-func (m matchMods) IDSync(val string) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.IDSync = func() string { return val }
-	})
-}
-
-// Set the Column from the function
-func (m matchMods) IDSyncFunc(f func() string) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.IDSync = f
-	})
-}
-
-// Clear any values for the column
-func (m matchMods) UnsetIDSync() MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.IDSync = nil
-	})
-}
-
-// Generates a random value for the column using the given faker
-// if faker is nil, a default faker is used
-func (m matchMods) RandomIDSync(f *faker.Faker) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.IDSync = func() string {
-			return random[string](f)
-		}
-	})
-}
-
-func (m matchMods) ensureIDSync(f *faker.Faker) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		if o.IDSync != nil {
-			return
-		}
-
-		o.IDSync = func() string {
+		o.ID = func() string {
 			return random[string](f)
 		}
 	})
@@ -728,14 +665,14 @@ func (m matchMods) ensureDate(f *faker.Faker) MatchMod {
 }
 
 // Set the model columns to this value
-func (m matchMods) Timestamp(val int) MatchMod {
+func (m matchMods) Timestamp(val int64) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.Timestamp = func() int { return val }
+		o.Timestamp = func() int64 { return val }
 	})
 }
 
 // Set the Column from the function
-func (m matchMods) TimestampFunc(f func() int) MatchMod {
+func (m matchMods) TimestampFunc(f func() int64) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
 		o.Timestamp = f
 	})
@@ -752,8 +689,8 @@ func (m matchMods) UnsetTimestamp() MatchMod {
 // if faker is nil, a default faker is used
 func (m matchMods) RandomTimestamp(f *faker.Faker) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.Timestamp = func() int {
-			return random[int](f)
+		o.Timestamp = func() int64 {
+			return random[int64](f)
 		}
 	})
 }
@@ -764,8 +701,8 @@ func (m matchMods) ensureTimestamp(f *faker.Faker) MatchMod {
 			return
 		}
 
-		o.Timestamp = func() int {
-			return random[int](f)
+		o.Timestamp = func() int64 {
+			return random[int64](f)
 		}
 	})
 }
@@ -857,14 +794,14 @@ func (m matchMods) ensureAwayRedCards(f *faker.Faker) MatchMod {
 }
 
 // Set the model columns to this value
-func (m matchMods) HomeID(val uuid.UUID) MatchMod {
+func (m matchMods) HomeID(val string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.HomeID = func() uuid.UUID { return val }
+		o.HomeID = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m matchMods) HomeIDFunc(f func() uuid.UUID) MatchMod {
+func (m matchMods) HomeIDFunc(f func() string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
 		o.HomeID = f
 	})
@@ -881,8 +818,8 @@ func (m matchMods) UnsetHomeID() MatchMod {
 // if faker is nil, a default faker is used
 func (m matchMods) RandomHomeID(f *faker.Faker) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.HomeID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.HomeID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -893,21 +830,21 @@ func (m matchMods) ensureHomeID(f *faker.Faker) MatchMod {
 			return
 		}
 
-		o.HomeID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.HomeID = func() string {
+			return random[string](f)
 		}
 	})
 }
 
 // Set the model columns to this value
-func (m matchMods) AwayID(val uuid.UUID) MatchMod {
+func (m matchMods) AwayID(val string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.AwayID = func() uuid.UUID { return val }
+		o.AwayID = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m matchMods) AwayIDFunc(f func() uuid.UUID) MatchMod {
+func (m matchMods) AwayIDFunc(f func() string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
 		o.AwayID = f
 	})
@@ -924,8 +861,8 @@ func (m matchMods) UnsetAwayID() MatchMod {
 // if faker is nil, a default faker is used
 func (m matchMods) RandomAwayID(f *faker.Faker) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.AwayID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.AwayID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -936,21 +873,21 @@ func (m matchMods) ensureAwayID(f *faker.Faker) MatchMod {
 			return
 		}
 
-		o.AwayID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.AwayID = func() string {
+			return random[string](f)
 		}
 	})
 }
 
 // Set the model columns to this value
-func (m matchMods) TournamentID(val uuid.UUID) MatchMod {
+func (m matchMods) TournamentID(val string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.TournamentID = func() uuid.UUID { return val }
+		o.TournamentID = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m matchMods) TournamentIDFunc(f func() uuid.UUID) MatchMod {
+func (m matchMods) TournamentIDFunc(f func() string) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
 		o.TournamentID = f
 	})
@@ -967,8 +904,8 @@ func (m matchMods) UnsetTournamentID() MatchMod {
 // if faker is nil, a default faker is used
 func (m matchMods) RandomTournamentID(f *faker.Faker) MatchMod {
 	return MatchModFunc(func(o *MatchTemplate) {
-		o.TournamentID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.TournamentID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -979,8 +916,8 @@ func (m matchMods) ensureTournamentID(f *faker.Faker) MatchMod {
 			return
 		}
 
-		o.TournamentID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.TournamentID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -1324,49 +1261,6 @@ func (m matchMods) ensureThumbnailURL(f *faker.Faker) MatchMod {
 		}
 
 		o.ThumbnailURL = func() null.Val[string] {
-			return randomNull[string](f)
-		}
-	})
-}
-
-// Set the model columns to this value
-func (m matchMods) Commentators(val null.Val[string]) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.Commentators = func() null.Val[string] { return val }
-	})
-}
-
-// Set the Column from the function
-func (m matchMods) CommentatorsFunc(f func() null.Val[string]) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.Commentators = f
-	})
-}
-
-// Clear any values for the column
-func (m matchMods) UnsetCommentators() MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.Commentators = nil
-	})
-}
-
-// Generates a random value for the column using the given faker
-// if faker is nil, a default faker is used
-func (m matchMods) RandomCommentators(f *faker.Faker) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		o.Commentators = func() null.Val[string] {
-			return randomNull[string](f)
-		}
-	})
-}
-
-func (m matchMods) ensureCommentators(f *faker.Faker) MatchMod {
-	return MatchModFunc(func(o *MatchTemplate) {
-		if o.Commentators != nil {
-			return
-		}
-
-		o.Commentators = func() null.Val[string] {
 			return randomNull[string](f)
 		}
 	})

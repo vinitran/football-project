@@ -12,7 +12,6 @@ type Tournament struct {
 	Logo       string    `db:"logo"  json:"logo""`
 	IsFeatured bool      `db:"is_featured"  json:"is_featured"`
 	Priority   int       `db:"priority"  json:"priority"`
-	IDSync     string    `db:"id_sync"  json:"id_sync"`
 	CreatedAt  time.Time `db:"created_at"  json:"created_at"`
 	UpdatedAt  time.Time `db:"updated_at"  json:"updated_at"`
 }

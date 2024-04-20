@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/aarondl/opt/omit"
-	"github.com/google/uuid"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/clause"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -22,13 +21,12 @@ import (
 
 // Tournament is an object representing the database table.
 type Tournament struct {
-	ID         uuid.UUID `db:"id,pk" `
+	ID         string    `db:"id,pk" `
 	Name       string    `db:"name" `
 	Slug       string    `db:"slug" `
 	Logo       string    `db:"logo" `
 	IsFeatured bool      `db:"is_featured" `
 	Priority   int       `db:"priority" `
-	IDSync     string    `db:"id_sync" `
 	CreatedAt  time.Time `db:"created_at" `
 	UpdatedAt  time.Time `db:"updated_at" `
 
@@ -57,13 +55,12 @@ type tournamentR struct {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type TournamentSetter struct {
-	ID         omit.Val[uuid.UUID] `db:"id,pk"`
+	ID         omit.Val[string]    `db:"id,pk"`
 	Name       omit.Val[string]    `db:"name"`
 	Slug       omit.Val[string]    `db:"slug"`
 	Logo       omit.Val[string]    `db:"logo"`
 	IsFeatured omit.Val[bool]      `db:"is_featured"`
 	Priority   omit.Val[int]       `db:"priority"`
-	IDSync     omit.Val[string]    `db:"id_sync"`
 	CreatedAt  omit.Val[time.Time] `db:"created_at"`
 	UpdatedAt  omit.Val[time.Time] `db:"updated_at"`
 }
@@ -75,7 +72,6 @@ type tournamentColumnNames struct {
 	Logo       string
 	IsFeatured string
 	Priority   string
-	IDSync     string
 	CreatedAt  string
 	UpdatedAt  string
 }
@@ -105,7 +101,6 @@ var TournamentColumns = struct {
 	Logo       psql.Expression
 	IsFeatured psql.Expression
 	Priority   psql.Expression
-	IDSync     psql.Expression
 	CreatedAt  psql.Expression
 	UpdatedAt  psql.Expression
 }{
@@ -115,32 +110,29 @@ var TournamentColumns = struct {
 	Logo:       psql.Quote("tournaments", "logo"),
 	IsFeatured: psql.Quote("tournaments", "is_featured"),
 	Priority:   psql.Quote("tournaments", "priority"),
-	IDSync:     psql.Quote("tournaments", "id_sync"),
 	CreatedAt:  psql.Quote("tournaments", "created_at"),
 	UpdatedAt:  psql.Quote("tournaments", "updated_at"),
 }
 
 type tournamentWhere[Q psql.Filterable] struct {
-	ID         psql.WhereMod[Q, uuid.UUID]
+	ID         psql.WhereMod[Q, string]
 	Name       psql.WhereMod[Q, string]
 	Slug       psql.WhereMod[Q, string]
 	Logo       psql.WhereMod[Q, string]
 	IsFeatured psql.WhereMod[Q, bool]
 	Priority   psql.WhereMod[Q, int]
-	IDSync     psql.WhereMod[Q, string]
 	CreatedAt  psql.WhereMod[Q, time.Time]
 	UpdatedAt  psql.WhereMod[Q, time.Time]
 }
 
 func TournamentWhere[Q psql.Filterable]() tournamentWhere[Q] {
 	return tournamentWhere[Q]{
-		ID:         psql.Where[Q, uuid.UUID](TournamentColumns.ID),
+		ID:         psql.Where[Q, string](TournamentColumns.ID),
 		Name:       psql.Where[Q, string](TournamentColumns.Name),
 		Slug:       psql.Where[Q, string](TournamentColumns.Slug),
 		Logo:       psql.Where[Q, string](TournamentColumns.Logo),
 		IsFeatured: psql.Where[Q, bool](TournamentColumns.IsFeatured),
 		Priority:   psql.Where[Q, int](TournamentColumns.Priority),
-		IDSync:     psql.Where[Q, string](TournamentColumns.IDSync),
 		CreatedAt:  psql.Where[Q, time.Time](TournamentColumns.CreatedAt),
 		UpdatedAt:  psql.Where[Q, time.Time](TournamentColumns.UpdatedAt),
 	}
@@ -153,7 +145,7 @@ func Tournaments(ctx context.Context, exec bob.Executor, mods ...bob.Mod[*dialec
 
 // FindTournament retrieves a single record by primary key
 // If cols is empty Find will return all columns.
-func FindTournament(ctx context.Context, exec bob.Executor, IDPK uuid.UUID, cols ...string) (*Tournament, error) {
+func FindTournament(ctx context.Context, exec bob.Executor, IDPK string, cols ...string) (*Tournament, error) {
 	if len(cols) == 0 {
 		return TournamentsTable.Query(
 			ctx, exec,
@@ -169,7 +161,7 @@ func FindTournament(ctx context.Context, exec bob.Executor, IDPK uuid.UUID, cols
 }
 
 // TournamentExists checks the presence of a single record by primary key
-func TournamentExists(ctx context.Context, exec bob.Executor, IDPK uuid.UUID) (bool, error) {
+func TournamentExists(ctx context.Context, exec bob.Executor, IDPK string) (bool, error) {
 	return TournamentsTable.Query(
 		ctx, exec,
 		SelectWhere.Tournaments.ID.EQ(IDPK),
@@ -222,7 +214,7 @@ func (o TournamentSlice) UpdateAll(ctx context.Context, exec bob.Executor, vals 
 func (o TournamentSlice) ReloadAll(ctx context.Context, exec bob.Executor) error {
 	var mods []bob.Mod[*dialect.SelectQuery]
 
-	IDPK := make([]uuid.UUID, len(o))
+	IDPK := make([]string, len(o))
 
 	for i, o := range o {
 		IDPK[i] = o.ID

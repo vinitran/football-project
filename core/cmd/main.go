@@ -12,6 +12,8 @@ import (
 
 const (
 	appName = "football-core"
+	//cfgPath = "/app/config.toml"
+	cfgPath = "./internal/config/test.config.toml"
 )
 
 var (
@@ -37,7 +39,7 @@ var (
 )
 
 func main() {
-	cfg, err := config.Load("/app/config.toml")
+	cfg, err := config.Load(cfgPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,6 +67,13 @@ func main() {
 			Usage:   "Run the migration",
 			Action:  startMigration,
 			Flags:   append(flags, &configMigrateActionFlag),
+		},
+		{
+			Name:    "crawler",
+			Aliases: []string{},
+			Usage:   "Run the crawler",
+			Action:  startCrawler,
+			Flags:   append(flags),
 		},
 	}
 

@@ -11,7 +11,6 @@ import (
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
-	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
 	"github.com/stephenafamo/bob"
 )
@@ -37,14 +36,13 @@ func (mods TeamModSlice) Apply(n *TeamTemplate) {
 // TeamTemplate is an object representing the database table.
 // all columns are optional and should be set by mods
 type TeamTemplate struct {
-	ID        func() uuid.UUID
+	ID        func() string
 	Name      func() string
 	ShortName func() null.Val[string]
-	Gender    func() string
-	NameCode  func() string
+	Gender    func() null.Val[string]
+	NameCode  func() null.Val[string]
 	Logo      func() string
-	Slug      func() string
-	IDSync    func() string
+	Slug      func() null.Val[string]
 	CreatedAt func() time.Time
 	UpdatedAt func() time.Time
 
@@ -98,9 +96,6 @@ func (o TeamTemplate) toModel() *models.Team {
 	}
 	if o.Slug != nil {
 		m.Slug = o.Slug()
-	}
-	if o.IDSync != nil {
-		m.IDSync = o.IDSync()
 	}
 	if o.CreatedAt != nil {
 		m.CreatedAt = o.CreatedAt()
@@ -170,19 +165,16 @@ func (o TeamTemplate) BuildSetter() *models.TeamSetter {
 		m.ShortName = omitnull.FromNull(o.ShortName())
 	}
 	if o.Gender != nil {
-		m.Gender = omit.From(o.Gender())
+		m.Gender = omitnull.FromNull(o.Gender())
 	}
 	if o.NameCode != nil {
-		m.NameCode = omit.From(o.NameCode())
+		m.NameCode = omitnull.FromNull(o.NameCode())
 	}
 	if o.Logo != nil {
 		m.Logo = omit.From(o.Logo())
 	}
 	if o.Slug != nil {
-		m.Slug = omit.From(o.Slug())
-	}
-	if o.IDSync != nil {
-		m.IDSync = omit.From(o.IDSync())
+		m.Slug = omitnull.FromNull(o.Slug())
 	}
 	if o.CreatedAt != nil {
 		m.CreatedAt = omit.From(o.CreatedAt())
@@ -231,25 +223,13 @@ func (o TeamTemplate) BuildMany(number int) models.TeamSlice {
 
 func ensureCreatableTeam(m *models.TeamSetter) {
 	if m.ID.IsUnset() {
-		m.ID = omit.From(random[uuid.UUID](nil))
+		m.ID = omit.From(random[string](nil))
 	}
 	if m.Name.IsUnset() {
 		m.Name = omit.From(random[string](nil))
 	}
-	if m.Gender.IsUnset() {
-		m.Gender = omit.From(random[string](nil))
-	}
-	if m.NameCode.IsUnset() {
-		m.NameCode = omit.From(random[string](nil))
-	}
 	if m.Logo.IsUnset() {
 		m.Logo = omit.From(random[string](nil))
-	}
-	if m.Slug.IsUnset() {
-		m.Slug = omit.From(random[string](nil))
-	}
-	if m.IDSync.IsUnset() {
-		m.IDSync = omit.From(random[string](nil))
 	}
 	if m.CreatedAt.IsUnset() {
 		m.CreatedAt = omit.From(random[time.Time](nil))
@@ -361,21 +341,20 @@ func (m teamMods) RandomizeAllColumns(f *faker.Faker) TeamMod {
 		TeamMods.RandomNameCode(f),
 		TeamMods.RandomLogo(f),
 		TeamMods.RandomSlug(f),
-		TeamMods.RandomIDSync(f),
 		TeamMods.RandomCreatedAt(f),
 		TeamMods.RandomUpdatedAt(f),
 	}
 }
 
 // Set the model columns to this value
-func (m teamMods) ID(val uuid.UUID) TeamMod {
+func (m teamMods) ID(val string) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.ID = func() uuid.UUID { return val }
+		o.ID = func() string { return val }
 	})
 }
 
 // Set the Column from the function
-func (m teamMods) IDFunc(f func() uuid.UUID) TeamMod {
+func (m teamMods) IDFunc(f func() string) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
 		o.ID = f
 	})
@@ -392,8 +371,8 @@ func (m teamMods) UnsetID() TeamMod {
 // if faker is nil, a default faker is used
 func (m teamMods) RandomID(f *faker.Faker) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.ID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.ID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -404,8 +383,8 @@ func (m teamMods) ensureID(f *faker.Faker) TeamMod {
 			return
 		}
 
-		o.ID = func() uuid.UUID {
-			return random[uuid.UUID](f)
+		o.ID = func() string {
+			return random[string](f)
 		}
 	})
 }
@@ -497,14 +476,14 @@ func (m teamMods) ensureShortName(f *faker.Faker) TeamMod {
 }
 
 // Set the model columns to this value
-func (m teamMods) Gender(val string) TeamMod {
+func (m teamMods) Gender(val null.Val[string]) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.Gender = func() string { return val }
+		o.Gender = func() null.Val[string] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m teamMods) GenderFunc(f func() string) TeamMod {
+func (m teamMods) GenderFunc(f func() null.Val[string]) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
 		o.Gender = f
 	})
@@ -521,8 +500,8 @@ func (m teamMods) UnsetGender() TeamMod {
 // if faker is nil, a default faker is used
 func (m teamMods) RandomGender(f *faker.Faker) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.Gender = func() string {
-			return random[string](f)
+		o.Gender = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
@@ -533,21 +512,21 @@ func (m teamMods) ensureGender(f *faker.Faker) TeamMod {
 			return
 		}
 
-		o.Gender = func() string {
-			return random[string](f)
+		o.Gender = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
 
 // Set the model columns to this value
-func (m teamMods) NameCode(val string) TeamMod {
+func (m teamMods) NameCode(val null.Val[string]) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.NameCode = func() string { return val }
+		o.NameCode = func() null.Val[string] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m teamMods) NameCodeFunc(f func() string) TeamMod {
+func (m teamMods) NameCodeFunc(f func() null.Val[string]) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
 		o.NameCode = f
 	})
@@ -564,8 +543,8 @@ func (m teamMods) UnsetNameCode() TeamMod {
 // if faker is nil, a default faker is used
 func (m teamMods) RandomNameCode(f *faker.Faker) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.NameCode = func() string {
-			return random[string](f)
+		o.NameCode = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
@@ -576,8 +555,8 @@ func (m teamMods) ensureNameCode(f *faker.Faker) TeamMod {
 			return
 		}
 
-		o.NameCode = func() string {
-			return random[string](f)
+		o.NameCode = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
@@ -626,14 +605,14 @@ func (m teamMods) ensureLogo(f *faker.Faker) TeamMod {
 }
 
 // Set the model columns to this value
-func (m teamMods) Slug(val string) TeamMod {
+func (m teamMods) Slug(val null.Val[string]) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.Slug = func() string { return val }
+		o.Slug = func() null.Val[string] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m teamMods) SlugFunc(f func() string) TeamMod {
+func (m teamMods) SlugFunc(f func() null.Val[string]) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
 		o.Slug = f
 	})
@@ -650,8 +629,8 @@ func (m teamMods) UnsetSlug() TeamMod {
 // if faker is nil, a default faker is used
 func (m teamMods) RandomSlug(f *faker.Faker) TeamMod {
 	return TeamModFunc(func(o *TeamTemplate) {
-		o.Slug = func() string {
-			return random[string](f)
+		o.Slug = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
@@ -662,51 +641,8 @@ func (m teamMods) ensureSlug(f *faker.Faker) TeamMod {
 			return
 		}
 
-		o.Slug = func() string {
-			return random[string](f)
-		}
-	})
-}
-
-// Set the model columns to this value
-func (m teamMods) IDSync(val string) TeamMod {
-	return TeamModFunc(func(o *TeamTemplate) {
-		o.IDSync = func() string { return val }
-	})
-}
-
-// Set the Column from the function
-func (m teamMods) IDSyncFunc(f func() string) TeamMod {
-	return TeamModFunc(func(o *TeamTemplate) {
-		o.IDSync = f
-	})
-}
-
-// Clear any values for the column
-func (m teamMods) UnsetIDSync() TeamMod {
-	return TeamModFunc(func(o *TeamTemplate) {
-		o.IDSync = nil
-	})
-}
-
-// Generates a random value for the column using the given faker
-// if faker is nil, a default faker is used
-func (m teamMods) RandomIDSync(f *faker.Faker) TeamMod {
-	return TeamModFunc(func(o *TeamTemplate) {
-		o.IDSync = func() string {
-			return random[string](f)
-		}
-	})
-}
-
-func (m teamMods) ensureIDSync(f *faker.Faker) TeamMod {
-	return TeamModFunc(func(o *TeamTemplate) {
-		if o.IDSync != nil {
-			return
-		}
-
-		o.IDSync = func() string {
-			return random[string](f)
+		o.Slug = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
