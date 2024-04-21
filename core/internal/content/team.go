@@ -2,12 +2,10 @@ package content
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Team struct {
-	ID        uuid.UUID `db:"id,pk" json:"id"`
+	ID        string    `db:"id,pk" json:"id"`
 	Name      string    `db:"name" json:"name"`
 	ShortName *string   `db:"short_name" json:"short_name"`
 	Gender    string    `db:"gender" json:"gender"`

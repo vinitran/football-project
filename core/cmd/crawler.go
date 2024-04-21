@@ -1,12 +1,12 @@
 package main
 
 import (
+	"core/internal/content/service"
 	"errors"
 	"log"
 	"os"
 	"os/signal"
-
-	"core/internal/content/service"
+	"time"
 
 	"github.com/samber/do"
 	"github.com/urfave/cli/v2"
@@ -26,10 +26,14 @@ func startCrawler(c *cli.Context) error {
 	quit := make(chan os.Signal, 1)
 
 	go func() {
-		err := crawler.Exec()
-		if err != nil {
-			log.Printf("ListenAndServe failed: %s\n", err)
-			quit <- os.Kill
+		for {
+			err := crawler.CrawlMatch()
+			if err != nil {
+				log.Printf("ListenAndServe failed: %s\n", err)
+				quit <- os.Kill
+			}
+			log.Println("crawling...")
+			time.Sleep(5 * time.Second)
 		}
 	}()
 

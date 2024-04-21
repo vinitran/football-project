@@ -2,6 +2,10 @@ package datastore
 
 import (
 	"context"
+	"github.com/stephenafamo/bob"
+	"github.com/stephenafamo/bob/dialect/psql"
+	"github.com/stephenafamo/bob/dialect/psql/dialect"
+	"github.com/stephenafamo/bob/dialect/psql/sm"
 
 	"core/internal/content"
 	b "core/internal/content/bob"
@@ -25,6 +29,73 @@ type DatastoreMatchPgx struct {
 //
 //	return MatchBobToRaw(item), nil
 //}
+
+func (ds DatastoreMatchPgx) List(ctx context.Context, params content.MatchListParams) ([]*content.Match, error) {
+	mods := []bob.Mod[*dialect.SelectQuery]{}
+	if params.Limit > 0 && params.Limit <= 100 {
+		mods = append(mods, sm.Limit(int64(params.Limit)))
+	}
+
+	if params.Offset > 0 && params.Offset < 1000 {
+		mods = append(mods, sm.Offset(int64(params.Offset)))
+	}
+
+	if params.Status.Valid() {
+		mods = append(mods, sm.Where(b.MatchColumns.MatchStatus.EQ(psql.Arg(params.Status))))
+	}
+
+	if params.IsFeatured {
+		mods = append(mods, sm.Where(b.MatchColumns.IsFeatured.EQ(psql.Arg(true))))
+	}
+
+	mods = append(mods,
+		b.ThenLoadMatchHomeTeam(
+			sm.Columns(
+				b.TeamColumns.ID,
+				b.TeamColumns.Name,
+				b.TeamColumns.Slug,
+				b.TeamColumns.Logo,
+				b.TeamColumns.NameCode,
+				b.TeamColumns.Gender,
+				b.TeamColumns.ShortName,
+				b.TeamColumns.UpdatedAt,
+				b.TeamColumns.CreatedAt,
+			),
+		),
+		b.ThenLoadMatchAwayTeam(
+			sm.Columns(
+				b.TeamColumns.ID,
+				b.TeamColumns.Name,
+				b.TeamColumns.Slug,
+				b.TeamColumns.Logo,
+				b.TeamColumns.NameCode,
+				b.TeamColumns.Gender,
+				b.TeamColumns.ShortName,
+				b.TeamColumns.UpdatedAt,
+				b.TeamColumns.CreatedAt,
+			),
+		),
+		b.ThenLoadMatchTournament(
+			sm.Columns(
+				b.TournamentColumns.ID,
+				b.TournamentColumns.Name,
+				b.TournamentColumns.Slug,
+				b.TournamentColumns.Logo,
+				b.TournamentColumns.IsFeatured,
+				b.TournamentColumns.Priority,
+				b.TournamentColumns.UpdatedAt,
+				b.TournamentColumns.CreatedAt,
+			),
+		),
+	)
+
+	itemsBob, err := b.Matchs(ctx, ds.bobExecutor, mods...).All()
+	if err != nil {
+		return nil, err
+	}
+
+	return arr.ArrMap(itemsBob, MatchBobToRaw), nil
+}
 
 func (ds *DatastoreMatchPgx) FindByID(ctx context.Context, id string) (*content.Match, error) {
 	item, err := b.FindMatch(ctx, ds.bobExecutor, id)

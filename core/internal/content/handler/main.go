@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"core/pkg/auth"
 	"core/pkg/errorx"
@@ -45,6 +46,8 @@ func New(cfg *Config) (http.Handler, error) {
 
 	groupMatch := &GroupMatch{cfg}
 	{
+		routesAPIv1.GET("/matchs", groupMatch.Index)
+		routesAPIv1.GET("/matchs/:id/meta", groupMatch.Meta)
 		routesAPIv1.GET("/matchs/:id", groupMatch.Show)
 	}
 
@@ -65,4 +68,18 @@ func restAbort(c echo.Context, v any, err error) error {
 	}
 
 	return httpx.Abort(c, v)
+}
+
+func queryParamInt(c echo.Context, name string, val int) int {
+	v := c.QueryParam(name)
+	if v == "" {
+		return val
+	}
+
+	i, err := strconv.Atoi(v)
+	if err != nil {
+		return val
+	}
+
+	return i
 }

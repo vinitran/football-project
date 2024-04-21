@@ -65,6 +65,7 @@ func TeamBobToRaw(v *b.Team) *content.Team {
 	}
 
 	item := &content.Team{
+		ID:        v.ID,
 		Name:      v.Name,
 		ShortName: v.ShortName.Ptr(),
 		Gender:    v.Gender.GetOrZero(),
@@ -84,6 +85,7 @@ func TournamentBobToRaw(v *b.Tournament) *content.Tournament {
 	}
 
 	item := &content.Tournament{
+		ID:         v.ID,
 		Name:       v.Name,
 		Slug:       v.Slug,
 		Logo:       v.Logo,
