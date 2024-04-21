@@ -8,7 +8,7 @@ type Props = {};
 
 export const NewPage = (props: Props) => {
   const [pagination, setPagination] = useState<IPagination>({ pageNum: 1, pageSize: 12 });
-  const [{ data, loading }, error] = useAxios({
+  const [{ data, loading }] = useAxios({
     url: `news/vebotv/list/news/${pagination.pageNum}`
   });
 
