@@ -9,20 +9,12 @@ export const router = createBrowserRouter([
     path: '/',
     Component: LayoutWithNavBar,
     children: [
+      { path: '/', Component: HomePage },
       { path: '/home', Component: HomePage },
       { path: '/schedule-battle', Component: HomePage },
-      {
-        path: '/new',
-        Component: NewPage
-      },
-      {
-        path: '/test',
-        Component: TestPage
-      },
-      {
-        path: '/test2',
-        Component: Test2Page
-      }
+      { path: '/new', Component: NewPage },
+      { path: '/test', Component: TestPage },
+      { path: '/test2', Component: Test2Page }
     ]
   }
 ]);

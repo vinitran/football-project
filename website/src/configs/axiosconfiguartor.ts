@@ -3,7 +3,8 @@ import axios from 'axios';
 class AxiosConfiguration {
   initAxiosInstance = () => {
     const axiosInstance = axios.create({
-      baseURL: 'https://reqres.in/api', // URL cơ bản của API
+      // baseURL: 'https://reqres.in/api', // URL cơ bản của API
+      baseURL: 'https://api.vebo.xyz/api/', // URL cơ bản của API
       timeout: 10000, // Thời gian chờ tối đa là 10 giây
       headers: {
         'Content-Type': 'application/json' // Đặt kiểu nội dung mặc định là JSON

@@ -13,7 +13,9 @@ export const LayoutWithNavBar = (props: Props) => {
   return (
     <>
       <NavBar />
-      <Outlet />
+      <div className="my-[12px]">
+        <Outlet />
+      </div>
     </>
   );
 };

@@ -3,7 +3,7 @@ import { navBarList } from '../consts/nav-bar.const';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   children?: any;
@@ -11,15 +11,10 @@ type Props = {
 
 export const NavBar = (props: Props) => {
   const navigate = useNavigate();
-  const [value, setValue] = useState('one');
+  const [nav, setNav] = useState('/new');
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    console.log('into handle1');
-    setValue(newValue);
-  };
-
-  const handleNavChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log('into handle');
+  const handleNavChange = (event: React.SyntheticEvent, newValue: string) => {
+    setNav(newValue);
     navigate(`${newValue}`);
   };
 
@@ -27,7 +22,7 @@ export const NavBar = (props: Props) => {
     <>
       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <Tabs
-          value={value}
+          value={nav}
           onChange={handleNavChange}
           variant="scrollable"
           scrollButtons="auto"
@@ -35,7 +30,7 @@ export const NavBar = (props: Props) => {
           indicatorColor="secondary"
           aria-label="scrollable secondary auto tabs example">
           {navBarList.map((item, index) => (
-            <Tab value={item?.url} label={item?.label} />
+            <Tab key={index} value={item?.url} label={item?.label} />
           ))}
         </Tabs>
       </Box>
