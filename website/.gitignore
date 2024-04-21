@@ -30,3 +30,7 @@ npm-debug.log*
 *.test.ts*
 *.test.ssr.ts*
 package-lock.json
+
+/football/website/package-lock.json
+/website/package-lock.json
+/package-lock.json

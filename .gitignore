@@ -2,3 +2,10 @@
 /redisdata
 /docker-compose.override.yml
 /.idea
+
+
+package-lock.json
+
+/football/website/package-lock.json
+/website/package-lock.json
+/package-lock.json
