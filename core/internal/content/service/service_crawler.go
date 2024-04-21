@@ -3,15 +3,12 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
 	"core/internal/content"
 	b "core/internal/content/bob"
 	"core/internal/db"
-	"core/pkg/arr"
-
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
 	"github.com/redis/go-redis/v9"
@@ -63,7 +60,7 @@ func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 	}, nil
 }
 
-func (service *ServiceCrawler) Exec() error {
+func (service *ServiceCrawler) CrawlMatch() error {
 	url := "https://live.vebo.xyz/api/match/live"
 	resp, err := service.httpClient(3).Get(url, http.Header{
 		"content-type": []string{"application/json"},
@@ -80,8 +77,6 @@ func (service *ServiceCrawler) Exec() error {
 	}
 
 	payload := responseBody.Data
-	log.Println(payload[0].String())
-
 	if payload == nil || len(payload) == 0 {
 		return nil
 	}
@@ -149,29 +144,56 @@ func (service *ServiceCrawler) Exec() error {
 		})
 	}
 
-	log.Println("1", len(teamSetter))
-	log.Println("2", len(RemoveDuplicates(teamSetter)))
-	_, err = service.datastoreTeam.UpsertMany(context.Background(), RemoveDuplicates(teamSetter))
-	if err != nil {
-		return err
-	}
-	_, err = service.datastoreTournament.UpsertMany(context.Background(), arr.ArrUnique(tournamentSetter))
+	_, err = service.datastoreTeam.UpsertMany(context.Background(), RemoveDuplicatesTeam(teamSetter))
 	if err != nil {
 		return err
 	}
 
-	items, err := service.datastoreMatch.UpsertMany(context.Background(), matchSetter)
+	_, err = service.datastoreTournament.UpsertMany(context.Background(), RemoveDuplicatesTournament(tournamentSetter))
 	if err != nil {
 		return err
 	}
 
-	log.Println(items)
+	_, err = service.datastoreMatch.UpsertMany(context.Background(), RemoveDuplicatesMatch(matchSetter))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func RemoveDuplicates(input []*b.TeamSetter) []*b.TeamSetter {
+func RemoveDuplicatesTeam(input []*b.TeamSetter) []*b.TeamSetter {
 	encountered := map[string]bool{}
 	var result []*b.TeamSetter
+
+	for _, item := range input {
+
+		if !encountered[item.ID.GetOrZero()] {
+			encountered[item.ID.GetOrZero()] = true
+			result = append(result, item)
+		}
+	}
+
+	return result
+}
+
+func RemoveDuplicatesTournament(input []*b.TournamentSetter) []*b.TournamentSetter {
+	encountered := map[string]bool{}
+	var result []*b.TournamentSetter
+
+	for _, item := range input {
+		if !encountered[item.ID.GetOrZero()] {
+			encountered[item.ID.GetOrZero()] = true
+			result = append(result, item)
+		}
+	}
+
+	return result
+}
+
+func RemoveDuplicatesMatch(input []*b.MatchSetter) []*b.MatchSetter {
+	encountered := map[string]bool{}
+	var result []*b.MatchSetter
 
 	for _, item := range input {
 		if !encountered[item.ID.GetOrZero()] {

@@ -2,12 +2,10 @@ package content
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Tournament struct {
-	ID         uuid.UUID `db:"id,pk" json:"id"`
+	ID         string    `db:"id,pk" json:"id"`
 	Name       string    `db:"name"  json:"name""`
 	Slug       string    `db:"slug"  json:"slug""`
 	Logo       string    `db:"logo"  json:"logo""`
