@@ -13,11 +13,13 @@ import (
 var TableNames = struct {
 	GooseDBVersions string
 	Matchs          string
+	News            string
 	Teams           string
 	Tournaments     string
 }{
 	GooseDBVersions: "goose_db_version",
 	Matchs:          "matchs",
+	News:            "news",
 	Teams:           "teams",
 	Tournaments:     "tournaments",
 }
@@ -25,6 +27,7 @@ var TableNames = struct {
 var ColumnNames = struct {
 	GooseDBVersions gooseDBVersionColumnNames
 	Matchs          matchColumnNames
+	News            newsColumnNames
 	Teams           teamColumnNames
 	Tournaments     tournamentColumnNames
 }{
@@ -55,6 +58,21 @@ var ColumnNames = struct {
 		ThumbnailURL: "thumbnail_url",
 		IsLive:       "is_live",
 		LiveTracker:  "live_tracker",
+		CreatedAt:    "created_at",
+		UpdatedAt:    "updated_at",
+	},
+	News: newsColumnNames{
+		ID:           "id",
+		Name:         "name",
+		Slug:         "slug",
+		Link:         "link",
+		Description:  "description",
+		FeatureImage: "feature_image",
+		Title:        "title",
+		Content:      "content",
+		Author:       "author",
+		Category:     "category",
+		VideoURL:     "video_url",
 		CreatedAt:    "created_at",
 		UpdatedAt:    "updated_at",
 	},
@@ -91,17 +109,20 @@ var (
 func Where[Q psql.Filterable]() struct {
 	GooseDBVersions gooseDBVersionWhere[Q]
 	Matchs          matchWhere[Q]
+	News            newsWhere[Q]
 	Teams           teamWhere[Q]
 	Tournaments     tournamentWhere[Q]
 } {
 	return struct {
 		GooseDBVersions gooseDBVersionWhere[Q]
 		Matchs          matchWhere[Q]
+		News            newsWhere[Q]
 		Teams           teamWhere[Q]
 		Tournaments     tournamentWhere[Q]
 	}{
 		GooseDBVersions: GooseDBVersionWhere[Q](),
 		Matchs:          MatchWhere[Q](),
+		News:            NewsWhere[Q](),
 		Teams:           TeamWhere[Q](),
 		Tournaments:     TournamentWhere[Q](),
 	}

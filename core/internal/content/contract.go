@@ -44,3 +44,6 @@ type DatastoreMatch interface {
 	Upsert(ctx context.Context, params *b.MatchSetter) (*Match, error)
 	UpsertMany(ctx context.Context, params []*b.MatchSetter) ([]*Match, error)
 }
+
+type DatastoreNews interface {
+}

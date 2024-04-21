@@ -79,6 +79,30 @@ func TeamBobToRaw(v *b.Team) *content.Team {
 	return item
 }
 
+func NewsBobToRaw(v *b.NewsType) *content.News {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.News{
+		ID:           v.ID,
+		Name:         v.Name,
+		Slug:         v.Slug,
+		Link:         v.Link,
+		Description:  v.Description,
+		FeatureImage: v.FeatureImage,
+		Title:        v.Title,
+		Content:      v.Content.Ptr(),
+		Author:       v.Author.Ptr(),
+		VideoURL:     v.VideoURL.Ptr(),
+		Category:     v.Category.Val,
+		CreatedAt:    v.CreatedAt,
+		UpdatedAt:    v.UpdatedAt,
+	}
+
+	return item
+}
+
 func TournamentBobToRaw(v *b.Tournament) *content.Tournament {
 	if v == nil {
 		return nil
