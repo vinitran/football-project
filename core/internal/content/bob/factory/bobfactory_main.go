@@ -18,6 +18,7 @@ import (
 type factory struct {
 	baseGooseDBVersionMods GooseDBVersionModSlice
 	baseMatchMods          MatchModSlice
+	baseNewsMods           NewsModSlice
 	baseTeamMods           TeamModSlice
 	baseTournamentMods     TournamentModSlice
 }
@@ -46,6 +47,18 @@ func (f *factory) NewMatch(mods ...MatchMod) *MatchTemplate {
 	}
 
 	MatchModSlice(mods).Apply(o)
+
+	return o
+}
+
+func (f *factory) NewNews(mods ...NewsMod) *NewsTemplate {
+	o := &NewsTemplate{f: f}
+
+	if f != nil {
+		f.baseNewsMods.Apply(o)
+	}
+
+	NewsModSlice(mods).Apply(o)
 
 	return o
 }
@@ -90,6 +103,14 @@ func (f *factory) AddBaseMatchMod(mods ...MatchMod) {
 	f.baseMatchMods = append(f.baseMatchMods, mods...)
 }
 
+func (f *factory) ClearBaseNewsMods() {
+	f.baseNewsMods = nil
+}
+
+func (f *factory) AddBaseNewsMod(mods ...NewsMod) {
+	f.baseNewsMods = append(f.baseNewsMods, mods...)
+}
+
 func (f *factory) ClearBaseTeamMods() {
 	f.baseTeamMods = nil
 }
@@ -111,6 +132,7 @@ type contextKey string
 var (
 	gooseDBVersionCtx = newContextual[*models.GooseDBVersion]("gooseDBVersion")
 	matchCtx          = newContextual[*models.Match]("match")
+	newsCtx           = newContextual[*models.News]("news")
 	teamCtx           = newContextual[*models.Team]("team")
 	tournamentCtx     = newContextual[*models.Tournament]("tournament")
 )
