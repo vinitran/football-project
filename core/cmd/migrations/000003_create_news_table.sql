@@ -3,7 +3,7 @@ CREATE TABLE "news"(
     "id" text PRIMARY KEY,
     "name" text NOT NULL,
     "slug" text NOT NULL,
-    "link" text NOT NULL,
+    "link" text,
     "description" text NOT NULL,
     "feature_image" text NOT NULL,
     "title" text NOT NULL,

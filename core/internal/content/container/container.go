@@ -38,6 +38,8 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideServiceMatch)
 	do.Provide(injector, ProvideServiceTeam)
 	do.Provide(injector, ProvideServiceTournament)
+	do.Provide(injector, ProvideServiceNews)
+
 	do.Provide(injector, ProvideServiceCrawler)
 
 	return injector
@@ -92,6 +94,10 @@ func ProvideServiceMatch(i *do.Injector) (*service.ServiceMatch, error) {
 
 func ProvideServiceTeam(i *do.Injector) (*service.ServiceTeam, error) {
 	return service.NewServiceTeam(i)
+}
+
+func ProvideServiceNews(i *do.Injector) (*service.ServiceNews, error) {
+	return service.NewServiceNews(i)
 }
 
 func ProvideServiceCrawler(i *do.Injector) (*service.ServiceCrawler, error) {

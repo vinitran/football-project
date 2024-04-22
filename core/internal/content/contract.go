@@ -21,6 +21,11 @@ type MatchListParams struct {
 	IsFeatured bool
 }
 
+type NewsListParams struct {
+	CommonListParams
+	Search string
+}
+
 type DatastoreTeam interface {
 	FindByID(ctx context.Context, id string) (*Team, error)
 	ExistsBy(ctx context.Context, finder bob.Mod[*dialect.SelectQuery]) (bool, error)
@@ -46,4 +51,7 @@ type DatastoreMatch interface {
 }
 
 type DatastoreNews interface {
+	Upsert(ctx context.Context, params *b.NewsSetter) (*News, error)
+	List(ctx context.Context, params NewsListParams) ([]*News, error)
+	FindByID(ctx context.Context, id string) (*News, error)
 }

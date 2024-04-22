@@ -88,7 +88,7 @@ func NewsBobToRaw(v *b.NewsType) *content.News {
 		ID:           v.ID,
 		Name:         v.Name,
 		Slug:         v.Slug,
-		Link:         v.Link,
+		Link:         v.Link.Ptr(),
 		Description:  v.Description,
 		FeatureImage: v.FeatureImage,
 		Title:        v.Title,

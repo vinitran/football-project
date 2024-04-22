@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -22,6 +23,7 @@ type ServiceCrawler struct {
 	datastoreMatch      content.DatastoreMatch
 	datastoreTeam       content.DatastoreTeam
 	datastoreTournament content.DatastoreTournament
+	datastoreNews       content.DatastoreNews
 	cache               db.Cache
 }
 
@@ -32,6 +34,11 @@ func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 	}
 
 	datastoreTeam, err := do.Invoke[content.DatastoreTeam](container)
+	if err != nil {
+		return nil, err
+	}
+
+	datastoreNews, err := do.Invoke[content.DatastoreNews](container)
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +63,7 @@ func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 		datastoreMatch:      datastoreMatch,
 		datastoreTeam:       datastoreTeam,
 		datastoreTournament: datastoreTournament,
+		datastoreNews:       datastoreNews,
 		cache:               cache,
 	}, nil
 }
@@ -162,6 +170,83 @@ func (service *ServiceCrawler) CrawlMatch() error {
 	return nil
 }
 
+func (service *ServiceCrawler) CrawlNews() error {
+	index := 1
+	for {
+		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/news/%d", index)
+		resp, err := service.httpClient(3).Get(url, http.Header{
+			"content-type": []string{"application/json"},
+		})
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+		var responseBody NewsResponseData
+
+		err = json.NewDecoder(resp.Body).Decode(&responseBody)
+		if err != nil {
+			return err
+		}
+
+		payload := responseBody.Data.List
+		if payload == nil || len(payload) == 0 {
+			return nil
+		}
+
+		for _, p := range payload {
+			err := service.CrawlNewsDetail(p.ID.GetOrZero())
+			if err != nil {
+				return err
+			}
+		}
+
+		index++
+	}
+}
+
+func (service *ServiceCrawler) CrawlNewsDetail(id string) error {
+	url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/detail/%s", id)
+
+	resp, err := service.httpClient(3).Get(url, http.Header{
+		"content-type": []string{"application/json"},
+	})
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	var responseBody DetailNewsResponseData
+
+	err = json.NewDecoder(resp.Body).Decode(&responseBody)
+	if err != nil {
+		return err
+	}
+
+	payload := responseBody.Data
+
+	newsSetter := &b.NewsSetter{
+		ID:           payload.ID,
+		Name:         payload.Name,
+		Slug:         payload.Slug,
+		Link:         payload.Link,
+		Description:  payload.Description,
+		FeatureImage: payload.FeatureImage,
+		Title:        payload.Title,
+		Content:      payload.Content,
+		Author:       payload.Author,
+		Category:     payload.Category,
+		VideoURL:     payload.VideoURL,
+		CreatedAt:    payload.CreatedAt,
+		UpdatedAt:    payload.UpdatedAt,
+	}
+
+	_, err = service.datastoreNews.Upsert(context.Background(), newsSetter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func RemoveDuplicatesTeam(input []*b.TeamSetter) []*b.TeamSetter {
 	encountered := map[string]bool{}
 	var result []*b.TeamSetter
@@ -258,4 +343,41 @@ type TournamentResponseData struct {
 		IsFeatured omit.Val[bool]   `json:"is_featured"`
 		Priority   omit.Val[int]    `json:"priority"`
 	} `json:"unique_tournament"`
+}
+
+type NewsResponseData struct {
+	Status int `json:"status"`
+	Data   struct {
+		Page      int        `json:"page"`
+		Limit     int        `json:"limit"`
+		Total     int        `json:"total"`
+		Highlight any        `json:"highlight"`
+		List      []NewsData `json:"list"`
+	} `json:"data"`
+}
+
+type DetailNewsResponseData struct {
+	Status int      `json:"status"`
+	Data   NewsData `json:"data"`
+}
+
+type NewsData struct {
+	ID           omit.Val[string]                      `json:"id"`
+	Name         omit.Val[string]                      `json:"name"`
+	Slug         omit.Val[string]                      `json:"slug"`
+	Link         omitnull.Val[string]                  `json:"link"`
+	Description  omit.Val[string]                      `json:"description"`
+	FeatureImage omit.Val[string]                      `json:"feature_image"`
+	Category     omit.Val[types.JSON[json.RawMessage]] `json:"category"`
+	Title        omit.Val[string]                      `json:"title"`
+	Content      omitnull.Val[string]                  `json:"content"`
+	Author       omitnull.Val[string]                  `json:"author"`
+	VideoURL     omitnull.Val[string]                  `json:"video_url"`
+	CreatedAt    omit.Val[time.Time]                   `json:"created_at"`
+	UpdatedAt    omit.Val[time.Time]                   `json:"updated_at"`
+}
+
+func (item NewsResponseData) String() string {
+	str, _ := json.Marshal(item)
+	return string(str)
 }

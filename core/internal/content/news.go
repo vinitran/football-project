@@ -9,7 +9,7 @@ type News struct {
 	ID           string          `db:"id,pk" json:"id"`
 	Name         string          `db:"name" json:"name"`
 	Slug         string          `db:"slug" json:"slug"`
-	Link         string          `db:"link" json:"link"`
+	Link         *string         `db:"link" json:"link"`
 	Description  string          `db:"description" json:"description"`
 	FeatureImage string          `db:"feature_image" json:"feature_image"`
 	Title        string          `db:"title" json:"title"`
