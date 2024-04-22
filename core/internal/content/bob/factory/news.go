@@ -41,7 +41,7 @@ type NewsTemplate struct {
 	ID           func() string
 	Name         func() string
 	Slug         func() string
-	Link         func() string
+	Link         func() null.Val[string]
 	Description  func() string
 	FeatureImage func() string
 	Title        func() string
@@ -141,7 +141,7 @@ func (o NewsTemplate) BuildSetter() *models.NewsSetter {
 		m.Slug = omit.From(o.Slug())
 	}
 	if o.Link != nil {
-		m.Link = omit.From(o.Link())
+		m.Link = omitnull.FromNull(o.Link())
 	}
 	if o.Description != nil {
 		m.Description = omit.From(o.Description())
@@ -218,9 +218,6 @@ func ensureCreatableNews(m *models.NewsSetter) {
 	}
 	if m.Slug.IsUnset() {
 		m.Slug = omit.From(random[string](nil))
-	}
-	if m.Link.IsUnset() {
-		m.Link = omit.From(random[string](nil))
 	}
 	if m.Description.IsUnset() {
 		m.Description = omit.From(random[string](nil))
@@ -453,14 +450,14 @@ func (m newsMods) ensureSlug(f *faker.Faker) NewsMod {
 }
 
 // Set the model columns to this value
-func (m newsMods) Link(val string) NewsMod {
+func (m newsMods) Link(val null.Val[string]) NewsMod {
 	return NewsModFunc(func(o *NewsTemplate) {
-		o.Link = func() string { return val }
+		o.Link = func() null.Val[string] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m newsMods) LinkFunc(f func() string) NewsMod {
+func (m newsMods) LinkFunc(f func() null.Val[string]) NewsMod {
 	return NewsModFunc(func(o *NewsTemplate) {
 		o.Link = f
 	})
@@ -477,8 +474,8 @@ func (m newsMods) UnsetLink() NewsMod {
 // if faker is nil, a default faker is used
 func (m newsMods) RandomLink(f *faker.Faker) NewsMod {
 	return NewsModFunc(func(o *NewsTemplate) {
-		o.Link = func() string {
-			return random[string](f)
+		o.Link = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }
@@ -489,8 +486,8 @@ func (m newsMods) ensureLink(f *faker.Faker) NewsMod {
 			return
 		}
 
-		o.Link = func() string {
-			return random[string](f)
+		o.Link = func() null.Val[string] {
+			return randomNull[string](f)
 		}
 	})
 }

@@ -47,8 +47,14 @@ func New(cfg *Config) (http.Handler, error) {
 	groupMatch := &GroupMatch{cfg}
 	{
 		routesAPIv1.GET("/matchs", groupMatch.Index)
-		routesAPIv1.GET("/matchs/:id/meta", groupMatch.Meta)
 		routesAPIv1.GET("/matchs/:id", groupMatch.Show)
+		routesAPIv1.GET("/matchs/:id/meta", groupMatch.Meta)
+	}
+
+	groupNews := &GroupNews{cfg}
+	{
+		routesAPIv1.GET("/news", groupNews.Index)
+		routesAPIv1.GET("/news/:id", groupNews.Show)
 	}
 
 	return r, nil

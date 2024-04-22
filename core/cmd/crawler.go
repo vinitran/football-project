@@ -33,8 +33,16 @@ func startCrawler(c *cli.Context) error {
 				quit <- os.Kill
 			}
 			log.Println("crawling...")
-			time.Sleep(5 * time.Second)
+			time.Sleep(5 * time.Minute)
 		}
+	}()
+	go func() {
+		err := crawler.CrawlNews()
+		if err != nil {
+			log.Printf("ListenAndServe failed: %s\n", err)
+			quit <- os.Kill
+		}
+		log.Println("crawling...")
 	}()
 
 	signal.Notify(quit, os.Interrupt)

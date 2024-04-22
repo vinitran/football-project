@@ -23,7 +23,7 @@ type NewsType struct {
 	ID           string                      `db:"id,pk" `
 	Name         string                      `db:"name" `
 	Slug         string                      `db:"slug" `
-	Link         string                      `db:"link" `
+	Link         null.Val[string]            `db:"link" `
 	Description  string                      `db:"description" `
 	FeatureImage string                      `db:"feature_image" `
 	Title        string                      `db:"title" `
@@ -55,7 +55,7 @@ type NewsSetter struct {
 	ID           omit.Val[string]                      `db:"id,pk"`
 	Name         omit.Val[string]                      `db:"name"`
 	Slug         omit.Val[string]                      `db:"slug"`
-	Link         omit.Val[string]                      `db:"link"`
+	Link         omitnull.Val[string]                  `db:"link"`
 	Description  omit.Val[string]                      `db:"description"`
 	FeatureImage omit.Val[string]                      `db:"feature_image"`
 	Title        omit.Val[string]                      `db:"title"`
@@ -117,7 +117,7 @@ type newsWhere[Q psql.Filterable] struct {
 	ID           psql.WhereMod[Q, string]
 	Name         psql.WhereMod[Q, string]
 	Slug         psql.WhereMod[Q, string]
-	Link         psql.WhereMod[Q, string]
+	Link         psql.WhereNullMod[Q, string]
 	Description  psql.WhereMod[Q, string]
 	FeatureImage psql.WhereMod[Q, string]
 	Title        psql.WhereMod[Q, string]
@@ -134,7 +134,7 @@ func NewsWhere[Q psql.Filterable]() newsWhere[Q] {
 		ID:           psql.Where[Q, string](NewsColumns.ID),
 		Name:         psql.Where[Q, string](NewsColumns.Name),
 		Slug:         psql.Where[Q, string](NewsColumns.Slug),
-		Link:         psql.Where[Q, string](NewsColumns.Link),
+		Link:         psql.WhereNull[Q, string](NewsColumns.Link),
 		Description:  psql.Where[Q, string](NewsColumns.Description),
 		FeatureImage: psql.Where[Q, string](NewsColumns.FeatureImage),
 		Title:        psql.Where[Q, string](NewsColumns.Title),
