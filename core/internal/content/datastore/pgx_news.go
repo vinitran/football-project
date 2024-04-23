@@ -5,10 +5,15 @@ import (
 	"core/internal/content"
 	"core/pkg/arr"
 	"fmt"
+	"github.com/aarondl/opt/omitnull"
+	"github.com/lib/pq"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/dialect"
 	"github.com/stephenafamo/bob/dialect/psql/sm"
+	"github.com/stephenafamo/bob/dialect/psql/um"
+	"github.com/stephenafamo/scan"
+	"log"
 	"strings"
 
 	b "core/internal/content/bob"
@@ -79,6 +84,33 @@ func (ds *DatastoreNewsPgx) Upsert(ctx context.Context, params *b.NewsInforSette
 	if err != nil {
 		return nil, err
 	}
+
+	return NewsBobToRaw(item), nil
+}
+
+func (ds *DatastoreNewsPgx) UpdateLabelByID(ctx context.Context, id string, label []string) (*content.News, error) {
+	builder := psql.Update(
+		um.Table(b.NewsInforsTable.Name(ctx)),
+		um.Where(b.NewsInforColumns.ID.EQ(psql.Arg(id))),
+		um.Returning("*"),
+	)
+
+	log.Println("label", label)
+	log.Println("asdasd", len(label))
+
+	a := pq.StringArray(label)
+
+	log.Println("hehe", a)
+	builder.Apply(
+		um.Set("labels").ToArg(omitnull.From(a)),
+	)
+
+	item, err := bob.One(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.NewsInfor]())
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("complete", item.ID)
 
 	return NewsBobToRaw(item), nil
 }
