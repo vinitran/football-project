@@ -33,7 +33,7 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideDatastoreMatch)
 	do.Provide(injector, ProvideDatastoreTeam)
 	do.Provide(injector, ProvideDatastoreTournament)
-	//do.Provide(injector, ProvideDatastoreNews)
+	do.Provide(injector, ProvideDatastoreNews)
 
 	do.Provide(injector, ProvideServiceMatch)
 	do.Provide(injector, ProvideServiceTeam)
@@ -41,6 +41,7 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideServiceNews)
 
 	do.Provide(injector, ProvideServiceCrawler)
+	do.Provide(injector, ProvideServiceExtracter)
 
 	return injector
 }
@@ -79,14 +80,14 @@ func ProvideDatastoreTournament(i *do.Injector) (content.DatastoreTournament, er
 	return datastore.NewDatastoreTournament(pool)
 }
 
-//func ProvideDatastoreNews(i *do.Injector) (content.DatastoreNews, error) {
-//	pool, err := do.Invoke[*pgxpool.Pool](i)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return datastore.NewDatastoreNews(pool)
-//}
+func ProvideDatastoreNews(i *do.Injector) (content.DatastoreNews, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreNews(pool)
+}
 
 func ProvideServiceMatch(i *do.Injector) (*service.ServiceMatch, error) {
 	return service.NewServiceMatch(i)
@@ -102,6 +103,10 @@ func ProvideServiceNews(i *do.Injector) (*service.ServiceNews, error) {
 
 func ProvideServiceCrawler(i *do.Injector) (*service.ServiceCrawler, error) {
 	return service.NewServiceCrawler(i)
+}
+
+func ProvideServiceExtracter(i *do.Injector) (*service.ServiceExtractKeywords, error) {
+	return service.NewServiceExtractKeyword(i)
 }
 
 func ProvideServiceTournament(i *do.Injector) (*service.ServiceTournament, error) {

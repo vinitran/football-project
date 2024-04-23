@@ -75,6 +75,13 @@ func main() {
 			Action:  startCrawler,
 			Flags:   append(flags),
 		},
+		{
+			Name:    "extracter",
+			Aliases: []string{},
+			Usage:   "Run the crawler",
+			Action:  startExtracter,
+			Flags:   append(flags),
+		},
 	}
 
 	err = app.Run(os.Args)
