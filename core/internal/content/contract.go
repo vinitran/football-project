@@ -51,7 +51,7 @@ type DatastoreMatch interface {
 }
 
 type DatastoreNews interface {
-	Upsert(ctx context.Context, params *b.NewsSetter) (*News, error)
+	Upsert(ctx context.Context, params *b.NewsInforSetter) (*News, error)
 	List(ctx context.Context, params NewsListParams) ([]*News, error)
 	FindByID(ctx context.Context, id string) (*News, error)
 }
