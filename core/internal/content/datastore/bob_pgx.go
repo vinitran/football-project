@@ -79,7 +79,7 @@ func TeamBobToRaw(v *b.Team) *content.Team {
 	return item
 }
 
-func NewsBobToRaw(v *b.NewsType) *content.News {
+func NewsBobToRaw(v *b.NewsInfor) *content.News {
 	if v == nil {
 		return nil
 	}

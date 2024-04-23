@@ -11,31 +11,55 @@ import (
 )
 
 var TableNames = struct {
+	Feedbacks       string
 	GooseDBVersions string
+	Items           string
 	Matchs          string
-	News            string
+	NewsInfors      string
 	Teams           string
 	Tournaments     string
+	Users           string
 }{
+	Feedbacks:       "feedback",
 	GooseDBVersions: "goose_db_version",
+	Items:           "items",
 	Matchs:          "matchs",
-	News:            "news",
+	NewsInfors:      "news_infor",
 	Teams:           "teams",
 	Tournaments:     "tournaments",
+	Users:           "users",
 }
 
 var ColumnNames = struct {
+	Feedbacks       feedbackColumnNames
 	GooseDBVersions gooseDBVersionColumnNames
+	Items           itemColumnNames
 	Matchs          matchColumnNames
-	News            newsColumnNames
+	NewsInfors      newsInforColumnNames
 	Teams           teamColumnNames
 	Tournaments     tournamentColumnNames
+	Users           userColumnNames
 }{
+	Feedbacks: feedbackColumnNames{
+		FeedbackType: "feedback_type",
+		UserID:       "user_id",
+		ItemID:       "item_id",
+		TimeStamp:    "time_stamp",
+		Comment:      "comment",
+	},
 	GooseDBVersions: gooseDBVersionColumnNames{
 		ID:        "id",
 		VersionID: "version_id",
 		IsApplied: "is_applied",
 		Tstamp:    "tstamp",
+	},
+	Items: itemColumnNames{
+		ItemID:     "item_id",
+		IsHidden:   "is_hidden",
+		Categories: "categories",
+		TimeStamp:  "time_stamp",
+		Labels:     "labels",
+		Comment:    "comment",
 	},
 	Matchs: matchColumnNames{
 		ID:           "id",
@@ -61,7 +85,7 @@ var ColumnNames = struct {
 		CreatedAt:    "created_at",
 		UpdatedAt:    "updated_at",
 	},
-	News: newsColumnNames{
+	NewsInfors: newsInforColumnNames{
 		ID:           "id",
 		Name:         "name",
 		Slug:         "slug",
@@ -75,6 +99,7 @@ var ColumnNames = struct {
 		VideoURL:     "video_url",
 		CreatedAt:    "created_at",
 		UpdatedAt:    "updated_at",
+		Labels:       "labels",
 	},
 	Teams: teamColumnNames{
 		ID:        "id",
@@ -97,6 +122,12 @@ var ColumnNames = struct {
 		CreatedAt:  "created_at",
 		UpdatedAt:  "updated_at",
 	},
+	Users: userColumnNames{
+		UserID:    "user_id",
+		Labels:    "labels",
+		Subscribe: "subscribe",
+		Comment:   "comment",
+	},
 }
 
 var (
@@ -107,24 +138,33 @@ var (
 )
 
 func Where[Q psql.Filterable]() struct {
+	Feedbacks       feedbackWhere[Q]
 	GooseDBVersions gooseDBVersionWhere[Q]
+	Items           itemWhere[Q]
 	Matchs          matchWhere[Q]
-	News            newsWhere[Q]
+	NewsInfors      newsInforWhere[Q]
 	Teams           teamWhere[Q]
 	Tournaments     tournamentWhere[Q]
+	Users           userWhere[Q]
 } {
 	return struct {
+		Feedbacks       feedbackWhere[Q]
 		GooseDBVersions gooseDBVersionWhere[Q]
+		Items           itemWhere[Q]
 		Matchs          matchWhere[Q]
-		News            newsWhere[Q]
+		NewsInfors      newsInforWhere[Q]
 		Teams           teamWhere[Q]
 		Tournaments     tournamentWhere[Q]
+		Users           userWhere[Q]
 	}{
+		Feedbacks:       FeedbackWhere[Q](),
 		GooseDBVersions: GooseDBVersionWhere[Q](),
+		Items:           ItemWhere[Q](),
 		Matchs:          MatchWhere[Q](),
-		News:            NewsWhere[Q](),
+		NewsInfors:      NewsInforWhere[Q](),
 		Teams:           TeamWhere[Q](),
 		Tournaments:     TournamentWhere[Q](),
+		Users:           UserWhere[Q](),
 	}
 }
 

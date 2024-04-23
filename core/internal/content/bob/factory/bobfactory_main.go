@@ -12,19 +12,35 @@ import (
 	models "core/internal/content/bob"
 	"github.com/aarondl/opt/null"
 	"github.com/jaswdr/faker"
+	"github.com/lib/pq"
 	"github.com/stephenafamo/bob/types"
 )
 
 type factory struct {
+	baseFeedbackMods       FeedbackModSlice
 	baseGooseDBVersionMods GooseDBVersionModSlice
+	baseItemMods           ItemModSlice
 	baseMatchMods          MatchModSlice
-	baseNewsMods           NewsModSlice
+	baseNewsInforMods      NewsInforModSlice
 	baseTeamMods           TeamModSlice
 	baseTournamentMods     TournamentModSlice
+	baseUserMods           UserModSlice
 }
 
 func New() *factory {
 	return &factory{}
+}
+
+func (f *factory) NewFeedback(mods ...FeedbackMod) *FeedbackTemplate {
+	o := &FeedbackTemplate{f: f}
+
+	if f != nil {
+		f.baseFeedbackMods.Apply(o)
+	}
+
+	FeedbackModSlice(mods).Apply(o)
+
+	return o
 }
 
 func (f *factory) NewGooseDBVersion(mods ...GooseDBVersionMod) *GooseDBVersionTemplate {
@@ -35,6 +51,18 @@ func (f *factory) NewGooseDBVersion(mods ...GooseDBVersionMod) *GooseDBVersionTe
 	}
 
 	GooseDBVersionModSlice(mods).Apply(o)
+
+	return o
+}
+
+func (f *factory) NewItem(mods ...ItemMod) *ItemTemplate {
+	o := &ItemTemplate{f: f}
+
+	if f != nil {
+		f.baseItemMods.Apply(o)
+	}
+
+	ItemModSlice(mods).Apply(o)
 
 	return o
 }
@@ -51,14 +79,14 @@ func (f *factory) NewMatch(mods ...MatchMod) *MatchTemplate {
 	return o
 }
 
-func (f *factory) NewNews(mods ...NewsMod) *NewsTemplate {
-	o := &NewsTemplate{f: f}
+func (f *factory) NewNewsInfor(mods ...NewsInforMod) *NewsInforTemplate {
+	o := &NewsInforTemplate{f: f}
 
 	if f != nil {
-		f.baseNewsMods.Apply(o)
+		f.baseNewsInforMods.Apply(o)
 	}
 
-	NewsModSlice(mods).Apply(o)
+	NewsInforModSlice(mods).Apply(o)
 
 	return o
 }
@@ -87,12 +115,40 @@ func (f *factory) NewTournament(mods ...TournamentMod) *TournamentTemplate {
 	return o
 }
 
+func (f *factory) NewUser(mods ...UserMod) *UserTemplate {
+	o := &UserTemplate{f: f}
+
+	if f != nil {
+		f.baseUserMods.Apply(o)
+	}
+
+	UserModSlice(mods).Apply(o)
+
+	return o
+}
+
+func (f *factory) ClearBaseFeedbackMods() {
+	f.baseFeedbackMods = nil
+}
+
+func (f *factory) AddBaseFeedbackMod(mods ...FeedbackMod) {
+	f.baseFeedbackMods = append(f.baseFeedbackMods, mods...)
+}
+
 func (f *factory) ClearBaseGooseDBVersionMods() {
 	f.baseGooseDBVersionMods = nil
 }
 
 func (f *factory) AddBaseGooseDBVersionMod(mods ...GooseDBVersionMod) {
 	f.baseGooseDBVersionMods = append(f.baseGooseDBVersionMods, mods...)
+}
+
+func (f *factory) ClearBaseItemMods() {
+	f.baseItemMods = nil
+}
+
+func (f *factory) AddBaseItemMod(mods ...ItemMod) {
+	f.baseItemMods = append(f.baseItemMods, mods...)
 }
 
 func (f *factory) ClearBaseMatchMods() {
@@ -103,12 +159,12 @@ func (f *factory) AddBaseMatchMod(mods ...MatchMod) {
 	f.baseMatchMods = append(f.baseMatchMods, mods...)
 }
 
-func (f *factory) ClearBaseNewsMods() {
-	f.baseNewsMods = nil
+func (f *factory) ClearBaseNewsInforMods() {
+	f.baseNewsInforMods = nil
 }
 
-func (f *factory) AddBaseNewsMod(mods ...NewsMod) {
-	f.baseNewsMods = append(f.baseNewsMods, mods...)
+func (f *factory) AddBaseNewsInforMod(mods ...NewsInforMod) {
+	f.baseNewsInforMods = append(f.baseNewsInforMods, mods...)
 }
 
 func (f *factory) ClearBaseTeamMods() {
@@ -127,14 +183,25 @@ func (f *factory) AddBaseTournamentMod(mods ...TournamentMod) {
 	f.baseTournamentMods = append(f.baseTournamentMods, mods...)
 }
 
+func (f *factory) ClearBaseUserMods() {
+	f.baseUserMods = nil
+}
+
+func (f *factory) AddBaseUserMod(mods ...UserMod) {
+	f.baseUserMods = append(f.baseUserMods, mods...)
+}
+
 type contextKey string
 
 var (
+	feedbackCtx       = newContextual[*models.Feedback]("feedback")
 	gooseDBVersionCtx = newContextual[*models.GooseDBVersion]("gooseDBVersion")
+	itemCtx           = newContextual[*models.Item]("item")
 	matchCtx          = newContextual[*models.Match]("match")
-	newsCtx           = newContextual[*models.News]("news")
+	newsInforCtx      = newContextual[*models.NewsInfor]("newsInfor")
 	teamCtx           = newContextual[*models.Team]("team")
 	tournamentCtx     = newContextual[*models.Tournament]("tournament")
+	userCtx           = newContextual[*models.User]("user")
 )
 
 type contextual[V any] struct {
@@ -178,16 +245,19 @@ func random[T any](f *faker.Faker) T {
 	case int:
 		return any(int(f.Int())).(T)
 
-	case int64:
+	case time.Time:
 		return val
 
-	case time.Time:
+	case int64:
 		return val
 
 	case types.JSON[json.RawMessage]:
 		return val
 
 	case MatchStatus:
+		return val
+
+	case pq.StringArray:
 		return val
 
 	}

@@ -223,7 +223,7 @@ func (service *ServiceCrawler) CrawlNewsDetail(id string) error {
 
 	payload := responseBody.Data
 
-	newsSetter := &b.NewsSetter{
+	newsSetter := &b.NewsInforSetter{
 		ID:           payload.ID,
 		Name:         payload.Name,
 		Slug:         payload.Slug,
