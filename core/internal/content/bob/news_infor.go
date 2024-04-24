@@ -11,7 +11,6 @@ import (
 	"github.com/aarondl/opt/null"
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
-	"github.com/lib/pq"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/dialect"
@@ -21,20 +20,20 @@ import (
 
 // NewsInfor is an object representing the database table.
 type NewsInfor struct {
-	ID           string                      `db:"id,pk" `
-	Name         string                      `db:"name" `
-	Slug         string                      `db:"slug" `
-	Link         null.Val[string]            `db:"link" `
-	Description  string                      `db:"description" `
-	FeatureImage string                      `db:"feature_image" `
-	Title        string                      `db:"title" `
-	Content      null.Val[string]            `db:"content" `
-	Author       null.Val[string]            `db:"author" `
-	Category     types.JSON[json.RawMessage] `db:"category" `
-	VideoURL     null.Val[string]            `db:"video_url" `
-	CreatedAt    time.Time                   `db:"created_at" `
-	UpdatedAt    time.Time                   `db:"updated_at" `
-	Labels       null.Val[pq.StringArray]    `db:"labels" `
+	ID           string                                `db:"id,pk" `
+	Name         string                                `db:"name" `
+	Slug         string                                `db:"slug" `
+	Link         null.Val[string]                      `db:"link" `
+	Description  string                                `db:"description" `
+	FeatureImage string                                `db:"feature_image" `
+	Title        string                                `db:"title" `
+	Content      null.Val[string]                      `db:"content" `
+	Author       null.Val[string]                      `db:"author" `
+	Category     types.JSON[json.RawMessage]           `db:"category" `
+	VideoURL     null.Val[string]                      `db:"video_url" `
+	CreatedAt    time.Time                             `db:"created_at" `
+	UpdatedAt    time.Time                             `db:"updated_at" `
+	Labels       null.Val[types.JSON[json.RawMessage]] `db:"labels" `
 }
 
 // NewsInforSlice is an alias for a slice of pointers to NewsInfor.
@@ -54,20 +53,20 @@ type NewsInforsStmt = bob.QueryStmt[*NewsInfor, NewsInforSlice]
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type NewsInforSetter struct {
-	ID           omit.Val[string]                      `db:"id,pk"`
-	Name         omit.Val[string]                      `db:"name"`
-	Slug         omit.Val[string]                      `db:"slug"`
-	Link         omitnull.Val[string]                  `db:"link"`
-	Description  omit.Val[string]                      `db:"description"`
-	FeatureImage omit.Val[string]                      `db:"feature_image"`
-	Title        omit.Val[string]                      `db:"title"`
-	Content      omitnull.Val[string]                  `db:"content"`
-	Author       omitnull.Val[string]                  `db:"author"`
-	Category     omit.Val[types.JSON[json.RawMessage]] `db:"category"`
-	VideoURL     omitnull.Val[string]                  `db:"video_url"`
-	CreatedAt    omit.Val[time.Time]                   `db:"created_at"`
-	UpdatedAt    omit.Val[time.Time]                   `db:"updated_at"`
-	Labels       omitnull.Val[pq.StringArray]          `db:"labels"`
+	ID           omit.Val[string]                          `db:"id,pk"`
+	Name         omit.Val[string]                          `db:"name"`
+	Slug         omit.Val[string]                          `db:"slug"`
+	Link         omitnull.Val[string]                      `db:"link"`
+	Description  omit.Val[string]                          `db:"description"`
+	FeatureImage omit.Val[string]                          `db:"feature_image"`
+	Title        omit.Val[string]                          `db:"title"`
+	Content      omitnull.Val[string]                      `db:"content"`
+	Author       omitnull.Val[string]                      `db:"author"`
+	Category     omit.Val[types.JSON[json.RawMessage]]     `db:"category"`
+	VideoURL     omitnull.Val[string]                      `db:"video_url"`
+	CreatedAt    omit.Val[time.Time]                       `db:"created_at"`
+	UpdatedAt    omit.Val[time.Time]                       `db:"updated_at"`
+	Labels       omitnull.Val[types.JSON[json.RawMessage]] `db:"labels"`
 }
 
 type newsInforColumnNames struct {
@@ -133,7 +132,7 @@ type newsInforWhere[Q psql.Filterable] struct {
 	VideoURL     psql.WhereNullMod[Q, string]
 	CreatedAt    psql.WhereMod[Q, time.Time]
 	UpdatedAt    psql.WhereMod[Q, time.Time]
-	Labels       psql.WhereNullMod[Q, pq.StringArray]
+	Labels       psql.WhereNullMod[Q, types.JSON[json.RawMessage]]
 }
 
 func NewsInforWhere[Q psql.Filterable]() newsInforWhere[Q] {
@@ -151,7 +150,7 @@ func NewsInforWhere[Q psql.Filterable]() newsInforWhere[Q] {
 		VideoURL:     psql.WhereNull[Q, string](NewsInforColumns.VideoURL),
 		CreatedAt:    psql.Where[Q, time.Time](NewsInforColumns.CreatedAt),
 		UpdatedAt:    psql.Where[Q, time.Time](NewsInforColumns.UpdatedAt),
-		Labels:       psql.WhereNull[Q, pq.StringArray](NewsInforColumns.Labels),
+		Labels:       psql.WhereNull[Q, types.JSON[json.RawMessage]](NewsInforColumns.Labels),
 	}
 }
 

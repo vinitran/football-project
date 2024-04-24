@@ -36,6 +36,7 @@ type Config struct {
 	Environment LogEnvironment    `mapstructure:"Environment" jsonschema:"enum=production,enum=development"`
 	Database    db.DatabaseConfig `mapstructure:"Database"`
 	Redis       db.RedisConfig    `mapstructure:"Redis"`
+	Recommender Recommender       `mapstructure:"Recommender"`
 }
 
 // Default parses the default configuration values.
@@ -106,3 +107,8 @@ const (
 	// EnvironmentDevelopment development log environment.
 	EnvironmentDevelopment = LogEnvironment("development")
 )
+
+type Recommender struct {
+	Host string `mapstructure:"Host"`
+	Port string `mapstructure:"Port"`
+}

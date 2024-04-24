@@ -11,7 +11,7 @@ type ServiceHTTP struct{}
 
 func (service *ServiceHTTP) httpClient(retries int) *httpclient.Client {
 	client := httpclient.NewClient(
-		httpclient.WithHTTPTimeout(60 * time.Second),
+		httpclient.WithHTTPTimeout(180 * time.Second),
 	)
 
 	if retries > 0 {

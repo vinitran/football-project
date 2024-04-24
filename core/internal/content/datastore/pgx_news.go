@@ -4,14 +4,15 @@ import (
 	"context"
 	"core/internal/content"
 	"core/pkg/arr"
+	"encoding/json"
 	"fmt"
 	"github.com/aarondl/opt/omitnull"
-	"github.com/lib/pq"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"
 	"github.com/stephenafamo/bob/dialect/psql/dialect"
 	"github.com/stephenafamo/bob/dialect/psql/sm"
 	"github.com/stephenafamo/bob/dialect/psql/um"
+	"github.com/stephenafamo/bob/types"
 	"github.com/stephenafamo/scan"
 	"log"
 	"strings"
@@ -62,6 +63,10 @@ func (ds DatastoreNewsPgx) List(ctx context.Context, params content.NewsListPara
 		)))
 	}
 
+	if len(params.NewsIDs) > 0 {
+		mods = append(mods, b.SelectWhere.NewsInfors.ID.In(params.NewsIDs...))
+	}
+
 	itemsBob, err := b.NewsInfors(ctx, ds.bobExecutor, mods...).All()
 	if err != nil {
 		return nil, err
@@ -95,14 +100,14 @@ func (ds *DatastoreNewsPgx) UpdateLabelByID(ctx context.Context, id string, labe
 		um.Returning("*"),
 	)
 
-	log.Println("label", label)
-	log.Println("asdasd", len(label))
+	jsonData, err := json.Marshal(label)
+	if err != nil {
+		return nil, err
+	}
 
-	a := pq.StringArray(label)
-
-	log.Println("hehe", a)
+	lb := omitnull.From(types.NewJSON(json.RawMessage(jsonData)))
 	builder.Apply(
-		um.Set("labels").ToArg(omitnull.From(a)),
+		um.Set("labels").ToArg(lb),
 	)
 
 	item, err := bob.One(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.NewsInfor]())

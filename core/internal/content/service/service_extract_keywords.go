@@ -11,7 +11,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 )
 
@@ -46,11 +45,13 @@ func NewServiceExtractKeyword(container *do.Injector) (*ServiceExtractKeywords, 
 }
 
 func (service *ServiceExtractKeywords) ExtractNews() error {
+	page := 1
+	limit := 100
 	for {
 		params := content.NewsListParams{
 			CommonListParams: content.CommonListParams{
-				Limit:   100,
-				Offset:  1,
+				Limit:   limit,
+				Offset:  (page - 1) * limit,
 				Compact: true,
 			},
 		}
@@ -64,12 +65,12 @@ func (service *ServiceExtractKeywords) ExtractNews() error {
 		}
 
 		for _, item := range items {
-			err := service.ExtractNewsDescription(context.Background(), item.ID, item.Description)
+			err := service.ExtractNewsDescription(context.Background(), item.ID, item.Name)
 			if err != nil {
 				return err
 			}
 		}
-
+		page++
 	}
 }
 func (service *ServiceExtractKeywords) ExtractNewsDescription(ctx context.Context, id, description string) error {
@@ -89,19 +90,8 @@ func (service *ServiceExtractKeywords) ExtractNewsDescription(ctx context.Contex
 		return err
 	}
 
-	re := regexp.MustCompile(`keywords: ([^,]+)`)
-
-	match := re.FindStringSubmatch(string(a))
-
-	var keywordList []string
-	if len(match) > 1 {
-		keywords := match[1]
-		keywordList = regexp.MustCompile(`,\s*`).Split(keywords, -1)
-	} else {
-		keyword := strings.ReplaceAll(strings.ReplaceAll(string(a), "- ", ""), ", ", "\n")
-		keywordList = strings.Split(keyword, "\n")
-		fmt.Println("No keywords found")
-	}
+	keyword := strings.ReplaceAll(strings.ReplaceAll(string(a), "- ", ""), ", ", "\n")
+	keywordList := strings.Split(strings.ReplaceAll(keyword, "Keywords: ", ""), "\n")
 
 	_, err = service.datastoreNews.UpdateLabelByID(ctx, id, keywordList)
 	if err != nil {
