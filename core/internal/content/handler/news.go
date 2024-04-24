@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"strings"
+
 	"core/internal/content"
 	"core/internal/content/service"
 	"core/pkg/arr"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/do"
-	"strings"
 )
 
 type GroupNews struct {

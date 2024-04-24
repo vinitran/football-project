@@ -1,12 +1,13 @@
 package main
 
 import (
-	"core/internal/content/service"
 	"errors"
 	"log"
 	"os"
 	"os/signal"
 	"time"
+
+	"core/internal/content/service"
 
 	"github.com/samber/do"
 	"github.com/urfave/cli/v2"
