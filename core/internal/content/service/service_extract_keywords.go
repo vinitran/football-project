@@ -3,15 +3,17 @@ package service
 import (
 	"bytes"
 	"context"
-	"core/internal/content"
-	"core/internal/db"
 	"fmt"
-	"github.com/redis/go-redis/v9"
-	"github.com/samber/do"
 	"io"
 	"log"
 	"net/http"
 	"strings"
+
+	"core/internal/content"
+	"core/internal/db"
+
+	"github.com/redis/go-redis/v9"
+	"github.com/samber/do"
 )
 
 type ServiceExtractKeywords struct {
@@ -73,6 +75,7 @@ func (service *ServiceExtractKeywords) ExtractNews() error {
 		page++
 	}
 }
+
 func (service *ServiceExtractKeywords) ExtractNewsDescription(ctx context.Context, id, description string) error {
 	data := []byte(fmt.Sprintf(`{"text": "%s","locale":"en"}`, description)) // Data to be sent in the request body
 	url := "https://wordcount.com/api/extract_keywords"

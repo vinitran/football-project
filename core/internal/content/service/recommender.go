@@ -2,15 +2,17 @@ package service
 
 import (
 	"context"
-	"core/internal/config"
 	"encoding/json"
 	"fmt"
-	"github.com/gojek/heimdall/v7/httpclient"
-	"github.com/samber/do"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+
+	"core/internal/config"
+
+	"github.com/gojek/heimdall/v7/httpclient"
+	"github.com/samber/do"
 )
 
 type ServiceRecommender struct {

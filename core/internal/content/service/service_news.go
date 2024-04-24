@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
-	"core/internal/content"
-	"core/internal/db"
 	"fmt"
 	"time"
+
+	"core/internal/content"
+	"core/internal/db"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"

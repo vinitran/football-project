@@ -252,7 +252,6 @@ func RemoveDuplicatesTeam(input []*b.TeamSetter) []*b.TeamSetter {
 	var result []*b.TeamSetter
 
 	for _, item := range input {
-
 		if !encountered[item.ID.GetOrZero()] {
 			encountered[item.ID.GetOrZero()] = true
 			result = append(result, item)

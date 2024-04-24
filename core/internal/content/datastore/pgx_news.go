@@ -2,10 +2,14 @@ package datastore
 
 import (
 	"context"
-	"core/internal/content"
-	"core/pkg/arr"
 	"encoding/json"
 	"fmt"
+	"log"
+	"strings"
+
+	"core/internal/content"
+	"core/pkg/arr"
+
 	"github.com/aarondl/opt/omitnull"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -14,8 +18,6 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql/um"
 	"github.com/stephenafamo/bob/types"
 	"github.com/stephenafamo/scan"
-	"log"
-	"strings"
 
 	b "core/internal/content/bob"
 )
