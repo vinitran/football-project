@@ -12,3 +12,8 @@ Environment = "development" # "production" or "development"
     Name = "redis"
     Host = "localhost"
     Port = "6380"
+
+
+[Recommender]
+    Host = "http://127.0.0.1"
+    Port = "8088"

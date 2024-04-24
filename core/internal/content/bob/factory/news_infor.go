@@ -13,7 +13,6 @@ import (
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
 	"github.com/jaswdr/faker"
-	"github.com/lib/pq"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/types"
 )
@@ -52,7 +51,7 @@ type NewsInforTemplate struct {
 	VideoURL     func() null.Val[string]
 	CreatedAt    func() time.Time
 	UpdatedAt    func() time.Time
-	Labels       func() null.Val[pq.StringArray]
+	Labels       func() null.Val[types.JSON[json.RawMessage]]
 
 	f *factory
 }
@@ -889,14 +888,14 @@ func (m newsInforMods) ensureUpdatedAt(f *faker.Faker) NewsInforMod {
 }
 
 // Set the model columns to this value
-func (m newsInforMods) Labels(val null.Val[pq.StringArray]) NewsInforMod {
+func (m newsInforMods) Labels(val null.Val[types.JSON[json.RawMessage]]) NewsInforMod {
 	return NewsInforModFunc(func(o *NewsInforTemplate) {
-		o.Labels = func() null.Val[pq.StringArray] { return val }
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m newsInforMods) LabelsFunc(f func() null.Val[pq.StringArray]) NewsInforMod {
+func (m newsInforMods) LabelsFunc(f func() null.Val[types.JSON[json.RawMessage]]) NewsInforMod {
 	return NewsInforModFunc(func(o *NewsInforTemplate) {
 		o.Labels = f
 	})
@@ -913,8 +912,8 @@ func (m newsInforMods) UnsetLabels() NewsInforMod {
 // if faker is nil, a default faker is used
 func (m newsInforMods) RandomLabels(f *faker.Faker) NewsInforMod {
 	return NewsInforModFunc(func(o *NewsInforTemplate) {
-		o.Labels = func() null.Val[pq.StringArray] {
-			return randomNull[pq.StringArray](f)
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] {
+			return randomNull[types.JSON[json.RawMessage]](f)
 		}
 	})
 }
@@ -925,8 +924,8 @@ func (m newsInforMods) ensureLabels(f *faker.Faker) NewsInforMod {
 			return
 		}
 
-		o.Labels = func() null.Val[pq.StringArray] {
-			return randomNull[pq.StringArray](f)
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] {
+			return randomNull[types.JSON[json.RawMessage]](f)
 		}
 	})
 }

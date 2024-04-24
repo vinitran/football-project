@@ -12,7 +12,6 @@ import (
 	models "core/internal/content/bob"
 	"github.com/aarondl/opt/null"
 	"github.com/jaswdr/faker"
-	"github.com/lib/pq"
 	"github.com/stephenafamo/bob/types"
 )
 
@@ -255,9 +254,6 @@ func random[T any](f *faker.Faker) T {
 		return val
 
 	case MatchStatus:
-		return val
-
-	case pq.StringArray:
 		return val
 
 	}

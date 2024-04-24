@@ -23,7 +23,8 @@ type MatchListParams struct {
 
 type NewsListParams struct {
 	CommonListParams
-	Search string
+	Search  string
+	NewsIDs []string
 }
 
 type DatastoreTeam interface {

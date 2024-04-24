@@ -3,8 +3,10 @@ package handler
 import (
 	"core/internal/content"
 	"core/internal/content/service"
+	"core/pkg/arr"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/do"
+	"strings"
 )
 
 type GroupNews struct {
@@ -39,10 +41,22 @@ func (group *GroupNews) Index(c echo.Context) error {
 			Offset:  offset,
 			Compact: false,
 		},
+		NewsIDs: []string{},
 	}
 
 	if c.QueryParams().Has("search") {
 		params.Search = c.QueryParam("search")
+	}
+
+	if c.QueryParams().Has("news_ids") {
+		var newsIds []string
+		parts := strings.Split(c.QueryParam("news_ids"), ",")
+		arr.ArrEach(parts, func(part string) {
+			if err == nil {
+				newsIds = append(newsIds, part)
+			}
+		})
+		params.NewsIDs = newsIds
 	}
 
 	items, err := serviceNews.List(ctx, params)

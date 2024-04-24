@@ -41,6 +41,7 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideServiceNews)
 
 	do.Provide(injector, ProvideServiceCrawler)
+	do.Provide(injector, ProvideServiceRecommender)
 	do.Provide(injector, ProvideServiceExtracter)
 
 	return injector
@@ -103,6 +104,10 @@ func ProvideServiceNews(i *do.Injector) (*service.ServiceNews, error) {
 
 func ProvideServiceCrawler(i *do.Injector) (*service.ServiceCrawler, error) {
 	return service.NewServiceCrawler(i)
+}
+
+func ProvideServiceRecommender(i *do.Injector) (*service.ServiceRecommender, error) {
+	return service.NewServiceRecommender(i)
 }
 
 func ProvideServiceExtracter(i *do.Injector) (*service.ServiceExtractKeywords, error) {
