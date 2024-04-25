@@ -1,13 +1,11 @@
 package main
 
 import (
-	"errors"
-	"log"
-	"os"
-	"os/signal"
-	"time"
-
+	"core/internal/config"
 	"core/internal/content/service"
+	"errors"
+	"fmt"
+	"log"
 
 	"github.com/samber/do"
 	"github.com/urfave/cli/v2"
@@ -24,22 +22,20 @@ func startExtracter(c *cli.Context) error {
 		return err
 	}
 
-	quit := make(chan os.Signal, 1)
-
-	go func() {
-		for {
-			err := extractor.ExtractNews()
-			if err != nil {
-				log.Println(err)
-				quit <- os.Kill
-			}
-			log.Println("crawling...")
-			time.Sleep(5 * time.Minute)
+	switch c.String(config.FlagTable) {
+	case config.FlagNews:
+		err := extractor.ExtractNews()
+		if err != nil {
+			log.Println(err)
 		}
-	}()
-
-	signal.Notify(quit, os.Interrupt)
-	<-quit
+	case config.FlagMatchs:
+		err := extractor.ExtractMatchs()
+		if err != nil {
+			log.Println(err)
+		}
+	default:
+		return fmt.Errorf(`extracter: invalid extracter flags`)
+	}
 
 	return nil
 }

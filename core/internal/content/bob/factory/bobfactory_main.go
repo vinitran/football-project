@@ -21,6 +21,7 @@ type factory struct {
 	baseItemMods           ItemModSlice
 	baseMatchMods          MatchModSlice
 	baseNewsInforMods      NewsInforModSlice
+	baseReviewMatchMods    ReviewMatchModSlice
 	baseTeamMods           TeamModSlice
 	baseTournamentMods     TournamentModSlice
 	baseUserMods           UserModSlice
@@ -86,6 +87,18 @@ func (f *factory) NewNewsInfor(mods ...NewsInforMod) *NewsInforTemplate {
 	}
 
 	NewsInforModSlice(mods).Apply(o)
+
+	return o
+}
+
+func (f *factory) NewReviewMatch(mods ...ReviewMatchMod) *ReviewMatchTemplate {
+	o := &ReviewMatchTemplate{f: f}
+
+	if f != nil {
+		f.baseReviewMatchMods.Apply(o)
+	}
+
+	ReviewMatchModSlice(mods).Apply(o)
 
 	return o
 }
@@ -166,6 +179,14 @@ func (f *factory) AddBaseNewsInforMod(mods ...NewsInforMod) {
 	f.baseNewsInforMods = append(f.baseNewsInforMods, mods...)
 }
 
+func (f *factory) ClearBaseReviewMatchMods() {
+	f.baseReviewMatchMods = nil
+}
+
+func (f *factory) AddBaseReviewMatchMod(mods ...ReviewMatchMod) {
+	f.baseReviewMatchMods = append(f.baseReviewMatchMods, mods...)
+}
+
 func (f *factory) ClearBaseTeamMods() {
 	f.baseTeamMods = nil
 }
@@ -198,6 +219,7 @@ var (
 	itemCtx           = newContextual[*models.Item]("item")
 	matchCtx          = newContextual[*models.Match]("match")
 	newsInforCtx      = newContextual[*models.NewsInfor]("newsInfor")
+	reviewMatchCtx    = newContextual[*models.ReviewMatch]("reviewMatch")
 	teamCtx           = newContextual[*models.Team]("team")
 	tournamentCtx     = newContextual[*models.Tournament]("tournament")
 	userCtx           = newContextual[*models.User]("user")

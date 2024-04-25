@@ -19,16 +19,22 @@ import (
 
 type ServiceCrawler struct {
 	ServiceHTTP
-	container           *do.Injector
-	datastoreMatch      content.DatastoreMatch
-	datastoreTeam       content.DatastoreTeam
-	datastoreTournament content.DatastoreTournament
-	datastoreNews       content.DatastoreNews
-	cache               db.Cache
+	container            *do.Injector
+	datastoreMatch       content.DatastoreMatch
+	datastoreReviewMatch content.DatastoreReviewMatch
+	datastoreTeam        content.DatastoreTeam
+	datastoreTournament  content.DatastoreTournament
+	datastoreNews        content.DatastoreNews
+	cache                db.Cache
 }
 
 func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 	datastoreMatch, err := do.Invoke[content.DatastoreMatch](container)
+	if err != nil {
+		return nil, err
+	}
+
+	datastoreReviewMatch, err := do.Invoke[content.DatastoreReviewMatch](container)
 	if err != nil {
 		return nil, err
 	}
@@ -59,12 +65,13 @@ func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 	}
 
 	return &ServiceCrawler{
-		container:           container,
-		datastoreMatch:      datastoreMatch,
-		datastoreTeam:       datastoreTeam,
-		datastoreTournament: datastoreTournament,
-		datastoreNews:       datastoreNews,
-		cache:               cache,
+		container:            container,
+		datastoreMatch:       datastoreMatch,
+		datastoreTeam:        datastoreTeam,
+		datastoreTournament:  datastoreTournament,
+		datastoreNews:        datastoreNews,
+		datastoreReviewMatch: datastoreReviewMatch,
+		cache:                cache,
 	}, nil
 }
 
@@ -247,6 +254,83 @@ func (service *ServiceCrawler) CrawlNewsDetail(id string) error {
 	return nil
 }
 
+func (service *ServiceCrawler) CrawlReviewMatch() error {
+	index := 1
+	for {
+		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/xemlai/%d", index)
+		resp, err := service.httpClient(3).Get(url, http.Header{
+			"content-type": []string{"application/json"},
+		})
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+		var responseBody ReviewMatchResponseData
+
+		err = json.NewDecoder(resp.Body).Decode(&responseBody)
+		if err != nil {
+			return err
+		}
+
+		payload := responseBody.Data.List
+		if payload == nil || len(payload) == 0 {
+			return nil
+		}
+
+		for _, p := range payload {
+			err := service.CrawlReviewMatchDetail(p.ID.GetOrZero())
+			if err != nil {
+				return err
+			}
+		}
+
+		index++
+	}
+}
+
+func (service *ServiceCrawler) CrawlReviewMatchDetail(id string) error {
+	url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/detail/%s", id)
+
+	resp, err := service.httpClient(3).Get(url, http.Header{
+		"content-type": []string{"application/json"},
+	})
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	var responseBody DetailReviewMatchResponseData
+
+	err = json.NewDecoder(resp.Body).Decode(&responseBody)
+	if err != nil {
+		return err
+	}
+
+	payload := responseBody.Data
+
+	matchSetter := &b.ReviewMatchSetter{
+		ID:           payload.ID,
+		Name:         payload.Name,
+		Slug:         payload.Slug,
+		Description:  payload.Description,
+		VideoURL:     payload.VideoURL,
+		FeatureImage: payload.FeatureImage,
+		Category:     payload.Category,
+		Label:        payload.Label,
+		Content:      payload.Content,
+		Title:        payload.Title,
+		H1:           payload.H1,
+		CreatedAt:    payload.CreatedAt,
+		UpdatedAt:    payload.UpdatedAt,
+	}
+
+	_, err = service.datastoreReviewMatch.Upsert(context.Background(), matchSetter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func RemoveDuplicatesTeam(input []*b.TeamSetter) []*b.TeamSetter {
 	encountered := map[string]bool{}
 	var result []*b.TeamSetter
@@ -355,6 +439,17 @@ type NewsResponseData struct {
 	} `json:"data"`
 }
 
+type ReviewMatchResponseData struct {
+	Status int `json:"status"`
+	Data   struct {
+		Page      int               `json:"page"`
+		Limit     int               `json:"limit"`
+		Total     int               `json:"total"`
+		Highlight any               `json:"highlight"`
+		List      []ReviewMatchData `json:"list"`
+	} `json:"data"`
+}
+
 type DetailNewsResponseData struct {
 	Status int      `json:"status"`
 	Data   NewsData `json:"data"`
@@ -374,6 +469,27 @@ type NewsData struct {
 	VideoURL     omitnull.Val[string]                  `json:"video_url"`
 	CreatedAt    omit.Val[time.Time]                   `json:"created_at"`
 	UpdatedAt    omit.Val[time.Time]                   `json:"updated_at"`
+}
+
+type DetailReviewMatchResponseData struct {
+	Status int             `json:"status"`
+	Data   ReviewMatchData `json:"data"`
+}
+
+type ReviewMatchData struct {
+	ID           omit.Val[string]                          `json:"id,pk"`
+	Name         omit.Val[string]                          `json:"name"`
+	Slug         omit.Val[string]                          `json:"slug"`
+	Description  omit.Val[string]                          `json:"description"`
+	VideoURL     omit.Val[string]                          `json:"video_url"`
+	FeatureImage omit.Val[string]                          `json:"feature_image"`
+	Category     omit.Val[types.JSON[json.RawMessage]]     `json:"category"`
+	Label        omitnull.Val[types.JSON[json.RawMessage]] `json:"label"`
+	Content      omit.Val[string]                          `json:"content"`
+	Title        omit.Val[string]                          `json:"title"`
+	H1           omit.Val[string]                          `json:"h1"`
+	CreatedAt    omit.Val[time.Time]                       `json:"created_at"`
+	UpdatedAt    omit.Val[time.Time]                       `json:"updated_at"`
 }
 
 func (item NewsResponseData) String() string {

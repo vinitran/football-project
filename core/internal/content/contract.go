@@ -49,6 +49,7 @@ type DatastoreMatch interface {
 	List(ctx context.Context, params MatchListParams) ([]*Match, error)
 	Upsert(ctx context.Context, params *b.MatchSetter) (*Match, error)
 	UpsertMany(ctx context.Context, params []*b.MatchSetter) ([]*Match, error)
+	UpdateLabelByID(ctx context.Context, id string, label []string) (*Match, error)
 }
 
 type DatastoreNews interface {
@@ -56,4 +57,13 @@ type DatastoreNews interface {
 	List(ctx context.Context, params NewsListParams) ([]*News, error)
 	FindByID(ctx context.Context, id string) (*News, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*News, error)
+}
+
+type DatastoreReviewMatch interface {
+	Exists(ctx context.Context, id string) (bool, error)
+	FindByID(ctx context.Context, id string) (*ReviewMatch, error)
+	List(ctx context.Context, params MatchListParams) ([]*ReviewMatch, error)
+	Upsert(ctx context.Context, params *b.ReviewMatchSetter) (*ReviewMatch, error)
+	UpsertMany(ctx context.Context, params []*b.ReviewMatchSetter) ([]*ReviewMatch, error)
+	UpdateLabelByID(ctx context.Context, id string, label []string) (*ReviewMatch, error)
 }

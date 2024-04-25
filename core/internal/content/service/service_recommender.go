@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"core/pkg/arr"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -57,9 +58,9 @@ func (service *ServiceRecommender) GetNeighborsItem(ctx context.Context, itemId,
 	}
 
 	var result []string
-	for _, item := range items {
+	arr.ArrEach(items, func(item Score) {
 		result = append(result, item.Id)
-	}
+	})
 
 	return result, nil
 }
