@@ -60,6 +60,7 @@ type MatchTemplate struct {
 	LiveTracker  func() null.Val[string]
 	CreatedAt    func() time.Time
 	UpdatedAt    func() time.Time
+	Labels       func() null.Val[types.JSON[json.RawMessage]]
 
 	r matchR
 	f *factory
@@ -158,6 +159,9 @@ func (o MatchTemplate) toModel() *models.Match {
 	}
 	if o.UpdatedAt != nil {
 		m.UpdatedAt = o.UpdatedAt()
+	}
+	if o.Labels != nil {
+		m.Labels = o.Labels()
 	}
 
 	return m
@@ -271,6 +275,9 @@ func (o MatchTemplate) BuildSetter() *models.MatchSetter {
 	}
 	if o.UpdatedAt != nil {
 		m.UpdatedAt = omit.From(o.UpdatedAt())
+	}
+	if o.Labels != nil {
+		m.Labels = omitnull.FromNull(o.Labels())
 	}
 
 	return m
@@ -489,6 +496,7 @@ func (m matchMods) RandomizeAllColumns(f *faker.Faker) MatchMod {
 		MatchMods.RandomLiveTracker(f),
 		MatchMods.RandomCreatedAt(f),
 		MatchMods.RandomUpdatedAt(f),
+		MatchMods.RandomLabels(f),
 	}
 }
 
@@ -1434,6 +1442,49 @@ func (m matchMods) ensureUpdatedAt(f *faker.Faker) MatchMod {
 
 		o.UpdatedAt = func() time.Time {
 			return random[time.Time](f)
+		}
+	})
+}
+
+// Set the model columns to this value
+func (m matchMods) Labels(val null.Val[types.JSON[json.RawMessage]]) MatchMod {
+	return MatchModFunc(func(o *MatchTemplate) {
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] { return val }
+	})
+}
+
+// Set the Column from the function
+func (m matchMods) LabelsFunc(f func() null.Val[types.JSON[json.RawMessage]]) MatchMod {
+	return MatchModFunc(func(o *MatchTemplate) {
+		o.Labels = f
+	})
+}
+
+// Clear any values for the column
+func (m matchMods) UnsetLabels() MatchMod {
+	return MatchModFunc(func(o *MatchTemplate) {
+		o.Labels = nil
+	})
+}
+
+// Generates a random value for the column using the given faker
+// if faker is nil, a default faker is used
+func (m matchMods) RandomLabels(f *faker.Faker) MatchMod {
+	return MatchModFunc(func(o *MatchTemplate) {
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] {
+			return randomNull[types.JSON[json.RawMessage]](f)
+		}
+	})
+}
+
+func (m matchMods) ensureLabels(f *faker.Faker) MatchMod {
+	return MatchModFunc(func(o *MatchTemplate) {
+		if o.Labels != nil {
+			return
+		}
+
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] {
+			return randomNull[types.JSON[json.RawMessage]](f)
 		}
 	})
 }

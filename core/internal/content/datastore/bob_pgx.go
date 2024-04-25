@@ -155,3 +155,27 @@ func MatchBobToRaw(v *b.Match) *content.Match {
 
 	return item
 }
+
+func ReviewMatchBobToRaw(v *b.ReviewMatch) *content.ReviewMatch {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.ReviewMatch{
+		ID:           v.ID,
+		Name:         v.Name,
+		Slug:         v.Slug,
+		Description:  v.Description,
+		VideoUrl:     v.VideoURL,
+		FeatureImage: v.FeatureImage,
+		Category:     v.Category.Val,
+		Content:      v.Content,
+		Title:        v.Title,
+		H1:           v.H1,
+
+		CreatedAt: v.CreatedAt,
+		UpdatedAt: v.UpdatedAt,
+	}
+
+	return item
+}

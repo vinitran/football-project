@@ -2,6 +2,12 @@ package datastore
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/aarondl/opt/omitnull"
+	"github.com/stephenafamo/bob/dialect/psql/um"
+	"github.com/stephenafamo/bob/types"
+	"github.com/stephenafamo/scan"
+	"log"
 
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -116,6 +122,61 @@ func (ds *DatastoreMatchPgx) UpsertMany(ctx context.Context, params []*b.MatchSe
 	return arr.ArrMap(item, MatchBobToRaw), nil
 }
 
+func (ds *DatastoreMatchPgx) UpdateLabelByID(ctx context.Context, id string, label []string) (*content.Match, error) {
+	builder := psql.Update(
+		um.Table(b.MatchsTable.Name(ctx)),
+		um.Where(b.MatchColumns.ID.EQ(psql.Arg(id))),
+		um.Returning("*"),
+	)
+
+	var lbs []string
+	arr.ArrEach(label, func(lb string) {
+		for _, banned := range bannedKeyword {
+			if lb == banned {
+				return
+			}
+		}
+		lbs = append(lbs, lb)
+	})
+
+	jsonData, err := json.Marshal(lbs)
+	if err != nil {
+		return nil, err
+	}
+
+	lb := omitnull.From(types.NewJSON(json.RawMessage(jsonData)))
+	builder.Apply(
+		um.Set("labels").ToArg(lb),
+	)
+
+	item, err := bob.One(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.Match]())
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("complete", item.ID)
+
+	return MatchBobToRaw(item), nil
+}
+
 func NewDatastoreMatch(pool PGXPool) (*DatastoreMatchPgx, error) {
 	return &DatastoreMatchPgx{pool, &BobExecutorPgx{pool}}, nil
+}
+
+var bannedKeyword = []string{
+	"match",
+	"vs",
+	"football",
+	"women's football",
+	"teams",
+	"vs.",
+	"game",
+	"sports",
+	"W",
+	"competition",
+	"players",
+	"score",
+	"result",
+	"racing",
+	"women's soccer",
 }

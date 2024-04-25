@@ -26,28 +26,29 @@ import (
 
 // Match is an object representing the database table.
 type Match struct {
-	ID           string                      `db:"id,pk" `
-	Name         string                      `db:"name" `
-	Slug         string                      `db:"slug" `
-	Date         string                      `db:"date" `
-	Timestamp    int64                       `db:"timestamp" `
-	HomeRedCards int                         `db:"home_red_cards" `
-	AwayRedCards int                         `db:"away_red_cards" `
-	HomeID       string                      `db:"home_id" `
-	AwayID       string                      `db:"away_id" `
-	TournamentID string                      `db:"tournament_id" `
-	Scores       types.JSON[json.RawMessage] `db:"scores" `
-	WinCode      null.Val[int]               `db:"win_code" `
-	MatchStatus  MatchStatus                 `db:"match_status" `
-	SportType    null.Val[string]            `db:"sport_type" `
-	HasLineup    null.Val[bool]              `db:"has_lineup" `
-	HasTracker   null.Val[bool]              `db:"has_tracker" `
-	IsFeatured   null.Val[bool]              `db:"is_featured" `
-	ThumbnailURL null.Val[string]            `db:"thumbnail_url" `
-	IsLive       null.Val[bool]              `db:"is_live" `
-	LiveTracker  null.Val[string]            `db:"live_tracker" `
-	CreatedAt    time.Time                   `db:"created_at" `
-	UpdatedAt    time.Time                   `db:"updated_at" `
+	ID           string                                `db:"id,pk" `
+	Name         string                                `db:"name" `
+	Slug         string                                `db:"slug" `
+	Date         string                                `db:"date" `
+	Timestamp    int64                                 `db:"timestamp" `
+	HomeRedCards int                                   `db:"home_red_cards" `
+	AwayRedCards int                                   `db:"away_red_cards" `
+	HomeID       string                                `db:"home_id" `
+	AwayID       string                                `db:"away_id" `
+	TournamentID string                                `db:"tournament_id" `
+	Scores       types.JSON[json.RawMessage]           `db:"scores" `
+	WinCode      null.Val[int]                         `db:"win_code" `
+	MatchStatus  MatchStatus                           `db:"match_status" `
+	SportType    null.Val[string]                      `db:"sport_type" `
+	HasLineup    null.Val[bool]                        `db:"has_lineup" `
+	HasTracker   null.Val[bool]                        `db:"has_tracker" `
+	IsFeatured   null.Val[bool]                        `db:"is_featured" `
+	ThumbnailURL null.Val[string]                      `db:"thumbnail_url" `
+	IsLive       null.Val[bool]                        `db:"is_live" `
+	LiveTracker  null.Val[string]                      `db:"live_tracker" `
+	CreatedAt    time.Time                             `db:"created_at" `
+	UpdatedAt    time.Time                             `db:"updated_at" `
+	Labels       null.Val[types.JSON[json.RawMessage]] `db:"labels" `
 
 	R matchR `db:"-" `
 }
@@ -76,28 +77,29 @@ type matchR struct {
 // All values are optional, and do not have to be set
 // Generated columns are not included
 type MatchSetter struct {
-	ID           omit.Val[string]                      `db:"id,pk"`
-	Name         omit.Val[string]                      `db:"name"`
-	Slug         omit.Val[string]                      `db:"slug"`
-	Date         omit.Val[string]                      `db:"date"`
-	Timestamp    omit.Val[int64]                       `db:"timestamp"`
-	HomeRedCards omit.Val[int]                         `db:"home_red_cards"`
-	AwayRedCards omit.Val[int]                         `db:"away_red_cards"`
-	HomeID       omit.Val[string]                      `db:"home_id"`
-	AwayID       omit.Val[string]                      `db:"away_id"`
-	TournamentID omit.Val[string]                      `db:"tournament_id"`
-	Scores       omit.Val[types.JSON[json.RawMessage]] `db:"scores"`
-	WinCode      omitnull.Val[int]                     `db:"win_code"`
-	MatchStatus  omit.Val[MatchStatus]                 `db:"match_status"`
-	SportType    omitnull.Val[string]                  `db:"sport_type"`
-	HasLineup    omitnull.Val[bool]                    `db:"has_lineup"`
-	HasTracker   omitnull.Val[bool]                    `db:"has_tracker"`
-	IsFeatured   omitnull.Val[bool]                    `db:"is_featured"`
-	ThumbnailURL omitnull.Val[string]                  `db:"thumbnail_url"`
-	IsLive       omitnull.Val[bool]                    `db:"is_live"`
-	LiveTracker  omitnull.Val[string]                  `db:"live_tracker"`
-	CreatedAt    omit.Val[time.Time]                   `db:"created_at"`
-	UpdatedAt    omit.Val[time.Time]                   `db:"updated_at"`
+	ID           omit.Val[string]                          `db:"id,pk"`
+	Name         omit.Val[string]                          `db:"name"`
+	Slug         omit.Val[string]                          `db:"slug"`
+	Date         omit.Val[string]                          `db:"date"`
+	Timestamp    omit.Val[int64]                           `db:"timestamp"`
+	HomeRedCards omit.Val[int]                             `db:"home_red_cards"`
+	AwayRedCards omit.Val[int]                             `db:"away_red_cards"`
+	HomeID       omit.Val[string]                          `db:"home_id"`
+	AwayID       omit.Val[string]                          `db:"away_id"`
+	TournamentID omit.Val[string]                          `db:"tournament_id"`
+	Scores       omit.Val[types.JSON[json.RawMessage]]     `db:"scores"`
+	WinCode      omitnull.Val[int]                         `db:"win_code"`
+	MatchStatus  omit.Val[MatchStatus]                     `db:"match_status"`
+	SportType    omitnull.Val[string]                      `db:"sport_type"`
+	HasLineup    omitnull.Val[bool]                        `db:"has_lineup"`
+	HasTracker   omitnull.Val[bool]                        `db:"has_tracker"`
+	IsFeatured   omitnull.Val[bool]                        `db:"is_featured"`
+	ThumbnailURL omitnull.Val[string]                      `db:"thumbnail_url"`
+	IsLive       omitnull.Val[bool]                        `db:"is_live"`
+	LiveTracker  omitnull.Val[string]                      `db:"live_tracker"`
+	CreatedAt    omit.Val[time.Time]                       `db:"created_at"`
+	UpdatedAt    omit.Val[time.Time]                       `db:"updated_at"`
+	Labels       omitnull.Val[types.JSON[json.RawMessage]] `db:"labels"`
 }
 
 type matchColumnNames struct {
@@ -123,6 +125,7 @@ type matchColumnNames struct {
 	LiveTracker  string
 	CreatedAt    string
 	UpdatedAt    string
+	Labels       string
 }
 
 type matchRelationshipJoins[Q dialect.Joinable] struct {
@@ -170,6 +173,7 @@ var MatchColumns = struct {
 	LiveTracker  psql.Expression
 	CreatedAt    psql.Expression
 	UpdatedAt    psql.Expression
+	Labels       psql.Expression
 }{
 	ID:           psql.Quote("matchs", "id"),
 	Name:         psql.Quote("matchs", "name"),
@@ -193,6 +197,7 @@ var MatchColumns = struct {
 	LiveTracker:  psql.Quote("matchs", "live_tracker"),
 	CreatedAt:    psql.Quote("matchs", "created_at"),
 	UpdatedAt:    psql.Quote("matchs", "updated_at"),
+	Labels:       psql.Quote("matchs", "labels"),
 }
 
 type matchWhere[Q psql.Filterable] struct {
@@ -218,6 +223,7 @@ type matchWhere[Q psql.Filterable] struct {
 	LiveTracker  psql.WhereNullMod[Q, string]
 	CreatedAt    psql.WhereMod[Q, time.Time]
 	UpdatedAt    psql.WhereMod[Q, time.Time]
+	Labels       psql.WhereNullMod[Q, types.JSON[json.RawMessage]]
 }
 
 func MatchWhere[Q psql.Filterable]() matchWhere[Q] {
@@ -244,6 +250,7 @@ func MatchWhere[Q psql.Filterable]() matchWhere[Q] {
 		LiveTracker:  psql.WhereNull[Q, string](MatchColumns.LiveTracker),
 		CreatedAt:    psql.Where[Q, time.Time](MatchColumns.CreatedAt),
 		UpdatedAt:    psql.Where[Q, time.Time](MatchColumns.UpdatedAt),
+		Labels:       psql.WhereNull[Q, types.JSON[json.RawMessage]](MatchColumns.Labels),
 	}
 }
 

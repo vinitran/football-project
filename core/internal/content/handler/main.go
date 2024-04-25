@@ -62,6 +62,10 @@ func New(cfg *Config) (http.Handler, error) {
 		routesAPIv1.GET("/recommend/:id", groupRecommend.GetByUser)
 		routesAPIv1.GET("/recommend/:id/:category", groupRecommend.GetByUserAndCategory)
 		routesAPIv1.POST("/recommend/feedback", groupRecommend.CreateFeedback)
+
+		routesAPIv1.GET("/news/:id/neighbors", groupRecommend.GetByItem)
+		routesAPIv1.GET("/news/:id/neighbors/:category", groupRecommend.GetByItemAndCategory)
+
 	}
 
 	return r, nil

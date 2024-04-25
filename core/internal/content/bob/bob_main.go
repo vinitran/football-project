@@ -16,6 +16,7 @@ var TableNames = struct {
 	Items           string
 	Matchs          string
 	NewsInfors      string
+	ReviewMatchs    string
 	Teams           string
 	Tournaments     string
 	Users           string
@@ -25,6 +26,7 @@ var TableNames = struct {
 	Items:           "items",
 	Matchs:          "matchs",
 	NewsInfors:      "news_infor",
+	ReviewMatchs:    "review_matchs",
 	Teams:           "teams",
 	Tournaments:     "tournaments",
 	Users:           "users",
@@ -36,6 +38,7 @@ var ColumnNames = struct {
 	Items           itemColumnNames
 	Matchs          matchColumnNames
 	NewsInfors      newsInforColumnNames
+	ReviewMatchs    reviewMatchColumnNames
 	Teams           teamColumnNames
 	Tournaments     tournamentColumnNames
 	Users           userColumnNames
@@ -84,6 +87,7 @@ var ColumnNames = struct {
 		LiveTracker:  "live_tracker",
 		CreatedAt:    "created_at",
 		UpdatedAt:    "updated_at",
+		Labels:       "labels",
 	},
 	NewsInfors: newsInforColumnNames{
 		ID:           "id",
@@ -100,6 +104,21 @@ var ColumnNames = struct {
 		CreatedAt:    "created_at",
 		UpdatedAt:    "updated_at",
 		Labels:       "labels",
+	},
+	ReviewMatchs: reviewMatchColumnNames{
+		ID:           "id",
+		Name:         "name",
+		Slug:         "slug",
+		Description:  "description",
+		VideoURL:     "video_url",
+		FeatureImage: "feature_image",
+		Category:     "category",
+		Label:        "label",
+		Content:      "content",
+		Title:        "title",
+		H1:           "h1",
+		CreatedAt:    "created_at",
+		UpdatedAt:    "updated_at",
 	},
 	Teams: teamColumnNames{
 		ID:        "id",
@@ -143,6 +162,7 @@ func Where[Q psql.Filterable]() struct {
 	Items           itemWhere[Q]
 	Matchs          matchWhere[Q]
 	NewsInfors      newsInforWhere[Q]
+	ReviewMatchs    reviewMatchWhere[Q]
 	Teams           teamWhere[Q]
 	Tournaments     tournamentWhere[Q]
 	Users           userWhere[Q]
@@ -153,6 +173,7 @@ func Where[Q psql.Filterable]() struct {
 		Items           itemWhere[Q]
 		Matchs          matchWhere[Q]
 		NewsInfors      newsInforWhere[Q]
+		ReviewMatchs    reviewMatchWhere[Q]
 		Teams           teamWhere[Q]
 		Tournaments     tournamentWhere[Q]
 		Users           userWhere[Q]
@@ -162,6 +183,7 @@ func Where[Q psql.Filterable]() struct {
 		Items:           ItemWhere[Q](),
 		Matchs:          MatchWhere[Q](),
 		NewsInfors:      NewsInforWhere[Q](),
+		ReviewMatchs:    ReviewMatchWhere[Q](),
 		Teams:           TeamWhere[Q](),
 		Tournaments:     TournamentWhere[Q](),
 		Users:           UserWhere[Q](),
