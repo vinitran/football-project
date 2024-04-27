@@ -13,9 +13,11 @@ export const NavBar = (props: Props) => {
   const navigate = useNavigate();
   const [nav, setNav] = useState('/new');
 
-  const handleNavChange = (event: React.SyntheticEvent, newValue: string) => {
-    setNav(newValue);
-    navigate(`${newValue}`);
+  const handleNavChange = (event?: React.SyntheticEvent | undefined, newValue?: string) => {
+    if (newValue) {
+      setNav(newValue);
+      navigate(`${newValue}`);
+    }
   };
 
   return (
@@ -23,14 +25,20 @@ export const NavBar = (props: Props) => {
       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <Tabs
           value={nav}
-          onChange={handleNavChange}
           variant="scrollable"
           scrollButtons="auto"
           textColor="secondary"
           indicatorColor="secondary"
           aria-label="scrollable secondary auto tabs example">
           {navBarList.map((item, index) => (
-            <Tab key={index} value={item?.url} label={item?.label} />
+            <Tab
+              key={index}
+              value={item?.url}
+              label={item?.label}
+              onClick={() => {
+                handleNavChange(undefined, item?.url);
+              }}
+            />
           ))}
         </Tabs>
       </Box>

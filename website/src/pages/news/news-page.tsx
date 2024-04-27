@@ -46,7 +46,7 @@ const ItemNews = ({ news }: { news: INews }) => {
     <div
       className="flex flex-col items-start justify-start w-[310px] h-[245px] overflow-hidden cursor-pointer"
       onClick={() => {
-        navigate(`/new/${news.id}`);
+        navigate(`/new-detail/${news.id}`);
       }}>
       <img
         className="w-full h-[200px] rounded-md border-solid border-[1px] border-[--color-stroke]"
