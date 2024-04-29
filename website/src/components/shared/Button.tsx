@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react';
 import styled from 'styled-components';
-import { text } from '@css/typography';
-import { transition } from '@css/helper';
-import { fillParent } from '@css/helper';
+import { fillParent, transition } from '../../assets/css/helper';
+import { Link } from 'react-router-dom';
+import { text } from '../../assets/css/typography';
 
 const ButtonWrapper = styled.button<{ $isSecondary?: boolean }>`
   position: relative;
@@ -59,11 +59,11 @@ export const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
   children
 }) => {
   return typeof action === 'string' ? (
-    <a href={action}>
+    <Link to={action}>
       <ButtonWrapper as="a" onClick={onLink} $isSecondary={isSecondary}>
         {children}
       </ButtonWrapper>
-    </a>
+    </Link>
   ) : (
     <ButtonWrapper type="button" onClick={action} $isSecondary={isSecondary}>
       {children}

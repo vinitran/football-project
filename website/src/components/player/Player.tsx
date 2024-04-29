@@ -4,8 +4,8 @@ import { usePlayer, withPlayer } from './PlayerProvider';
 import { PlayerControls } from './PlayerControls';
 import { fillParent, square } from '../../assets/css/helper';
 import { IconArrowLeft } from '../../assets/icon/IconArrowLeft';
-import { VideoDetail } from '../../interfaces/entites/video';
 import { controlsTransition } from '../../assets/css/player';
+import { useNavigate } from 'react-router-dom';
 
 const PlayerOverlay = styled.div`
   ${fillParent};
@@ -37,11 +37,12 @@ const IconBack = styled(IconArrowLeft)`
 `;
 
 export interface PlayerProps {
-  show: VideoDetail;
+  show: Api.TVDetails;
   fullscreenContainer: React.MutableRefObject<HTMLElement | null>;
 }
 
 export const Player = withPlayer(() => {
+  const navigate = useNavigate();
   const { controlsActive, togglePlay } = usePlayer();
 
   return (
@@ -49,7 +50,7 @@ export const Player = withPlayer(() => {
       <PlayerOverlay onClick={togglePlay} />
       {controlsActive && (
         <React.Fragment>
-          <PlayerBack onClick={() => {}}>
+          <PlayerBack onClick={() => navigate(-1)}>
             <IconBack />
           </PlayerBack>
           <PlayerControlsWrapper>

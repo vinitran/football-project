@@ -1,8 +1,7 @@
-import { Match as BaseMatch } from '../interfaces/entites/match';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Video, VideoDetail } from '../interfaces/entites/video';
-import { Genre } from '../interfaces/entites/genre';
+import { useWatchlist } from '../context/watch-list.context';
+import { Spinner } from '../components/shared/Spinner';
 import { Opener } from '../components/shared/Opener';
 import { MatchCard } from '../components/shared/Home/Card';
 
@@ -70,18 +69,20 @@ const WrapperList = styled.div`
   text-align: left;
 `;
 interface HomeProps {
-  featured: VideoDetail;
-  trending: Video[];
-  genres: Genre[];
+  featured: Api.TVDetails;
+  trending: Api.TV[];
+  genres: Api.Genre[];
 }
 
 interface Match {
   status: number;
-  data: BaseMatch[];
+  data: MatchModule.Matchs[];
 }
 
 export const HomePage: React.FC<HomeProps> = () => {
-  const [matches, setMatches] = useState<BaseMatch[]>();
+  const { loading: watchlistLoading } = useWatchlist();
+
+  const [matches, setMatches] = useState<MatchModule.Matchs[] | null>(null);
   const [inWatch, setInWatch] = useState(false);
 
   const fetchMatchData = async () => {
@@ -107,7 +108,7 @@ export const HomePage: React.FC<HomeProps> = () => {
       const data = (await response.json()) as Match;
       const map1 = new Map(data?.data.map((item) => [item.id, item]));
       const updatedData = matches?.map((item) => (map1.has(item.id) ? map1.get(item.id)! : item));
-      setMatches(updatedData);
+      setMatches(updatedData as MatchModule.Matchs[]);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -127,16 +128,27 @@ export const HomePage: React.FC<HomeProps> = () => {
 
   return (
     <React.Fragment>
-      <PageWrapper>
-        <BoxContent>
-          <WrapperList>
-            {matches?.map((item) => (
-              // item.is_live &&
-              <MatchCard data={item} key={item.id} />
-            ))}
-          </WrapperList>
-        </BoxContent>
-      </PageWrapper>
+      {/* <Meta
+        title="Trang VINITRAN.COM livestream bóng đá trực tuyến"
+        description="Xem VINITRAN.COM trực tiếp bóng đá nhanh nhất. Link Vinitran.com bóng đá nhanh miễn phí cùng kết quả, lịch thi đấu mới nhất"
+      /> */}
+      {watchlistLoading ? (
+        <PageLoading>
+          <Spinner />
+        </PageLoading>
+      ) : (
+        <PageWrapper>
+          <Opener />
+          <BoxContent>
+            <WrapperList>
+              {matches?.map((item) => (
+                // item.is_live &&
+                <MatchCard data={item} key={item.id} />
+              ))}
+            </WrapperList>
+          </BoxContent>
+        </PageWrapper>
+      )}
     </React.Fragment>
   );
 };

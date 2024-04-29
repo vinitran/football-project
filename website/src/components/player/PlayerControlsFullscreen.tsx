@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { usePlayer } from './PlayerProvider';
 import { controlsTransition } from '../../assets/css/player';
-import { IconMaximize } from '../../assets/icon/IconMaximize';
 import { square } from '../../assets/css/helper';
+import { IconMaximize } from '../../assets/icon/IconMaximize';
 import { IconMinimize } from '../../assets/icon/IconMinimize';
 import { useAppSelector } from '../../stores/store';
 

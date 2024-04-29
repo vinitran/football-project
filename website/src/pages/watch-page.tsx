@@ -1,12 +1,10 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { VideoDetail } from '../interfaces/entites/video';
 import { Spinner } from '../components/shared/Spinner';
-import { Player } from '../components/player/Player';
-import { useSelector } from 'react-redux';
-import { useAppSelector } from '../stores/store';
 // import { fillParent } from "@css/helper";
 // import { Content } from "@css/helper/content";
+import { Player } from '../components/player/Player';
+import { useAppSelector } from '../stores/store';
 
 const PlayerWrapper = styled.div``;
 
@@ -18,7 +16,7 @@ const SpinnerWrapper = styled.div`
 `;
 
 interface WatchProps {
-  show: VideoDetail;
+  show: Api.TVDetails;
   browserCompatible: boolean;
 }
 

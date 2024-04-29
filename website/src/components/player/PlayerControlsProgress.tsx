@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-
 import { usePlayer } from './PlayerProvider';
 import { useAppSelector } from '../../stores/store';
 import { Drag } from './drag';

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Content } from '../../assets/css/helper/content';
+import { Image } from './Image';
 
 const OpenerWrapper = styled.div`
   position: relative;
@@ -51,7 +52,14 @@ export const Opener = () => {
           giới. Thưởng thức ngay và cùng chia sẻ đam mê bóng đá ngay hôm nay!
         </OpenerText>
       </OpenerContent>
-      <OpenerBackground></OpenerBackground>
+      <OpenerBackground>
+        <Image
+          alt="poster"
+          src="https://res.cloudinary.com/de5wwikci/image/upload/v1708802621/wallpaperflare.com_wallpaper_sxusl3.jpg"
+          priority
+          fill
+        />
+      </OpenerBackground>
       <AccentOverlay />
     </OpenerWrapper>
   );

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IconChevronDown } from 'assets/icon/IconChevronDown';
-import { square } from 'assets/css/helper';
-import { text } from 'assets/css/typography';
+import { text } from '../../assets/css/typography';
+import { square } from '../../assets/css/helper';
+import { IconChevronDown } from '../../assets/icon/IconChevronDown';
 
 const SelectWrapper = styled.div`
   position: relative;

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Match } from '../../../interfaces/entites/match';
 import { Link } from 'react-router-dom';
 
 const MatchBlock = styled.div`
@@ -151,7 +150,7 @@ const League = styled.div`
 `;
 
 interface MatchCardProps {
-  data: Match;
+  data: MatchModule.Matchs;
 }
 
 export const MatchCard: React.FC<MatchCardProps> = ({ data }) => {

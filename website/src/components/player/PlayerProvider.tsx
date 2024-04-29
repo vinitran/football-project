@@ -10,12 +10,20 @@ import styled from 'styled-components';
 import Hls from 'hls.js';
 import { createContext, useContext } from 'react';
 import { PlayerProps } from './Player';
-import { useDispatch } from 'react-redux';
-import { Data, PlayUrl } from '../../interfaces/entites/match';
 import { useAppSelector } from '../../stores/store';
-import { useParams } from 'react-router-dom';
-import { resetPlayer, setBuffer, setPlaying, setProgress, setWaiting } from '../../stores/player';
+import { useWatchlist } from '../../context/watch-list.context';
+import {
+  resetPlayer,
+  setBuffer,
+  setFullscreen,
+  setPlaying,
+  setProgress,
+  setWaiting
+} from '../../stores/player';
+import { handleFullscreen } from '../../context/fullscreen.context';
 import { DEFAULT_TIMESTAMP, convertToTimeCode } from '../../utils/video.helper';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 export const HLS_VIDEO_DURATION = 888;
 
@@ -30,7 +38,7 @@ interface PlayerContextData {
   jumpToAbs: (abs: number) => void;
 }
 
-const getVideoUrl = (data: PlayUrl[]): string => {
+const getVideoUrl = (data: MatchDetailModule.PlayUrl[]): string => {
   const fullHd = data.find((element) => element.name === 'FHD');
   if (fullHd !== undefined) {
     return fullHd.url;
@@ -62,7 +70,7 @@ const Video = styled.video`
 
 interface Match {
   status: number;
-  data: Data;
+  data: MatchDetailModule.Data;
 }
 
 export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
@@ -72,11 +80,10 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
 }) => {
   const dispatch = useDispatch();
   const playing = useAppSelector((state) => state.player.playing);
-  //   const { loading: watchlistLoading, hasShowProgress, addProgressToWatchlist } = useWatchlist();
+  const { loading: watchlistLoading, hasShowProgress, addProgressToWatchlist } = useWatchlist();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [controlsActive, setControlsActive] = useState<boolean>(false);
-  //   const router = useRouter();
   const [matche, setMatche] = useState<Match | null>(null);
   const { id: videoId } = useParams();
 
@@ -95,7 +102,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
   }, []);
 
   useEffect(() => {
-    if (!videoRef.current || matche == null) {
+    if (!videoRef.current || watchlistLoading || matche == null) {
       return;
     }
 
@@ -136,7 +143,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
       hls.destroy();
       dispatch(resetPlayer());
     };
-  }, [dispatch, show, matche]);
+  }, [watchlistLoading, addProgressToWatchlist, dispatch, hasShowProgress, show, matche]);
 
   const interact = useCallback(() => {
     setControlsActive(true);
@@ -167,7 +174,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
         return;
       }
 
-      //   addProgressToWatchlist(show, videoRef.current.currentTime);
+      addProgressToWatchlist(show, videoRef.current.currentTime);
     };
 
     document.addEventListener('mousemove', interact);
@@ -181,7 +188,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [show, interact]);
+  }, [addProgressToWatchlist, show, interact]);
 
   /** Plays video if pause, else pause video. */
   const togglePlay = useCallback(() => {
@@ -202,9 +209,9 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
       return;
     }
 
-    // handleFullscreen(fullscreenContainer.current).then((isFullscreen) =>
-    //   dispatch(setFullscreen(isFullscreen))
-    // );
+    handleFullscreen(fullscreenContainer.current).then((isFullscreen) =>
+      dispatch(setFullscreen(isFullscreen))
+    );
   }, [dispatch, fullscreenContainer]);
 
   /** Sets play state according to video paused state. */
