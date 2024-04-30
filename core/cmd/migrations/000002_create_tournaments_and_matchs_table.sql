@@ -10,8 +10,6 @@ CREATE TABLE "tournaments"(
     "updated_at" timestamp with time zone NOT NULL
 );
 
-CREATE UNIQUE INDEX ON tournaments(priority);
-
 CREATE TYPE match_status AS ENUM(
   'pending',
   'finished',

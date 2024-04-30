@@ -10,5 +10,10 @@ Environment = "development" # "production" or "development"
 [Redis]
     Password = ""
     Name = "redis"
-    Host = "redis"
-    Port = "6379"
+    Host = "localhost"
+    Port = "6380"
+
+
+[Recommender]
+    Host = "http://127.0.0.1"
+    Port = "8088"

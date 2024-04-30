@@ -15,18 +15,6 @@ type DatastoreTeamPgx struct {
 	bobExecutor BobExecutor
 }
 
-//func (ds *DatastoreTeamPgx) Create(ctx context.Context, params *b.TeamSetter) (*content.Team, error) {
-//	params.CreatedAt = omit.From(time.Now())
-//	params.UpdatedAt = omit.From(time.Now())
-//
-//	item, err := b.TeamsTable.Insert(ctx, ds.bobExecutor, params)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return TeamBobToRaw(item), nil
-//}
-
 func (ds *DatastoreTeamPgx) FindByID(ctx context.Context, id string) (*content.Team, error) {
 	item, err := b.FindTeam(ctx, ds.bobExecutor, id)
 	if err != nil {

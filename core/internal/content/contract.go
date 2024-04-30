@@ -8,8 +8,26 @@ import (
 	"github.com/stephenafamo/bob/dialect/psql/dialect"
 )
 
+type CommonListParams struct {
+	Limit   int
+	Offset  int
+	Compact bool
+}
+
+type MatchListParams struct {
+	CommonListParams
+	Search     string
+	Status     MatchStatus
+	IsFeatured bool
+}
+
+type NewsListParams struct {
+	CommonListParams
+	Search  string
+	NewsIDs []string
+}
+
 type DatastoreTeam interface {
-	// Create(ctx context.Context, params *b.TeamSetter) (*Team, error)
 	FindByID(ctx context.Context, id string) (*Team, error)
 	ExistsBy(ctx context.Context, finder bob.Mod[*dialect.SelectQuery]) (bool, error)
 	FindBy(ctx context.Context, finder bob.Mod[*dialect.SelectQuery]) (*Team, error)
@@ -18,7 +36,6 @@ type DatastoreTeam interface {
 }
 
 type DatastoreTournament interface {
-	// Create(ctx context.Context, params *b.TournamentSetter) (*Tournament, error)
 	FindByID(ctx context.Context, id string) (*Tournament, error)
 	FindBy(ctx context.Context, finder bob.Mod[*dialect.SelectQuery]) (*Tournament, error)
 	ExistsBy(ctx context.Context, finder bob.Mod[*dialect.SelectQuery]) (bool, error)
@@ -27,12 +44,26 @@ type DatastoreTournament interface {
 }
 
 type DatastoreMatch interface {
-	// Create(ctx context.Context, params *b.MatchSetter) (*Match, error)
-	// CreateMany(ctx context.Context, params []*b.MatchSetter) ([]*Match, error)
 	Exists(ctx context.Context, id string) (bool, error)
 	FindByID(ctx context.Context, id string) (*Match, error)
-	// Update(ctx context.Context, id string, params *b.MatchSetter) (*Match, error)
-	// UpdateMany(ctx context.Context, params []*b.MatchSetter) ([]*Match, error)
+	List(ctx context.Context, params MatchListParams) ([]*Match, error)
 	Upsert(ctx context.Context, params *b.MatchSetter) (*Match, error)
 	UpsertMany(ctx context.Context, params []*b.MatchSetter) ([]*Match, error)
+	UpdateLabelByID(ctx context.Context, id string, label []string) (*Match, error)
+}
+
+type DatastoreNews interface {
+	Upsert(ctx context.Context, params *b.NewsInforSetter) (*News, error)
+	List(ctx context.Context, params NewsListParams) ([]*News, error)
+	FindByID(ctx context.Context, id string) (*News, error)
+	UpdateLabelByID(ctx context.Context, id string, label []string) (*News, error)
+}
+
+type DatastoreReviewMatch interface {
+	Exists(ctx context.Context, id string) (bool, error)
+	FindByID(ctx context.Context, id string) (*ReviewMatch, error)
+	List(ctx context.Context, params MatchListParams) ([]*ReviewMatch, error)
+	Upsert(ctx context.Context, params *b.ReviewMatchSetter) (*ReviewMatch, error)
+	UpsertMany(ctx context.Context, params []*b.ReviewMatchSetter) ([]*ReviewMatch, error)
+	UpdateLabelByID(ctx context.Context, id string, label []string) (*ReviewMatch, error)
 }

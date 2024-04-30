@@ -3,15 +3,13 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 	"time"
 
 	"core/internal/content"
 	b "core/internal/content/bob"
 	"core/internal/db"
-	"core/pkg/arr"
-
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
 	"github.com/redis/go-redis/v9"
@@ -21,11 +19,13 @@ import (
 
 type ServiceCrawler struct {
 	ServiceHTTP
-	container           *do.Injector
-	datastoreMatch      content.DatastoreMatch
-	datastoreTeam       content.DatastoreTeam
-	datastoreTournament content.DatastoreTournament
-	cache               db.Cache
+	container            *do.Injector
+	datastoreMatch       content.DatastoreMatch
+	datastoreReviewMatch content.DatastoreReviewMatch
+	datastoreTeam        content.DatastoreTeam
+	datastoreTournament  content.DatastoreTournament
+	datastoreNews        content.DatastoreNews
+	cache                db.Cache
 }
 
 func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
@@ -34,7 +34,17 @@ func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 		return nil, err
 	}
 
+	datastoreReviewMatch, err := do.Invoke[content.DatastoreReviewMatch](container)
+	if err != nil {
+		return nil, err
+	}
+
 	datastoreTeam, err := do.Invoke[content.DatastoreTeam](container)
+	if err != nil {
+		return nil, err
+	}
+
+	datastoreNews, err := do.Invoke[content.DatastoreNews](container)
 	if err != nil {
 		return nil, err
 	}
@@ -55,15 +65,17 @@ func NewServiceCrawler(container *do.Injector) (*ServiceCrawler, error) {
 	}
 
 	return &ServiceCrawler{
-		container:           container,
-		datastoreMatch:      datastoreMatch,
-		datastoreTeam:       datastoreTeam,
-		datastoreTournament: datastoreTournament,
-		cache:               cache,
+		container:            container,
+		datastoreMatch:       datastoreMatch,
+		datastoreTeam:        datastoreTeam,
+		datastoreTournament:  datastoreTournament,
+		datastoreNews:        datastoreNews,
+		datastoreReviewMatch: datastoreReviewMatch,
+		cache:                cache,
 	}, nil
 }
 
-func (service *ServiceCrawler) Exec() error {
+func (service *ServiceCrawler) CrawlMatch() error {
 	url := "https://live.vebo.xyz/api/match/live"
 	resp, err := service.httpClient(3).Get(url, http.Header{
 		"content-type": []string{"application/json"},
@@ -80,8 +92,6 @@ func (service *ServiceCrawler) Exec() error {
 	}
 
 	payload := responseBody.Data
-	log.Println(payload[0].String())
-
 	if payload == nil || len(payload) == 0 {
 		return nil
 	}
@@ -149,29 +159,209 @@ func (service *ServiceCrawler) Exec() error {
 		})
 	}
 
-	log.Println("1", len(teamSetter))
-	log.Println("2", len(RemoveDuplicates(teamSetter)))
-	_, err = service.datastoreTeam.UpsertMany(context.Background(), RemoveDuplicates(teamSetter))
-	if err != nil {
-		return err
-	}
-	_, err = service.datastoreTournament.UpsertMany(context.Background(), arr.ArrUnique(tournamentSetter))
+	_, err = service.datastoreTeam.UpsertMany(context.Background(), RemoveDuplicatesTeam(teamSetter))
 	if err != nil {
 		return err
 	}
 
-	items, err := service.datastoreMatch.UpsertMany(context.Background(), matchSetter)
+	_, err = service.datastoreTournament.UpsertMany(context.Background(), RemoveDuplicatesTournament(tournamentSetter))
 	if err != nil {
 		return err
 	}
 
-	log.Println(items)
+	_, err = service.datastoreMatch.UpsertMany(context.Background(), RemoveDuplicatesMatch(matchSetter))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func RemoveDuplicates(input []*b.TeamSetter) []*b.TeamSetter {
+func (service *ServiceCrawler) CrawlNews() error {
+	index := 1
+	for {
+		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/news/%d", index)
+		resp, err := service.httpClient(3).Get(url, http.Header{
+			"content-type": []string{"application/json"},
+		})
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+		var responseBody NewsResponseData
+
+		err = json.NewDecoder(resp.Body).Decode(&responseBody)
+		if err != nil {
+			return err
+		}
+
+		payload := responseBody.Data.List
+		if payload == nil || len(payload) == 0 {
+			return nil
+		}
+
+		for _, p := range payload {
+			err := service.CrawlNewsDetail(p.ID.GetOrZero())
+			if err != nil {
+				return err
+			}
+		}
+
+		index++
+	}
+}
+
+func (service *ServiceCrawler) CrawlNewsDetail(id string) error {
+	url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/detail/%s", id)
+
+	resp, err := service.httpClient(3).Get(url, http.Header{
+		"content-type": []string{"application/json"},
+	})
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	var responseBody DetailNewsResponseData
+
+	err = json.NewDecoder(resp.Body).Decode(&responseBody)
+	if err != nil {
+		return err
+	}
+
+	payload := responseBody.Data
+
+	newsSetter := &b.NewsInforSetter{
+		ID:           payload.ID,
+		Name:         payload.Name,
+		Slug:         payload.Slug,
+		Link:         payload.Link,
+		Description:  payload.Description,
+		FeatureImage: payload.FeatureImage,
+		Title:        payload.Title,
+		Content:      payload.Content,
+		Author:       payload.Author,
+		Category:     payload.Category,
+		VideoURL:     payload.VideoURL,
+		CreatedAt:    payload.CreatedAt,
+		UpdatedAt:    payload.UpdatedAt,
+	}
+
+	_, err = service.datastoreNews.Upsert(context.Background(), newsSetter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *ServiceCrawler) CrawlReviewMatch() error {
+	index := 1
+	for {
+		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/xemlai/%d", index)
+		resp, err := service.httpClient(3).Get(url, http.Header{
+			"content-type": []string{"application/json"},
+		})
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+		var responseBody ReviewMatchResponseData
+
+		err = json.NewDecoder(resp.Body).Decode(&responseBody)
+		if err != nil {
+			return err
+		}
+
+		payload := responseBody.Data.List
+		if payload == nil || len(payload) == 0 {
+			return nil
+		}
+
+		for _, p := range payload {
+			err := service.CrawlReviewMatchDetail(p.ID.GetOrZero())
+			if err != nil {
+				return err
+			}
+		}
+
+		index++
+	}
+}
+
+func (service *ServiceCrawler) CrawlReviewMatchDetail(id string) error {
+	url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/detail/%s", id)
+
+	resp, err := service.httpClient(3).Get(url, http.Header{
+		"content-type": []string{"application/json"},
+	})
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	var responseBody DetailReviewMatchResponseData
+
+	err = json.NewDecoder(resp.Body).Decode(&responseBody)
+	if err != nil {
+		return err
+	}
+
+	payload := responseBody.Data
+
+	matchSetter := &b.ReviewMatchSetter{
+		ID:           payload.ID,
+		Name:         payload.Name,
+		Slug:         payload.Slug,
+		Description:  payload.Description,
+		VideoURL:     payload.VideoURL,
+		FeatureImage: payload.FeatureImage,
+		Category:     payload.Category,
+		Label:        payload.Label,
+		Content:      payload.Content,
+		Title:        payload.Title,
+		H1:           payload.H1,
+		CreatedAt:    payload.CreatedAt,
+		UpdatedAt:    payload.UpdatedAt,
+	}
+
+	_, err = service.datastoreReviewMatch.Upsert(context.Background(), matchSetter)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemoveDuplicatesTeam(input []*b.TeamSetter) []*b.TeamSetter {
 	encountered := map[string]bool{}
 	var result []*b.TeamSetter
+
+	for _, item := range input {
+		if !encountered[item.ID.GetOrZero()] {
+			encountered[item.ID.GetOrZero()] = true
+			result = append(result, item)
+		}
+	}
+
+	return result
+}
+
+func RemoveDuplicatesTournament(input []*b.TournamentSetter) []*b.TournamentSetter {
+	encountered := map[string]bool{}
+	var result []*b.TournamentSetter
+
+	for _, item := range input {
+		if !encountered[item.ID.GetOrZero()] {
+			encountered[item.ID.GetOrZero()] = true
+			result = append(result, item)
+		}
+	}
+
+	return result
+}
+
+func RemoveDuplicatesMatch(input []*b.MatchSetter) []*b.MatchSetter {
+	encountered := map[string]bool{}
+	var result []*b.MatchSetter
 
 	for _, item := range input {
 		if !encountered[item.ID.GetOrZero()] {
@@ -236,4 +426,73 @@ type TournamentResponseData struct {
 		IsFeatured omit.Val[bool]   `json:"is_featured"`
 		Priority   omit.Val[int]    `json:"priority"`
 	} `json:"unique_tournament"`
+}
+
+type NewsResponseData struct {
+	Status int `json:"status"`
+	Data   struct {
+		Page      int        `json:"page"`
+		Limit     int        `json:"limit"`
+		Total     int        `json:"total"`
+		Highlight any        `json:"highlight"`
+		List      []NewsData `json:"list"`
+	} `json:"data"`
+}
+
+type ReviewMatchResponseData struct {
+	Status int `json:"status"`
+	Data   struct {
+		Page      int               `json:"page"`
+		Limit     int               `json:"limit"`
+		Total     int               `json:"total"`
+		Highlight any               `json:"highlight"`
+		List      []ReviewMatchData `json:"list"`
+	} `json:"data"`
+}
+
+type DetailNewsResponseData struct {
+	Status int      `json:"status"`
+	Data   NewsData `json:"data"`
+}
+
+type NewsData struct {
+	ID           omit.Val[string]                      `json:"id"`
+	Name         omit.Val[string]                      `json:"name"`
+	Slug         omit.Val[string]                      `json:"slug"`
+	Link         omitnull.Val[string]                  `json:"link"`
+	Description  omit.Val[string]                      `json:"description"`
+	FeatureImage omit.Val[string]                      `json:"feature_image"`
+	Category     omit.Val[types.JSON[json.RawMessage]] `json:"category"`
+	Title        omit.Val[string]                      `json:"title"`
+	Content      omitnull.Val[string]                  `json:"content"`
+	Author       omitnull.Val[string]                  `json:"author"`
+	VideoURL     omitnull.Val[string]                  `json:"video_url"`
+	CreatedAt    omit.Val[time.Time]                   `json:"created_at"`
+	UpdatedAt    omit.Val[time.Time]                   `json:"updated_at"`
+}
+
+type DetailReviewMatchResponseData struct {
+	Status int             `json:"status"`
+	Data   ReviewMatchData `json:"data"`
+}
+
+type ReviewMatchData struct {
+	ID           omit.Val[string]                          `json:"id,pk"`
+	Name         omit.Val[string]                          `json:"name"`
+	Slug         omit.Val[string]                          `json:"slug"`
+	Description  omit.Val[string]                          `json:"description"`
+	VideoURL     omit.Val[string]                          `json:"video_url"`
+	FeatureImage omit.Val[string]                          `json:"feature_image"`
+	Category     omit.Val[types.JSON[json.RawMessage]]     `json:"category"`
+	Label        omitnull.Val[types.JSON[json.RawMessage]] `json:"label"`
+	Content      omit.Val[string]                          `json:"content"`
+	Title        omit.Val[string]                          `json:"title"`
+	H1           omit.Val[string]                          `json:"h1"`
+	CreatedAt    omit.Val[time.Time]                       `json:"created_at"`
+	UpdatedAt    omit.Val[time.Time]                       `json:"updated_at"`
+}
+
+func (item NewsResponseData) String() string {
+	str, _ := json.Marshal(item)
+	return string(str)
 }

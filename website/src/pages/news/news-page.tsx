@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useAxios } from '../hooks/use-axios';
-import { IPagination } from '../interfaces/entites/pagination';
-import { INews } from '../interfaces/entites/news';
+import { useAxios } from '../../hooks/use-axios';
+import { IPagination } from '../../interfaces/entites/pagination';
+import { INews } from '../../interfaces/entites/news';
 import { Box, CircularProgress, Pagination } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Loading } from '../../components/commons/loading';
 
 type Props = {};
 
@@ -23,9 +25,7 @@ export const NewPage = (props: Props) => {
             data.data.list.map((item: INews, index: number) => <ItemNews news={item}></ItemNews>)
           ) : (
             <div className="col-start-2 flex items-center justify-center h-[500px]">
-              <Box sx={{}}>
-                <CircularProgress />
-              </Box>
+              <Loading />
             </div>
           )}
         </div>
@@ -41,8 +41,13 @@ export const NewPage = (props: Props) => {
 };
 
 const ItemNews = ({ news }: { news: INews }) => {
+  const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-start justify-start w-[310px] h-[245px] overflow-hidden">
+    <div
+      className="flex flex-col items-start justify-start w-[310px] h-[245px] overflow-hidden cursor-pointer"
+      onClick={() => {
+        navigate(`/new/${news.id}`);
+      }}>
       <img
         className="w-full h-[200px] rounded-md border-solid border-[1px] border-[--color-stroke]"
         src={news.feature_image}

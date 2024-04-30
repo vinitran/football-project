@@ -65,6 +65,7 @@ func TeamBobToRaw(v *b.Team) *content.Team {
 	}
 
 	item := &content.Team{
+		ID:        v.ID,
 		Name:      v.Name,
 		ShortName: v.ShortName.Ptr(),
 		Gender:    v.Gender.GetOrZero(),
@@ -78,12 +79,37 @@ func TeamBobToRaw(v *b.Team) *content.Team {
 	return item
 }
 
+func NewsBobToRaw(v *b.NewsInfor) *content.News {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.News{
+		ID:           v.ID,
+		Name:         v.Name,
+		Slug:         v.Slug,
+		Link:         v.Link.Ptr(),
+		Description:  v.Description,
+		FeatureImage: v.FeatureImage,
+		Title:        v.Title,
+		Content:      v.Content.Ptr(),
+		Author:       v.Author.Ptr(),
+		VideoURL:     v.VideoURL.Ptr(),
+		Category:     v.Category.Val,
+		CreatedAt:    v.CreatedAt,
+		UpdatedAt:    v.UpdatedAt,
+	}
+
+	return item
+}
+
 func TournamentBobToRaw(v *b.Tournament) *content.Tournament {
 	if v == nil {
 		return nil
 	}
 
 	item := &content.Tournament{
+		ID:         v.ID,
 		Name:       v.Name,
 		Slug:       v.Slug,
 		Logo:       v.Logo,
@@ -125,6 +151,30 @@ func MatchBobToRaw(v *b.Match) *content.Match {
 		Tournament: TournamentBobToRaw(v.R.Tournament),
 		Home:       TeamBobToRaw(v.R.HomeTeam),
 		Away:       TeamBobToRaw(v.R.AwayTeam),
+	}
+
+	return item
+}
+
+func ReviewMatchBobToRaw(v *b.ReviewMatch) *content.ReviewMatch {
+	if v == nil {
+		return nil
+	}
+
+	item := &content.ReviewMatch{
+		ID:           v.ID,
+		Name:         v.Name,
+		Slug:         v.Slug,
+		Description:  v.Description,
+		VideoUrl:     v.VideoURL,
+		FeatureImage: v.FeatureImage,
+		Category:     v.Category.Val,
+		Content:      v.Content,
+		Title:        v.Title,
+		H1:           v.H1,
+
+		CreatedAt: v.CreatedAt,
+		UpdatedAt: v.UpdatedAt,
 	}
 
 	return item

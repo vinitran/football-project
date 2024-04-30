@@ -31,13 +31,20 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideRouter)
 
 	do.Provide(injector, ProvideDatastoreMatch)
+	do.Provide(injector, ProvideDatastoreReviewMatch)
 	do.Provide(injector, ProvideDatastoreTeam)
 	do.Provide(injector, ProvideDatastoreTournament)
+	do.Provide(injector, ProvideDatastoreNews)
 
 	do.Provide(injector, ProvideServiceMatch)
+	do.Provide(injector, ProvideServiceReviewMatch)
 	do.Provide(injector, ProvideServiceTeam)
 	do.Provide(injector, ProvideServiceTournament)
+	do.Provide(injector, ProvideServiceNews)
+
 	do.Provide(injector, ProvideServiceCrawler)
+	do.Provide(injector, ProvideServiceRecommender)
+	do.Provide(injector, ProvideServiceExtracter)
 
 	return injector
 }
@@ -58,6 +65,15 @@ func ProvideDatastoreMatch(i *do.Injector) (content.DatastoreMatch, error) {
 	return datastore.NewDatastoreMatch(pool)
 }
 
+func ProvideDatastoreReviewMatch(i *do.Injector) (content.DatastoreReviewMatch, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreReviewMatch(pool)
+}
+
 func ProvideDatastoreTeam(i *do.Injector) (content.DatastoreTeam, error) {
 	pool, err := do.Invoke[*pgxpool.Pool](i)
 	if err != nil {
@@ -76,16 +92,41 @@ func ProvideDatastoreTournament(i *do.Injector) (content.DatastoreTournament, er
 	return datastore.NewDatastoreTournament(pool)
 }
 
+func ProvideDatastoreNews(i *do.Injector) (content.DatastoreNews, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreNews(pool)
+}
+
 func ProvideServiceMatch(i *do.Injector) (*service.ServiceMatch, error) {
 	return service.NewServiceMatch(i)
+}
+
+func ProvideServiceReviewMatch(i *do.Injector) (*service.ServiceReviewMatch, error) {
+	return service.NewServiceReviewMatch(i)
 }
 
 func ProvideServiceTeam(i *do.Injector) (*service.ServiceTeam, error) {
 	return service.NewServiceTeam(i)
 }
 
+func ProvideServiceNews(i *do.Injector) (*service.ServiceNews, error) {
+	return service.NewServiceNews(i)
+}
+
 func ProvideServiceCrawler(i *do.Injector) (*service.ServiceCrawler, error) {
 	return service.NewServiceCrawler(i)
+}
+
+func ProvideServiceRecommender(i *do.Injector) (*service.ServiceRecommender, error) {
+	return service.NewServiceRecommender(i)
+}
+
+func ProvideServiceExtracter(i *do.Injector) (*service.ServiceExtractKeywords, error) {
+	return service.NewServiceExtractKeyword(i)
 }
 
 func ProvideServiceTournament(i *do.Injector) (*service.ServiceTournament, error) {

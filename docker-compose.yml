@@ -40,6 +40,27 @@ services:
       - "-c"
       - "/app/main migration --action up --cfg /app/config.toml"
 
+  gorse:
+    image: zhenghaoz/gorse-in-one
+    restart: unless-stopped
+    ports:
+      - 8086:8086   # gRPC port
+      - 8088:8088   # HTTP port
+    environment:
+      GORSE_CACHE_STORE: redis://redis:6379/0
+      GORSE_DATA_STORE: postgres://postgres:123456@postgres:5432/postgres?sslmode=disable
+    networks:
+      - football
+    command: >
+      -c /etc/gorse/config.toml 
+      --log-path /var/log/gorse/master.log 
+      --cache-path /var/lib/gorse/master_cache.data
+    volumes:
+      - ./config.toml:/etc/gorse/config.toml
+    depends_on:
+      - redis
+      - postgres
+
   migrate-down:
     container_name: migrate-up
     build:
@@ -58,7 +79,6 @@ services:
       - "/bin/sh"
       - "-c"
       - "/app/main migration --action down --cfg /app/config.toml"
-
 
   postgres:
     container_name: bridge_postgres

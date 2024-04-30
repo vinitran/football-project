@@ -1,12 +1,11 @@
 package main
 
 import (
-	"errors"
-	"log"
-	"os"
-	"os/signal"
-
+	"core/internal/config"
 	"core/internal/content/service"
+	"errors"
+	"fmt"
+	"log"
 
 	"github.com/samber/do"
 	"github.com/urfave/cli/v2"
@@ -23,18 +22,25 @@ func startCrawler(c *cli.Context) error {
 		return err
 	}
 
-	quit := make(chan os.Signal, 1)
-
-	go func() {
-		err := crawler.Exec()
+	switch c.String(config.FlagTable) {
+	case config.FlagMatchs:
+		err = crawler.CrawlMatch()
 		if err != nil {
-			log.Printf("ListenAndServe failed: %s\n", err)
-			quit <- os.Kill
+			log.Println(err)
 		}
-	}()
-
-	signal.Notify(quit, os.Interrupt)
-	<-quit
+	case config.FlagNews:
+		err = crawler.CrawlNews()
+		if err != nil {
+			log.Println(err)
+		}
+	case config.FlagReviewMatch:
+		err = crawler.CrawlReviewMatch()
+		if err != nil {
+			log.Println(err)
+		}
+	default:
+		return fmt.Errorf(`crawler: invalid crawler flags`)
+	}
 
 	return nil
 }

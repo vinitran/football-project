@@ -30,6 +30,12 @@ var (
 		Usage:    "Configuration up or down in migration",
 		Required: true,
 	}
+	configExtracterActionFlag = cli.StringFlag{
+		Name:     config.FlagTable,
+		Value:    "news",
+		Usage:    "Configuration up or down in migration",
+		Required: true,
+	}
 	configFileFlag = cli.StringFlag{
 		Name:     config.FlagCfg,
 		Aliases:  []string{"c"},
@@ -73,7 +79,14 @@ func main() {
 			Aliases: []string{},
 			Usage:   "Run the crawler",
 			Action:  startCrawler,
-			Flags:   append(flags),
+			Flags:   append(flags, &configExtracterActionFlag),
+		},
+		{
+			Name:    "extracter",
+			Aliases: []string{},
+			Usage:   "Run the crawler",
+			Action:  startExtracter,
+			Flags:   append(flags, &configExtracterActionFlag),
 		},
 	}
 

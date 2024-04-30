@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"core/pkg/auth"
 	"core/pkg/errorx"
@@ -45,7 +46,26 @@ func New(cfg *Config) (http.Handler, error) {
 
 	groupMatch := &GroupMatch{cfg}
 	{
+		routesAPIv1.GET("/matchs", groupMatch.Index)
 		routesAPIv1.GET("/matchs/:id", groupMatch.Show)
+		routesAPIv1.GET("/matchs/:id/meta", groupMatch.Meta)
+	}
+
+	groupNews := &GroupNews{cfg}
+	{
+		routesAPIv1.GET("/news", groupNews.Index)
+		routesAPIv1.GET("/news/:id", groupNews.Show)
+	}
+
+	groupRecommend := &GroupRecommend{cfg}
+	{
+		routesAPIv1.GET("/recommend/:id", groupRecommend.GetByUser)
+		routesAPIv1.GET("/recommend/:id/:category", groupRecommend.GetByUserAndCategory)
+		routesAPIv1.POST("/recommend/feedback", groupRecommend.CreateFeedback)
+
+		routesAPIv1.GET("/news/:id/neighbors", groupRecommend.GetByItem)
+		routesAPIv1.GET("/news/:id/neighbors/:category", groupRecommend.GetByItemAndCategory)
+
 	}
 
 	return r, nil
@@ -65,4 +85,18 @@ func restAbort(c echo.Context, v any, err error) error {
 	}
 
 	return httpx.Abort(c, v)
+}
+
+func queryParamInt(c echo.Context, name string, val int) int {
+	v := c.QueryParam(name)
+	if v == "" {
+		return val
+	}
+
+	i, err := strconv.Atoi(v)
+	if err != nil {
+		return val
+	}
+
+	return i
 }
