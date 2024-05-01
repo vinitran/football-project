@@ -91,7 +91,7 @@ const ItemNews = ({ news }: { news: INews }) => {
         src={news.feature_image}
         alt=""
       />
-      <p className="w-full text-ellipsis truncate">{news.name}</p>
+      <p className="w-full text-ellipsis truncate ">{news.name}</p>
     </div>
   );
 };
