@@ -1,4 +1,5 @@
 interface INavbar {
+  id: number;
   name: string;
   label: string;
   url: string;
@@ -6,13 +7,15 @@ interface INavbar {
 
 export const navBarList: INavbar[] = [
   {
-    name: 'new',
-    label: 'Tin tức',
-    url: '/new'
-  },
-  {
+    id: 0,
     name: 'schedule-battle',
     label: 'Lịch thi đấu',
     url: '/schedule-battle'
+  },
+  {
+    id: 1,
+    name: 'new',
+    label: 'Tin tức',
+    url: '/new'
   }
 ];

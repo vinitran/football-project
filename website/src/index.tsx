@@ -6,8 +6,12 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './assets/css/theme';
 import { store } from './stores/store';
+import { axiosConfiguration } from './configs/axiosconfiguartor';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
+axiosConfiguration.initAxiosInstance();
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

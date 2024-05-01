@@ -9,7 +9,7 @@ export const LayoutWithNavBar = (props: Props) => {
   return (
     <>
       <NavBar />
-      <div className="my-[12px]">
+      <div className="py-[24px] overflow-hidden">
         <Outlet />
       </div>
     </>
