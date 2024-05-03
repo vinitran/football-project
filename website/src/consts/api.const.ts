@@ -1,8 +1,10 @@
-export const baseURL: string = 'https://api.vebo.xyz/api/';
+// export const baseURL: string = 'https://api.vebo.xyz/api/';
+export const baseURL: string = '94.72.119.5:3030/api/v1/';
 
 export const Live7Api = {
-  tinTuc: {
-    live: 'https://live.vebo.xyz/api/match/live'
+  news: {
+    list: () => `news?limit=1`,
+    detail: (id: string) => `news/${id}`
   },
-  giaiDau: {}
+  rewatch: {}
 };

@@ -17,5 +17,11 @@ export const navBarList: INavbar[] = [
     name: 'new',
     label: 'Tin tức',
     url: '/new'
+  },
+  {
+    id: 2,
+    name: 'rewatch',
+    label: 'Xem lại',
+    url: '/rewatch'
   }
 ];
