@@ -16,39 +16,7 @@ const PageLoading = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const BoxContent = styled.div`
-  display: block;
-  font-family: Roboto, Arial;
-  min-height: 100%;
-  color: #eee;
-  font-size: 14px;
-  line-height: 1.4em;
-  font-weight: 400;
-  padding: 0;
-  margin: 0;
-  text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-
-  width: 100% !important;
-  margin-right: auto;
-  margin-left: auto;
-
-  @media (min-width: 1200px) {
-    max-width: 1100px;
-  }
-
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-
-  @media (min-width: 768px) {
-    max-width: 750px;
-  }
-
-  @media (min-width: 992px) {
-    max-width: 980px;
-  }
-`;
+const BoxContent = styled.div``;
 
 const WrapperList = styled.div`
   display: flex;
@@ -127,7 +95,7 @@ export const HomePage: React.FC<HomeProps> = () => {
   }, [inWatch]);
 
   return (
-    <React.Fragment>
+    <div className="schedule-battle">
       {/* <Meta
         title="Trang VINITRAN.COM livestream bóng đá trực tuyến"
         description="Xem VINITRAN.COM trực tiếp bóng đá nhanh nhất. Link Vinitran.com bóng đá nhanh miễn phí cùng kết quả, lịch thi đấu mới nhất"
@@ -137,18 +105,38 @@ export const HomePage: React.FC<HomeProps> = () => {
           <Spinner />
         </PageLoading>
       ) : (
-        <PageWrapper>
-          <Opener />
-          <BoxContent>
-            <WrapperList>
-              {matches?.map((item) => (
-                // item.is_live &&
-                <MatchCard data={item} key={item.id} />
-              ))}
-            </WrapperList>
-          </BoxContent>
-        </PageWrapper>
+        <div className="relative mt-[-24px] mb-[-26px]">
+          <div className="relative h-[705px]">
+            <img
+              className="absolute w-full"
+              src={require('../assets/image/bg2.jpg')}
+              alt=""
+            />
+            <div className="absolute flex items-center justify-center w-full h-fit pt-[10px]">
+              <WrapperList className='content-list-battle'>
+                {matches?.map((item) => (
+                  // item.is_live &&
+                  <MatchCard data={item} key={item.id} />
+                ))}
+              </WrapperList>
+            </div>
+          </div>
+        </div>
       )}
-    </React.Fragment>
+    </div>
+  );
+};
+
+const BackgoundLayout = () => {
+  return (
+    <>
+      <img
+        className="relative h-[1000px] w-full opacity-[1] z-[-1] my-[-24px]"
+        src={
+          'https://res.cloudinary.com/de5wwikci/image/upload/v1708802621/wallpaperflare.com_wallpaper_sxusl3.jpg'
+        }
+        alt=""
+      />
+    </>
   );
 };

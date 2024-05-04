@@ -122,6 +122,10 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
     const updatedUrl = url ? url.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8') : '';
     const proxyUrl = `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
 
+    console.log("url:", url)
+    console.log("updatedUrl:", updatedUrl)
+    console.log("proxyUrl:", proxyUrl)
+
     videoRef.current.removeAttribute('src');
     if (!Hls.isSupported()) {
       videoRef.current.canPlayType('application/vnd.apple.mpegurl');
@@ -277,7 +281,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
   }, []);
 
   /**
-   * Generates timestamp from current time and duration.
+   * Generates timestamp from current t\ime and duration.
    * @returns {string} Missing time in time code.
    */
   const missingTimeStamp = useCallback((): string => {

@@ -1,14 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAxios } from '../../hooks/use-axios';
 import { Loading } from '../../components/commons/loading';
+import ReactPlayer from 'react-player';
 import moment from 'moment';
-import { apis } from '../../consts/api.const';
 
-export const NewsDetailPage = () => {
+export const RewatchDetailPage = () => {
   const params = useParams();
   const [{ response, loading }] = useAxios({
-    // url: `news/vebotv/detail/${params.id}`
-    url: apis.news.detail({id: params.id})
+    url: `news/vebotv/det\ail/${params.id}`
   });
   return (
     <>
@@ -16,11 +15,11 @@ export const NewsDetailPage = () => {
         {!loading && response ? (
           <>
             <div className="main-left bg-[--color-background-content]">
-              <NewsDetailContent news={response.data.data} />
+              <RewatchDetailContent rewatch={response.data.data} />
             </div>
             {/* <div className="flex flex-col w-[350px]">
-              <NewsHot news={response.data.data_hot} />
-              <NewsRelative news={response.data.data_related} />
+              <RewatchHot rewatchHot={response.data.data_hot} />
+              <RewatchRelative rewatchRelative={response.data.data_related} />
             </div> */}
           </>
         ) : (
@@ -33,11 +32,10 @@ export const NewsDetailPage = () => {
   );
 };
 
-const NewsDetailContent = ({ news }: { news: INewsDetail }) => {
+const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
   return (
     <>
-      <div className="flex items-center justify-between ml-4 pl-4 border-l-4 border-green-500 border-solid">
-        <h4 className="leading-[28px] text-[20px] uppercase">{news.name}</h4>
+      <div className="flex items-center justify-end ml-4 pl-4">
         <div className="flex italic w-[165px]">
           <svg
             className="w-[15px] h-[15px] mr-1"
@@ -49,27 +47,47 @@ const NewsDetailContent = ({ news }: { news: INewsDetail }) => {
             />
           </svg>
           <p className="">
-            {moment(news.updated_at).format('hh:mm') +
+            {moment(rewatch.updated_at).format('hh:mm') +
               ' Ngày ' +
-              moment(news.updated_at).format('DD/MM/yyyy')}
+              moment(rewatch.updated_at).format('DD/MM/yyyy')}
           </p>
         </div>
       </div>
+      <div>
+        {filterUrl()}
+        <ReactPlayer
+          playing
+          loop
+          url={`https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8`}
+        />
+        <ReactPlayer playing loop url={filterUrl()} />
+        {/* <ReactPlayer playing loop url={`http://127.0.0.1:9665/fetchAPI?endpoint=https://obevcimanyd179314182.thapcam.link/live/may9/playlist.m3u8`} /> */}
+        {/* <ReactPlayer playing loop url={`https://stream.vinitran1245612.workers.dev?apiurl=${rewatch.video_url}&is_m3u8=true`} /> */}
+        {/* <ReactPlayer playing loop controls url="https://www.youtube.com/watch?v=LXb3EKWsInQ" /> */}
+        aaaaaaaa
+      </div>
       <div className="article-news block px-5 pt-[-15px]">
-        <p className="mt-10" dangerouslySetInnerHTML={{ __html: news.content }}></p>
+        <p className="mt-10" dangerouslySetInnerHTML={{ __html: rewatch.content }}></p>
       </div>
     </>
   );
 };
 
-const NewsHot = ({ news }: { news: INewsDetail[] }) => {
+const filterUrl = (url?: string) => {
+  let tmp =
+    'https://obevcimanyd179249207.thapcam.link/live/longFHD/playlist.m3u8';
+  tmp = tmp.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8');
+  return `https://stream.vinitran1245612.workers.dev?apiurl=${tmp}&is_m3u8=true`;
+};
+
+const RewatchHot = ({ rewatchHot }: { rewatchHot: IRewatchDetail[] }) => {
   const navigate = useNavigate();
   return (
     <>
       <div className="flex items-center ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Tin nổi bật</h4>
+        <h4 className="leading-5 text-[20px]">Trận đấu nổi bật</h4>
       </div>
-      {news.map((item, index) => (
+      {rewatchHot.map((item, index) => (
         <>
           <div
             onClick={() => {
@@ -87,14 +105,14 @@ const NewsHot = ({ news }: { news: INewsDetail[] }) => {
   );
 };
 
-const NewsRelative = ({ news }: { news: INewsDetail[] }) => {
+const RewatchRelative = ({ rewatchRelative }: { rewatchRelative: IRewatchDetail[] }) => {
   const navigate = useNavigate();
   return (
     <>
       <div className="flex items-center mt-[30px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Tin liên quan</h4>
+        <h4 className="leading-5 text-[20px]">Trận đấu liên quan</h4>
       </div>
-      {news.map((item, index) => (
+      {rewatchRelative.map((item, index) => (
         <>
           <div
             onClick={() => {
@@ -112,7 +130,7 @@ const NewsRelative = ({ news }: { news: INewsDetail[] }) => {
   );
 };
 
-interface INewsDetail {
+interface IRewatchDetail {
   id: string;
   name: string;
   video_url: string;

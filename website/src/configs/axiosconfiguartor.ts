@@ -65,3 +65,5 @@ class AxiosConfiguration {
 }
 
 export const axiosConfiguration = new AxiosConfiguration();
+
+export const _axios = axiosConfiguration.initAxiosInstance();

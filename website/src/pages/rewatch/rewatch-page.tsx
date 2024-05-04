@@ -7,33 +7,28 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components/commons/loading';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import axios from 'axios';
-import { apis } from '../../consts/api.const';
 
 type Props = {};
 
-export const NewPage = (props: Props) => {
+export const RewatchPage = (props: Props) => {
   const [pagination, setPagination] = useState<IPagination>({ pageNum: 1, pageSize: 12 });
-  const [{ data, loading }] = useAxios({
-    // url: `news/vebotv/list/news/${pagination.pageNum}`
-    url: apis.news.list({limit: pagination.pageSize, page: pagination.pageNum})
+  const [{ data, loading }] = useAxios<any, any, any>({
+    url: `news/vebotv/list/xemlai/${pagination.pageNum}`
   });
   const [dataHot, setDataHot] = useState<any>();
 
   useEffect(() => {
-    // if (data && data.data.highlight.id) {
-      // _axios({
-      //   url: `news/vebotv/detail/${data.data.highlight.id}`,
-      //   method: 'GET'
-      //   // headers: {
-      //   //     authorization: "your token comes here",
-      //   // },
-      //   // data: formData,
-      // })
-      //   .then((res: any) => {
-      //     setDataHot(res);
-      //   })
-      //   .catch((err) => {});
-    // }
+    // get news hot in right content
+    if (data && data.data.highlight.id) {
+      _axios({
+        url: `news/vebotv/detail/${data.data.highlight.id}`,
+        method: 'GET'
+      })
+        .then((res: any) => {
+          setDataHot(res);
+        })
+        .catch((err) => {});
+    }
   }, [data]);
 
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -46,8 +41,8 @@ export const NewPage = (props: Props) => {
           <div className="flex flex-row gap-4">
             <div className="flex-1 flex flex-col items-center justify-start gap-1 h-full">
               <div className="grid grid-cols-3 w-fit gap-2">
-                {data.data.map((item: INews, index: number) => (
-                  <ItemNews news={item}></ItemNews>
+                {data.data.list.map((item: IRewatchItem, index: number) => (
+                  <ItemRewatch rewatchItem={item}></ItemRewatch>
                 ))}
               </div>
               <Pagination
@@ -78,20 +73,20 @@ export const NewPage = (props: Props) => {
   );
 };
 
-const ItemNews = ({ news }: { news: INews }) => {
+const ItemRewatch = ({ rewatchItem }: { rewatchItem: IRewatchItem }) => {
   const navigate = useNavigate();
   return (
     <div
       className="flex flex-col items-start justify-start w-[310px] h-[245px] overflow-hidden cursor-pointer"
       onClick={() => {
-        navigate(`/new-detail/${news.id}`);
+        navigate(`/rewatch-detail/${rewatchItem.id}`);
       }}>
       <img
         className="w-full h-[200px] rounded-md border-solid border-[1px] border-[--color-stroke]"
-        src={news.feature_image}
+        src={rewatchItem.feature_image}
         alt=""
       />
-      <p className="w-full text-ellipsis truncate">{news.name}</p>
+      <p className="w-full text-ellipsis truncate">{rewatchItem.name}</p>
     </div>
   );
 };
@@ -101,13 +96,13 @@ const NewsHot = ({ news }: { news: INewsDetail[] }) => {
   return (
     <>
       <div className="flex items-center ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Tin nổi bật</h4>
+        <h4 className="leading-5 text-[20px]">Trận đấu nổi bật</h4>
       </div>
       {news.map((item, index) => (
         <>
           <div
             onClick={() => {
-              navigate(`/new-detail/${item.id}`);
+              navigate(`/rewatch-detail/${item.id}`);
             }}
             className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
             <img className="w-[120px] h-[75px]" src={item.feature_image} alt="" />
@@ -157,4 +152,10 @@ interface INewsDetail {
   created_at: string;
   updated_at: string;
   content: string;
+}
+
+interface IRewatchItem {
+  id: string;
+  name: string;
+  feature_image: string;
 }
