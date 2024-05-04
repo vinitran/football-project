@@ -113,7 +113,7 @@ var ColumnNames = struct {
 		VideoURL:     "video_url",
 		FeatureImage: "feature_image",
 		Category:     "category",
-		Label:        "label",
+		Labels:       "labels",
 		Content:      "content",
 		Title:        "title",
 		H1:           "h1",

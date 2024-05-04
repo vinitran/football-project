@@ -53,9 +53,7 @@ func (group *GroupNews) Index(c echo.Context) error {
 		var newsIds []string
 		parts := strings.Split(c.QueryParam("news_ids"), ",")
 		arr.ArrEach(parts, func(part string) {
-			if err == nil {
-				newsIds = append(newsIds, part)
-			}
+			newsIds = append(newsIds, part)
 		})
 		params.NewsIDs = newsIds
 	}

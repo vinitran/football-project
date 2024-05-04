@@ -16,15 +16,17 @@ type CommonListParams struct {
 
 type MatchListParams struct {
 	CommonListParams
-	Search     string
-	Status     MatchStatus
-	IsFeatured bool
+	Search      string
+	Status      MatchStatus
+	IsFeatured  bool
+	IsNullLabel bool
 }
 
 type NewsListParams struct {
 	CommonListParams
-	Search  string
-	NewsIDs []string
+	Search      string
+	NewsIDs     []string
+	IsNullLabel bool
 }
 
 type DatastoreTeam interface {
