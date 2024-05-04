@@ -7,34 +7,33 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components/commons/loading';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import axios from 'axios';
+import { apis } from '../../consts/api.const';
 
 type Props = {};
 
 export const NewPage = (props: Props) => {
   const [pagination, setPagination] = useState<IPagination>({ pageNum: 1, pageSize: 12 });
   const [{ data, loading }] = useAxios({
-    url: `news/vebotv/list/news/${pagination.pageNum}`
+    // url: `news/vebotv/list/news/${pagination.pageNum}`
+    url: apis.news.list({limit: pagination.pageSize, page: pagination.pageNum})
   });
   const [dataHot, setDataHot] = useState<any>();
 
   useEffect(() => {
-    if (data && data.data.highlight.id) {
-      console.log('into');
-      _axios({
-        url: `news/vebotv/detail/${data.data.highlight.id}`,
-        method: 'GET'
-        // headers: {
-        //     authorization: "your token comes here",
-        // },
-        // data: formData,
-      })
-        .then((res: any) => {
-          setDataHot(res);
-        })
-        .catch((err) => {});
-
-      console.log('dataHotResponse:', dataHot);
-    }
+    // if (data && data.data.highlight.id) {
+      // _axios({
+      //   url: `news/vebotv/detail/${data.data.highlight.id}`,
+      //   method: 'GET'
+      //   // headers: {
+      //   //     authorization: "your token comes here",
+      //   // },
+      //   // data: formData,
+      // })
+      //   .then((res: any) => {
+      //     setDataHot(res);
+      //   })
+      //   .catch((err) => {});
+    // }
   }, [data]);
 
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -47,7 +46,7 @@ export const NewPage = (props: Props) => {
           <div className="flex flex-row gap-4">
             <div className="flex-1 flex flex-col items-center justify-start gap-1 h-full">
               <div className="grid grid-cols-3 w-fit gap-2">
-                {data.data.list.map((item: INews, index: number) => (
+                {data.data.map((item: INews, index: number) => (
                   <ItemNews news={item}></ItemNews>
                 ))}
               </div>

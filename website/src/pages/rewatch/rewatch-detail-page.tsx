@@ -7,7 +7,7 @@ import moment from 'moment';
 export const RewatchDetailPage = () => {
   const params = useParams();
   const [{ response, loading }] = useAxios({
-    url: `news/vebotv/detail/${params.id}`
+    url: `news/vebotv/det\ail/${params.id}`
   });
   return (
     <>
@@ -17,10 +17,10 @@ export const RewatchDetailPage = () => {
             <div className="main-left bg-[--color-background-content]">
               <RewatchDetailContent rewatch={response.data.data} />
             </div>
-            <div className="flex flex-col w-[350px]">
+            {/* <div className="flex flex-col w-[350px]">
               <RewatchHot rewatchHot={response.data.data_hot} />
               <RewatchRelative rewatchRelative={response.data.data_related} />
-            </div>
+            </div> */}
           </>
         ) : (
           <div className="flex items-center justify-center h-full w-full">

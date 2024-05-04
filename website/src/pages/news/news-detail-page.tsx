@@ -2,11 +2,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAxios } from '../../hooks/use-axios';
 import { Loading } from '../../components/commons/loading';
 import moment from 'moment';
+import { apis } from '../../consts/api.const';
 
 export const NewsDetailPage = () => {
   const params = useParams();
   const [{ response, loading }] = useAxios({
-    url: `news/vebotv/detail/${params.id}`
+    // url: `news/vebotv/detail/${params.id}`
+    url: apis.news.detail({id: params.id})
   });
   return (
     <>
@@ -16,10 +18,10 @@ export const NewsDetailPage = () => {
             <div className="main-left bg-[--color-background-content]">
               <NewsDetailContent news={response.data.data} />
             </div>
-            <div className="flex flex-col w-[350px]">
+            {/* <div className="flex flex-col w-[350px]">
               <NewsHot news={response.data.data_hot} />
               <NewsRelative news={response.data.data_related} />
-            </div>
+            </div> */}
           </>
         ) : (
           <div className="flex items-center justify-center h-full w-full">
