@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"strings"
 
 	"core/internal/config"
 	"core/internal/content/container"
@@ -12,8 +14,7 @@ import (
 
 const (
 	appName = "football-core"
-	// cfgPath = "/app/config.toml"
-	cfgPath = "./internal/config/test.config.toml"
+	envPath = ".env.local,.env"
 )
 
 var (
@@ -44,8 +45,15 @@ var (
 	}
 )
 
+func init() {
+	err := godotenv.Load(strings.Split(envPath, ",")...)
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
-	cfg, err := config.Load(cfgPath)
+	cfg, err := config.Load(os.Getenv("CONFIG_PATH"))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -13,7 +13,6 @@ CREATE TABLE "review_matchs"(
     "h1" text NOT NULL,
     "created_at" timestamp with time zone NOT NULL,
     "updated_at" timestamp with time zone NOT NULL
-
 );
 
 -- +goose Down

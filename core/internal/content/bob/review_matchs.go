@@ -27,7 +27,7 @@ type ReviewMatch struct {
 	VideoURL     string                                `db:"video_url" `
 	FeatureImage string                                `db:"feature_image" `
 	Category     types.JSON[json.RawMessage]           `db:"category" `
-	Label        null.Val[types.JSON[json.RawMessage]] `db:"label" `
+	Labels       null.Val[types.JSON[json.RawMessage]] `db:"labels" `
 	Content      string                                `db:"content" `
 	Title        string                                `db:"title" `
 	H1           string                                `db:"h1" `
@@ -59,7 +59,7 @@ type ReviewMatchSetter struct {
 	VideoURL     omit.Val[string]                          `db:"video_url"`
 	FeatureImage omit.Val[string]                          `db:"feature_image"`
 	Category     omit.Val[types.JSON[json.RawMessage]]     `db:"category"`
-	Label        omitnull.Val[types.JSON[json.RawMessage]] `db:"label"`
+	Labels       omitnull.Val[types.JSON[json.RawMessage]] `db:"labels"`
 	Content      omit.Val[string]                          `db:"content"`
 	Title        omit.Val[string]                          `db:"title"`
 	H1           omit.Val[string]                          `db:"h1"`
@@ -75,7 +75,7 @@ type reviewMatchColumnNames struct {
 	VideoURL     string
 	FeatureImage string
 	Category     string
-	Label        string
+	Labels       string
 	Content      string
 	Title        string
 	H1           string
@@ -91,7 +91,7 @@ var ReviewMatchColumns = struct {
 	VideoURL     psql.Expression
 	FeatureImage psql.Expression
 	Category     psql.Expression
-	Label        psql.Expression
+	Labels       psql.Expression
 	Content      psql.Expression
 	Title        psql.Expression
 	H1           psql.Expression
@@ -105,7 +105,7 @@ var ReviewMatchColumns = struct {
 	VideoURL:     psql.Quote("review_matchs", "video_url"),
 	FeatureImage: psql.Quote("review_matchs", "feature_image"),
 	Category:     psql.Quote("review_matchs", "category"),
-	Label:        psql.Quote("review_matchs", "label"),
+	Labels:       psql.Quote("review_matchs", "labels"),
 	Content:      psql.Quote("review_matchs", "content"),
 	Title:        psql.Quote("review_matchs", "title"),
 	H1:           psql.Quote("review_matchs", "h1"),
@@ -121,7 +121,7 @@ type reviewMatchWhere[Q psql.Filterable] struct {
 	VideoURL     psql.WhereMod[Q, string]
 	FeatureImage psql.WhereMod[Q, string]
 	Category     psql.WhereMod[Q, types.JSON[json.RawMessage]]
-	Label        psql.WhereNullMod[Q, types.JSON[json.RawMessage]]
+	Labels       psql.WhereNullMod[Q, types.JSON[json.RawMessage]]
 	Content      psql.WhereMod[Q, string]
 	Title        psql.WhereMod[Q, string]
 	H1           psql.WhereMod[Q, string]
@@ -138,7 +138,7 @@ func ReviewMatchWhere[Q psql.Filterable]() reviewMatchWhere[Q] {
 		VideoURL:     psql.Where[Q, string](ReviewMatchColumns.VideoURL),
 		FeatureImage: psql.Where[Q, string](ReviewMatchColumns.FeatureImage),
 		Category:     psql.Where[Q, types.JSON[json.RawMessage]](ReviewMatchColumns.Category),
-		Label:        psql.WhereNull[Q, types.JSON[json.RawMessage]](ReviewMatchColumns.Label),
+		Labels:       psql.WhereNull[Q, types.JSON[json.RawMessage]](ReviewMatchColumns.Labels),
 		Content:      psql.Where[Q, string](ReviewMatchColumns.Content),
 		Title:        psql.Where[Q, string](ReviewMatchColumns.Title),
 		H1:           psql.Where[Q, string](ReviewMatchColumns.H1),

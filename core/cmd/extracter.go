@@ -33,6 +33,11 @@ func startExtracter(c *cli.Context) error {
 		if err != nil {
 			log.Println(err)
 		}
+	case config.FlagReviewMatch:
+		err := extractor.ExtractReviewMatchs()
+		if err != nil {
+			log.Println(err)
+		}
 	default:
 		return fmt.Errorf(`extracter: invalid extracter flags`)
 	}

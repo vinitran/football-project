@@ -315,7 +315,7 @@ func (service *ServiceCrawler) CrawlReviewMatchDetail(id string) error {
 		VideoURL:     payload.VideoURL,
 		FeatureImage: payload.FeatureImage,
 		Category:     payload.Category,
-		Label:        payload.Label,
+		Labels:       payload.Label,
 		Content:      payload.Content,
 		Title:        payload.Title,
 		H1:           payload.H1,
