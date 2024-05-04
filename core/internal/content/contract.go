@@ -27,6 +27,7 @@ type NewsListParams struct {
 	Search      string
 	NewsIDs     []string
 	IsNullLabel bool
+	HotNews     bool
 }
 
 type DatastoreTeam interface {

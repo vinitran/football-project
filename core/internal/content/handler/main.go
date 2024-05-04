@@ -65,7 +65,12 @@ func New(cfg *Config) (http.Handler, error) {
 
 		routesAPIv1.GET("/news/:id/neighbors", groupRecommend.GetByItem)
 		routesAPIv1.GET("/news/:id/neighbors/:category", groupRecommend.GetByItemAndCategory)
+	}
 
+	groupRematch := &GroupReviewMatch{cfg}
+	{
+		routesAPIv1.GET("/rematchs", groupRematch.Index)
+		routesAPIv1.GET("/rematchs/:id", groupRematch.Show)
 	}
 
 	return r, nil

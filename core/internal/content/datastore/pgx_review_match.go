@@ -38,6 +38,8 @@ func (ds DatastoreReviewMatchPgx) List(ctx context.Context, params content.Match
 		mods = append(mods, b.SelectWhere.ReviewMatchs.Labels.IsNull())
 	}
 
+	mods = append(mods, sm.OrderBy(b.ReviewMatchColumns.CreatedAt).Desc())
+
 	itemsBob, err := b.ReviewMatchs(ctx, ds.bobExecutor, mods...).All()
 	if err != nil {
 		return nil, err

@@ -1,6 +1,6 @@
 module core
 
-go 1.22
+go 1.22.0
 
 require (
 	github.com/MicahParks/keyfunc v1.9.0

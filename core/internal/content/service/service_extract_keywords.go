@@ -232,7 +232,8 @@ func (service *ServiceExtractKeywords) ExtractReviewMatchsDescription(ctx contex
 
 	keyword := strings.ReplaceAll(strings.ReplaceAll(string(a), "- ", ""), ", ", "\n")
 	keywordWithoutKeyWordText := strings.ReplaceAll(keyword, "Keywords: ", "")
-	keywordList := strings.Split(keywordWithoutKeyWordText, "\n")
+	keywordWithoutText := strings.ReplaceAll(keywordWithoutKeyWordText, "Full match ", "")
+	keywordList := strings.Split(keywordWithoutText, "\n")
 
 	_, err = service.datastoreReviewMatch.UpdateLabelByID(ctx, id, keywordList)
 	if err != nil {
