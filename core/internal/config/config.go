@@ -50,6 +50,7 @@ func Default() (*Config, error) {
 
 // Load loads the configuration
 func Load(configFilePath string) (*Config, error) {
+	log.Println("config", configFilePath)
 	cfg, err := Default()
 	if err != nil {
 		return nil, err

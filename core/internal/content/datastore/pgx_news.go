@@ -69,6 +69,10 @@ func (ds DatastoreNewsPgx) List(ctx context.Context, params content.NewsListPara
 		mods = append(mods, b.SelectWhere.NewsInfors.ID.In(params.NewsIDs...))
 	}
 
+	if params.IsNullLabel {
+		mods = append(mods, b.SelectWhere.NewsInfors.Labels.IsNull())
+	}
+
 	itemsBob, err := b.NewsInfors(ctx, ds.bobExecutor, mods...).All()
 	if err != nil {
 		return nil, err
