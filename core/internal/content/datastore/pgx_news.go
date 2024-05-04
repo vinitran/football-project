@@ -37,6 +37,8 @@ func (ds DatastoreNewsPgx) List(ctx context.Context, params content.NewsListPara
 		mods = append(mods, sm.Offset(int64(params.Offset)))
 	}
 
+	mods = append(mods, sm.OrderBy(b.NewsInforColumns.CreatedAt).Desc())
+
 	if params.Compact {
 		mods = append(mods,
 			sm.Columns(
