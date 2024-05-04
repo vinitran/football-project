@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 
 	"core/internal/config"
 	"core/internal/content/container"

@@ -3,11 +3,12 @@ package datastore
 import (
 	"context"
 	"encoding/json"
+	"log"
+
 	"github.com/aarondl/opt/omitnull"
 	"github.com/stephenafamo/bob/dialect/psql/um"
 	"github.com/stephenafamo/bob/types"
 	"github.com/stephenafamo/scan"
-	"log"
 
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"

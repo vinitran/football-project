@@ -5,6 +5,7 @@ import (
 	"core/pkg/errorx"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/do"
+	"log"
 )
 
 type GroupRecommend struct {
@@ -61,7 +62,7 @@ func (group *GroupRecommend) GetByUserAndCategory(c echo.Context) error {
 
 func (group *GroupRecommend) GetByItem(c echo.Context) error {
 	ctx := c.Request().Context()
-
+	log.Println("item")
 	itemId := c.Param("id")
 
 	limit := queryParamInt(c, "limit", 10)
@@ -91,3 +92,8 @@ func (group *GroupRecommend) GetByItemAndCategory(c echo.Context) error {
 	items, err := serviceRecommender.GetNeighborsItem(ctx, itemId, category, limit)
 	return restAbort(c, items, err)
 }
+
+//
+//INSERT INTO items (item_id, labels, time_stamp, categories)
+//SELECT id, labels, created_at, '["rematch"]'::jsonb
+//FROM review_matchs;

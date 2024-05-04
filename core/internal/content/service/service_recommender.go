@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
-	"core/pkg/arr"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+
+	"core/pkg/arr"
 
 	"core/internal/config"
 
@@ -114,8 +115,8 @@ type RowAffected struct {
 }
 
 type Score struct {
-	Id    string `json:"Id"`
-	Score int    `json:"Score"`
+	Id    string  `json:"Id"`
+	Score float64 `json:"Score"`
 }
 
 type User struct {
