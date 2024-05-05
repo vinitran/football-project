@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAxios } from '../../hooks/use-axios';
 import { IPagination } from '../../interfaces/entites/pagination';
 import { INews } from '../../interfaces/entites/news';
-import { Box, CircularProgress, Pagination } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components/commons/loading';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
@@ -17,11 +17,12 @@ export const RewatchPage = (props: Props) => {
   const [searching, setSearching] = useState('');
   const [pagination, setPagination] = useState<IPagination>({ pageNum: 1, pageSize: 12 });
   const [resListRewatch, setResListRewatch] = useState([]);
+  const [resTotalListRewatch, setResTotalListRewatch] = useState(0);
   const [resHotRewatch, setResHotRewatch] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // FUNCTION
-  const fetchListNews = async () => {
+  const fetchListRewatch = async () => {
     setLoading(true);
     const res1 = await _axios.get(
       apis.rewatch.list({ limit: pagination.pageSize, page: pagination.pageNum, search: searching })
@@ -31,6 +32,12 @@ export const RewatchPage = (props: Props) => {
     }
     setLoading(false);
   };
+  const fetchTotalListRewatch = async () => {
+    const res1 = await _axios.get(apis.rewatch.count());
+    if (res1) {
+      setResTotalListRewatch(res1.data?.data ?? 0);
+    }
+  };
   const fetchHotNews = async () => {
     const res1 = await _axios.get(apis.rewatch.hot());
     if (res1) {
@@ -39,13 +46,14 @@ export const RewatchPage = (props: Props) => {
   };
 
   useEffect(() => {
-    fetchListNews();
+    fetchListRewatch();
+    fetchTotalListRewatch();
     fetchHotNews();
   }, []);
 
   useEffect(() => {
-    fetchListNews();
-  }, [searching]);
+    fetchListRewatch();
+  }, [searching, pagination]);
 
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPagination({ ...pagination, pageNum: value });
@@ -66,8 +74,9 @@ export const RewatchPage = (props: Props) => {
                 <Pagination
                   color="primary"
                   count={
-                    pagination.pageSize ? Math.ceil(pagination.pageSize / pagination.pageSize) : 0
+                    resTotalListRewatch ? Math.ceil(resTotalListRewatch / pagination.pageSize) : 0
                   }
+                  className="cursor-pointer"
                   page={pagination.pageNum}
                   onChange={handlePaginationChange}
                 />
@@ -75,7 +84,12 @@ export const RewatchPage = (props: Props) => {
 
               <div className="flex flex-col w-[400px]">
                 {resHotRewatch ? (
-                  <HotBar title="Tin nổi bật" ids={resHotRewatch} urlDetail={apis.rewatch.detail} urlClick='/rewatch-detail/' />
+                  <HotBar
+                    title="Tin nổi bật"
+                    ids={resHotRewatch}
+                    urlDetail={apis.rewatch.detail}
+                    urlClick="/rewatch-detail/"
+                  />
                 ) : (
                   <div className="flex items-center justify-center">
                     <Loading />

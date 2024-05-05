@@ -9,7 +9,7 @@ export const SearchBar = (props: Props) => {
   const [searching, setSearching] = useState('');
   return (
     <div className="search-bar flex justify-center w-full h-[40px] mb-[12px]">
-      <div className="flex w-[95%] rounded-[16px] border-[1px] border-solid border-[--color-stroke] overflow-hidden">
+      <div className="flex w-[95%] rounded-[16px] border-[1px] border-solid border-[--color-stroke] overflow-hidden cursor-pointer">
         <input
           // className=" w-full border-[2px] border-solid border-[--color-stroke] outline-none"
           onChange={(e) => setSearching(e.target.value)}

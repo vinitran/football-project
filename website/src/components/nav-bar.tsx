@@ -16,9 +16,7 @@ export const NavBar = (props: Props) => {
   const [nav, setNav] = useState(0);
 
   const handleNavChange = (event?: React.SyntheticEvent | undefined, newValue?: number) => {
-    console.log('newvalue:', newValue);
     const filterResult = navBarList.filter((navBar) => navBar.id === newValue);
-    console.log('filterResult:', filterResult);
 
     if (filterResult.length === 1) {
       setNav(filterResult[0].id);
@@ -63,6 +61,7 @@ export const NavBar = (props: Props) => {
     margin: theme.spacing('2px 4px 0 4px'),
     padding: theme.spacing('0 2px 0 2px'),
     color: 'white',
+    cursor: 'pointer',
     // color: 'rgba(255, 255, 255, 0.7)',
     // backgroundColor: '#e6ffe6',
     '&.Mui-selected': {

@@ -22,6 +22,7 @@ export const apis: any = {
         (news_ids !== undefined ? `&news_ids=${news_ids}` : ``)
       );
     },
+    count: () => "news/count",
     detail: ({ id }: { id: string }) => `news/${id}`,
     relative: ({ id }: { id: string }) => `news/${id}/neighbors`,
     hot: () => `recommend/popular/news`
@@ -46,8 +47,8 @@ export const apis: any = {
         (news_ids !== undefined ? `&news_ids=${news_ids}` : ``)
       );
     },
+    count: () => "rematchs/count",
     detail: ({ id }: { id: string }) => `rematchs/${id}`,
     hot: () => `recommend/popular/rematch`
   },
-  relative: {}
 };

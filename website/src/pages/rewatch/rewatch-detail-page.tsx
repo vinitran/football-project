@@ -7,6 +7,7 @@ import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
 import { _axios } from '../../configs/axiosconfiguartor';
 import { HotBar } from '../../components/hot-bar';
+import VideoPlayer from '../../components/video-player';
 
 export const RewatchDetailPage = () => {
   const params = useParams();
@@ -17,12 +18,12 @@ export const RewatchDetailPage = () => {
 
   // FUNCTION
   const fetchDetailNews = async () => {
-    setLoading(true)
+    setLoading(true);
     const res1 = await _axios.get(apis.rewatch.detail({ id: params.id }));
     if (res1) {
       setResDetailRewatch(res1.data?.data ?? []);
     }
-    setLoading(false)
+    setLoading(false);
   };
   const fetchHotNews = async () => {
     const res1 = await _axios.get(apis.news.hot());
@@ -47,7 +48,7 @@ export const RewatchDetailPage = () => {
       <div className="news-detail flex justify-between p-5">
         {resDetailRewatch && !loading ? (
           <>
-            <div className="main-left bg-[--color-background-content]">
+            <div className="main-left bg-[--color-background-content] mr-[24px]">
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
             <div className="flex flex-col w-[400px]">
@@ -90,7 +91,8 @@ export const RewatchDetailPage = () => {
 const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
   return (
     <>
-      <div className="flex items-center justify-end ml-4 pl-4">
+      <div className="flex items-center justify-between ml-4 pl-4 border-l-4 border-green-500 border-solid">
+        <h4 className="leading-[28px] text-[20px] uppercase">{rewatch.name}</h4>
         <div className="flex italic w-[165px]">
           <svg
             className="w-[15px] h-[15px] mr-1"
@@ -108,20 +110,8 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
           </p>
         </div>
       </div>
-      <div>
-        {filterUrl()}
-        {/* <ReactPlayer
-          playing
-          loop
-          controls
-          url={`https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8`}
-        /> */}
-        {/* <ReactPlayer playing loop controls url="https://stream.vinitran1245612.workers.dev?apiurl=https://live-kh-1123139281.thapcam.link/xienHD/playlist.m3u8&is_m3u8=true" /> */}
-        <ReactPlayer playing loop controls url={filterUrl()} />
-        {/* <ReactPlayer playing loop url={`http://127.0.0.1:9665/fetchAPI?endpoint=https://obevcimanyd179314182.thapcam.link/live/may9/playlist.m3u8`} /> */}
-        {/* <ReactPlayer playing loop url={`https://stream.vinitran1245612.workers.dev?apiurl=${rewatch.video_url}&is_m3u8=true`} /> */}
-        {/* <ReactPlayer playing loop controls url="https://www.youtube.com/watch?v=LXb3EKWsInQ" /> */}
-        aaaaaaaa
+      <div className='p-[12px]'>
+        <VideoPlayer src={filterUrl(rewatch.video_url)} />
       </div>
       <div className="article-news block px-5 pt-[-15px]">
         <p className="mt-10" dangerouslySetInnerHTML={{ __html: rewatch.content }}></p>
@@ -131,81 +121,7 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
 };
 
 const filterUrl = (url?: string) => {
-  let tmp = 'https://obevcimanyd179249207.thapcam.link/live/longFHD/playlist.m3u8';
-  // tmp = "https://hl.thapcam.link/hls/2light/bda/fullmatch/avl-oly-3524.mp4/playlist.m3u8";
-  tmp = 'https://live-kh-1123139281.thapcam.link/xienHD/playlist.m3u8';
-  tmp = tmp.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8');
-  return `https://stream.vinitran1245612.workers.dev?apiurl=${tmp}&is_m3u8=true`;
-};
-
-const RewatchHot = ({ rewatchHot }: { rewatchHot: IRewatchDetail[] }) => {
-  const navigate = useNavigate();
-  return (
-    <>
-      <div className="flex items-center ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Trận đấu nổi bật</h4>
-      </div>
-      {rewatchHot.map((item, index) => (
-        <>
-          <div
-            onClick={() => {
-              navigate(`/new-detail/${item.id}`);
-            }}
-            className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
-            <img className="w-[120px] h-[75px]" src={item.feature_image} alt="" />
-            <div className="w-[192px] overflow-hidden line-clamp-3">
-              <p className="">{item.name}</p>
-            </div>
-          </div>
-        </>
-      ))}
-    </>
-  );
-};
-
-const RewatchRelative = ({ rewatchIds }: { rewatchIds: string[] }) => {
-  return (
-    <>
-      <div className="flex items-center mt-[30px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Các trận liên quan</h4>
-      </div>
-      {rewatchIds
-        ? rewatchIds.map((item, index) => (
-            <>
-              <ItemRelative id={item} />
-            </>
-          ))
-        : ''}
-    </>
-  );
-};
-
-const ItemRelative = ({ id }: { id: string }) => {
-  const navigate = useNavigate();
-  const [{ data }] = useAxios({
-    // url: `news/vebotv/detail/${params.id}`
-    url: apis.news.detail({ id: id })
-  });
-  return (
-    <>
-      {data ? (
-        <div
-          onClick={() => {
-            navigate(`/new-detail/${data.data.id}`);
-          }}
-          className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
-          <img className="w-[120px] h-[75px]" src={data.data.feature_image} alt="" />
-          <div className="w-[192px] overflow-hidden line-clamp-3">
-            <p className="">{data.data.name}</p>
-          </div>
-        </div>
-      ) : (
-        <div className="flex items-center justify-center">
-          <Loading />
-        </div>
-      )}
-    </>
-  );
+  return `https://stream.vinitran1245612.workers.dev?apiurl=${url}&is_m3u8=true`;
 };
 
 interface IRewatchDetail {

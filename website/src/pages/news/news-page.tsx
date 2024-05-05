@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAxios } from '../../hooks/use-axios';
 import { IPagination } from '../../interfaces/entites/pagination';
 import { INews } from '../../interfaces/entites/news';
-import { Box, CircularProgress, Pagination } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components/commons/loading';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
@@ -17,6 +17,7 @@ export const NewPage = (props: Props) => {
   const [searching, setSearching] = useState('');
   const [pagination, setPagination] = useState<IPagination>({ pageNum: 1, pageSize: 12 });
   const [resListNews, setResListNews] = useState([]);
+  const [resTotalListNews, setResTotalListNews] = useState(0);
   const [resHotNews, setResHotNews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +32,12 @@ export const NewPage = (props: Props) => {
     }
     setLoading(false);
   };
+  const fetchTotalListNews = async () => {
+    const res1 = await _axios.get(apis.rewatch.count());
+    if (res1) {
+      setResTotalListNews(res1.data?.data ?? 0);
+    }
+  };
   const fetchHotNews = async () => {
     const res1 = await _axios.get(apis.news.hot());
     if (res1) {
@@ -40,12 +47,13 @@ export const NewPage = (props: Props) => {
 
   useEffect(() => {
     fetchListNews();
+    fetchTotalListNews();
     fetchHotNews();
   }, []);
 
   useEffect(() => {
     fetchListNews();
-  }, [searching]);
+  }, [searching, pagination]);
 
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPagination({ ...pagination, pageNum: value });
@@ -66,8 +74,9 @@ export const NewPage = (props: Props) => {
                 <Pagination
                   color="primary"
                   count={
-                    pagination.pageSize ? Math.ceil(pagination.pageSize / pagination.pageSize) : 0
+                    resTotalListNews ? Math.ceil(resTotalListNews / pagination.pageSize) : 0
                   }
+                  className='cursor-pointer'
                   page={pagination.pageNum}
                   onChange={handlePaginationChange}
                 />
@@ -75,7 +84,12 @@ export const NewPage = (props: Props) => {
 
               <div className="flex flex-col w-[400px]">
                 {resHotNews ? (
-                  <HotBar title="Tin nổi bật" ids={resHotNews} urlDetail={apis.news.detail} urlClick='/new-detail/'/>
+                  <HotBar
+                    title="Tin nổi bật"
+                    ids={resHotNews}
+                    urlDetail={apis.news.detail}
+                    urlClick="/new-detail/"
+                  />
                 ) : (
                   <div className="flex items-center justify-center">
                     <Loading />
