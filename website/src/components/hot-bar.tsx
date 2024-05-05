@@ -23,7 +23,6 @@ export const HotBar = ({
       {ids
         ? ids.map((item, index) => (
             <>
-            {item}
               <HotItem id={item} urlDetail={urlDetail} urlClick={urlClick} />
             </>
           ))
