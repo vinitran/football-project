@@ -32,7 +32,7 @@ export const RewatchPage = (props: Props) => {
     setLoading(false);
   };
   const fetchHotNews = async () => {
-    const res1 = await _axios.get(apis.news.hot());
+    const res1 = await _axios.get(apis.rewatch.hot());
     if (res1) {
       setResHotRewatch(res1.data?.data ?? []);
     }
@@ -75,7 +75,7 @@ export const RewatchPage = (props: Props) => {
 
               <div className="flex flex-col w-[400px]">
                 {resHotRewatch ? (
-                  <HotBar title="Tin nổi bật" ids={resHotRewatch} urlDetail={apis.news.detail} />
+                  <HotBar title="Tin nổi bật" ids={resHotRewatch} urlDetail={apis.rewatch.detail} urlClick='/rewatch-detail/' />
                 ) : (
                   <div className="flex items-center justify-center">
                     <Loading />

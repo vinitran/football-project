@@ -46,7 +46,8 @@ export const apis: any = {
         (news_ids !== undefined ? `&news_ids=${news_ids}` : ``)
       );
     },
-    detail: ({ id }: { id: string }) => `rematchs/${id}`
+    detail: ({ id }: { id: string }) => `rematchs/${id}`,
+    hot: () => `recommend/popular/rematch`
   },
   relative: {}
 };

@@ -12,13 +12,16 @@ export const NewsDetailPage = () => {
   const [resDetailNews, setResDetailNews] = useState<any>();
   const [resHotNews, setResHotNews] = useState([]);
   const [resRelativeNews, setRelativeNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // FUNCTION
   const fetchDetailNews = async () => {
+    setLoading(true)
     const res1 = await _axios.get(apis.news.detail({ id: params.id }));
     if (res1) {
       setResDetailNews(res1.data?.data ?? []);
     }
+    setLoading(false)
   };
   const fetchHotNews = async () => {
     const res1 = await _axios.get(apis.news.hot());
@@ -27,6 +30,7 @@ export const NewsDetailPage = () => {
     }
   };
   const fetchRelativeNews = async () => {
+    console.log('fetchRelative')
     const res1 = await _axios.get(apis.news.relative({ id: params.id }));
     if (res1) {
       setRelativeNews(res1.data?.data ?? []);
@@ -37,24 +41,26 @@ export const NewsDetailPage = () => {
     fetchDetailNews();
     fetchHotNews();
     fetchRelativeNews();
-  }, []);
+  }, [params]);
 
   return (
     <>
+      <div className="hidden">{params.id}</div>
       <div className="news-detail flex justify-between p-5">
-        {resDetailNews ? (
+        {resDetailNews && !loading ? (
           <>
             <div className="flex-1 flex flex-col mr-[24px]">
               <div className="flex-1 main-left bg-[--color-background-content] w-full">
                 <NewsDetailContent news={resDetailNews} />
               </div>
             </div>
-              <div className="flex flex-col w-[400px]">
+            <div className="flex flex-col w-[400px]">
               {resRelativeNews ? (
                 <HotBar
                   title="Tin liên quan"
                   ids={resRelativeNews}
                   urlDetail={apis.news.detail}
+                  urlClick="/new-detail/"
                 />
               ) : (
                 <div className="flex items-center justify-center">
@@ -62,7 +68,12 @@ export const NewsDetailPage = () => {
                 </div>
               )}
               {resHotNews ? (
-                <HotBar title="Tin nổi bật" ids={resHotNews} urlDetail={apis.news.detail} />
+                <HotBar
+                  title="Tin nổi bật"
+                  ids={resHotNews}
+                  urlDetail={apis.news.detail}
+                  urlClick="/new-detail/"
+                />
               ) : (
                 <div className="flex items-center justify-center">
                   <Loading />

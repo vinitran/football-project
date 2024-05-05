@@ -75,7 +75,7 @@ export const NewPage = (props: Props) => {
 
               <div className="flex flex-col w-[400px]">
                 {resHotNews ? (
-                  <HotBar title="Tin nổi bật" ids={resHotNews} urlDetail={apis.news.detail} />
+                  <HotBar title="Tin nổi bật" ids={resHotNews} urlDetail={apis.news.detail} urlClick='/new-detail/'/>
                 ) : (
                   <div className="flex items-center justify-center">
                     <Loading />

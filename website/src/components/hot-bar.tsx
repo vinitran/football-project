@@ -7,11 +7,13 @@ import { _axios } from '../configs/axiosconfiguartor';
 export const HotBar = ({
   title,
   ids,
-  urlDetail
+  urlDetail,
+  urlClick
 }: {
   title: string;
   ids: string[];
   urlDetail: string;
+  urlClick: string;
 }) => {
   return (
     <>
@@ -21,7 +23,8 @@ export const HotBar = ({
       {ids
         ? ids.map((item, index) => (
             <>
-              <HotItem id={item} urlDetail={urlDetail} />
+            {item}
+              <HotItem id={item} urlDetail={urlDetail} urlClick={urlClick} />
             </>
           ))
         : ''}
@@ -29,7 +32,7 @@ export const HotBar = ({
   );
 };
 
-const HotItem = ({ id, urlDetail }: { id: string; urlDetail: any }) => {
+const HotItem = ({ id, urlDetail, urlClick }: { id: string; urlDetail: any; urlClick: string }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<IHotItem | undefined>();
   const fetchData = async () => {
@@ -46,7 +49,7 @@ const HotItem = ({ id, urlDetail }: { id: string; urlDetail: any }) => {
       {data ? (
         <div
           onClick={() => {
-            navigate(`/new-detail/${data.id}`);
+            navigate(`${urlClick}${data.id}`);
           }}
           className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-full h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
           <img className="w-[120px] h-[75px]" src={data.feature_image} alt="" />
