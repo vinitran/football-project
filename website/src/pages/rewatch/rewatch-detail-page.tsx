@@ -58,9 +58,10 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
         <ReactPlayer
           playing
           loop
+          controls
           url={`https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8`}
         />
-        <ReactPlayer playing loop url={filterUrl()} />
+        <ReactPlayer playing loop controls url={filterUrl()} />
         {/* <ReactPlayer playing loop url={`http://127.0.0.1:9665/fetchAPI?endpoint=https://obevcimanyd179314182.thapcam.link/live/may9/playlist.m3u8`} /> */}
         {/* <ReactPlayer playing loop url={`https://stream.vinitran1245612.workers.dev?apiurl=${rewatch.video_url}&is_m3u8=true`} /> */}
         {/* <ReactPlayer playing loop controls url="https://www.youtube.com/watch?v=LXb3EKWsInQ" /> */}
