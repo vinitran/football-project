@@ -27,7 +27,7 @@ export const RewatchDetailPage = () => {
     }
   };
   const fetchRelativeNews = async () => {
-    const res1 = await _axios.get(apis.news.relative({ id: "YoKxsem" }));
+    const res1 = await _axios.get(apis.news.relative({ id: 'YoKxsem' }));
     if (res1) {
       setRelativeNews(res1.data?.data ?? []);
     }
@@ -46,13 +46,9 @@ export const RewatchDetailPage = () => {
             <div className="main-left bg-[--color-background-content]">
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
-            <div className="flex flex-col w-[350px]">
+            <div className="flex flex-col w-[400px]">
               {resRelativeNews ? (
-                <HotBar
-                  title="Tin liên quan"
-                  ids={resRelativeNews}
-                  urlDetail={apis.news.detail}
-                />
+                <HotBar title="Tin liên quan" ids={resRelativeNews} urlDetail={apis.news.detail} />
               ) : (
                 <div className="flex items-center justify-center">
                   <Loading />

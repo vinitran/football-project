@@ -49,7 +49,7 @@ export const NewsDetailPage = () => {
                 <NewsDetailContent news={resDetailNews} />
               </div>
             </div>
-            <div className="flex flex-col w-[350px]">
+              <div className="flex flex-col w-[400px]">
               {resRelativeNews ? (
                 <HotBar
                   title="Tin liên quan"

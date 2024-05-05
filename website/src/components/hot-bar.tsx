@@ -48,7 +48,7 @@ const HotItem = ({ id, urlDetail }: { id: string; urlDetail: any }) => {
           onClick={() => {
             navigate(`/new-detail/${data.id}`);
           }}
-          className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
+          className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-full h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
           <img className="w-[120px] h-[75px]" src={data.feature_image} alt="" />
           <div className="w-[192px] overflow-hidden line-clamp-3">
             <p className="">{data.name}</p>
