@@ -125,7 +125,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
     const url = getVideoUrl(matche?.data.play_urls);
     const updatedUrl =
       'https://hl.thapcam.link/hls/2light/bda/fullmatch/avl-oly-3524.mp4/playlist.m3u8';
-    const proxyUrl = `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
+    const proxyUrl = `https://stream.vinitran1245612.workers.dev?apiurl=https://hl.thapcam.link/hls/2light/bda/fullmatch/rma-cad-5524.mp4/playlist.m3u8&is_m3u8=true`;
 
     console.log("url:", url)
     console.log("updatedUrl:", updatedUrl)

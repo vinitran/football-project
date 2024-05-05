@@ -3,9 +3,10 @@ import { useAxios } from '../hooks/use-axios';
 import { useNavigate } from 'react-router-dom';
 import { usePlayer, withPlayer } from '../components/player/PlayerProvider';
 import { useAppSelector } from '../stores/store';
+import VideoPlayer from '../components/video-player';
 
 type Props = {
-  show: Api.TVDetails
+  // show: Api.TVDetails;
 };
 
 export const TestPage = (props: Props) => {
@@ -19,14 +20,15 @@ export const TestPage = (props: Props) => {
     //   <pre>{JSON.stringify(data, null, 2)}</pre>
     // </>
     <>
-    <div>
-    <div ref={containerRef}>
+      <div>
+        {/* <div ref={containerRef}>
       {waiting && (
         <>loading...</>
       )}
       <Player show={props.show} fullscreenContainer={containerRef} />
-    </div>
-    </div>
+    </div> */}
+        <VideoPlayer src="https://hl.thapcam.link/hls/2light/bda/fullmatch/rma-cad-5524.mp4/playlist.m3u8" />
+      </div>
     </>
   );
 };
@@ -41,10 +43,10 @@ export const Player = withPlayer(() => {
       {controlsActive && (
         <React.Fragment>
           {/* <PlayerBack onClick={() => navigate(-1)}> */}
-            {/* <IconBack /> */}
+          {/* <IconBack /> */}
           {/* </PlayerBack> */}
           {/* <PlayerControlsWrapper> */}
-            {/* <PlayerControls /> */}
+          {/* <PlayerControls /> */}
           {/* </PlayerControlsWrapper> */}
         </React.Fragment>
       )}
@@ -63,4 +65,3 @@ export const Player = withPlayer(() => {
 //     </ControlsWrapper>
 //   );
 // };
-
