@@ -93,6 +93,22 @@ func (group *GroupRecommend) GetByItemAndCategory(c echo.Context) error {
 	return restAbort(c, items, err)
 }
 
+func (group *GroupRecommend) GetPopularByItem(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	category := c.Param("category")
+
+	limit := queryParamInt(c, "limit", 10)
+
+	serviceRecommender, err := do.Invoke[*service.ServiceRecommender](group.cfg.Container)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	items, err := serviceRecommender.GetPopularItem(ctx, category, limit)
+	return restAbort(c, items, err)
+}
+
 //
 //INSERT INTO items (item_id, labels, time_stamp, categories)
 //SELECT id, labels, created_at, '["rematch"]'::jsonb

@@ -11,6 +11,7 @@ import (
 
 	models "core/internal/content/bob"
 	"github.com/aarondl/opt/null"
+	"github.com/google/uuid"
 	"github.com/jaswdr/faker"
 	"github.com/stephenafamo/bob/types"
 )
@@ -24,6 +25,7 @@ type factory struct {
 	baseReviewMatchMods    ReviewMatchModSlice
 	baseTeamMods           TeamModSlice
 	baseTournamentMods     TournamentModSlice
+	baseUserInforMods      UserInforModSlice
 	baseUserMods           UserModSlice
 }
 
@@ -127,6 +129,18 @@ func (f *factory) NewTournament(mods ...TournamentMod) *TournamentTemplate {
 	return o
 }
 
+func (f *factory) NewUserInfor(mods ...UserInforMod) *UserInforTemplate {
+	o := &UserInforTemplate{f: f}
+
+	if f != nil {
+		f.baseUserInforMods.Apply(o)
+	}
+
+	UserInforModSlice(mods).Apply(o)
+
+	return o
+}
+
 func (f *factory) NewUser(mods ...UserMod) *UserTemplate {
 	o := &UserTemplate{f: f}
 
@@ -203,6 +217,14 @@ func (f *factory) AddBaseTournamentMod(mods ...TournamentMod) {
 	f.baseTournamentMods = append(f.baseTournamentMods, mods...)
 }
 
+func (f *factory) ClearBaseUserInforMods() {
+	f.baseUserInforMods = nil
+}
+
+func (f *factory) AddBaseUserInforMod(mods ...UserInforMod) {
+	f.baseUserInforMods = append(f.baseUserInforMods, mods...)
+}
+
 func (f *factory) ClearBaseUserMods() {
 	f.baseUserMods = nil
 }
@@ -222,6 +244,7 @@ var (
 	reviewMatchCtx    = newContextual[*models.ReviewMatch]("reviewMatch")
 	teamCtx           = newContextual[*models.Team]("team")
 	tournamentCtx     = newContextual[*models.Tournament]("tournament")
+	userInforCtx      = newContextual[*models.UserInfor]("userInfor")
 	userCtx           = newContextual[*models.User]("user")
 )
 
@@ -276,6 +299,9 @@ func random[T any](f *faker.Faker) T {
 		return val
 
 	case MatchStatus:
+		return val
+
+	case uuid.UUID:
 		return val
 
 	}

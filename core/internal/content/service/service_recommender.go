@@ -66,6 +66,21 @@ func (service *ServiceRecommender) GetNeighborsItem(ctx context.Context, itemId,
 	return result, nil
 }
 
+func (service *ServiceRecommender) GetPopularItem(ctx context.Context, category string, n int) ([]string, error) {
+	url := fmt.Sprintf("%s:%s/api/popular/%s?n=%d", service.cfg.Recommender.Host, service.cfg.Recommender.Port, category, n)
+	items, err := request[[]Score, any](ctx, service.httpClient(3), "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []string
+	arr.ArrEach(items, func(item Score) {
+		result = append(result, item.Id)
+	})
+
+	return result, nil
+}
+
 func request[Response any, Body any](ctx context.Context, c *httpclient.Client, method, url string, body Body) (result Response, err error) {
 	bodyByte, marshalErr := json.Marshal(body)
 	if marshalErr != nil {
