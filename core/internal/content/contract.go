@@ -28,7 +28,6 @@ type NewsListParams struct {
 	Search      string
 	NewsIDs     []string
 	IsNullLabel bool
-	HotNews     bool
 }
 
 type DatastoreTeam interface {
@@ -76,6 +75,10 @@ type DatastoreReviewMatch interface {
 
 type DatastoreUser interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*User, error)
+	FindByUsername(ctx context.Context, username string) (*User, error)
 	FindByEmail(ctx context.Context, email string) (*User, error)
-	Upsert(ctx context.Context, params *b.UserInforSetter) (*User, error)
+	Create(ctx context.Context, params *b.UserInforSetter) (*User, error)
+	ExistByEmail(ctx context.Context, email string) (bool, error)
+	PasswordByUsername(ctx context.Context, username string) (string, error)
+	ExistByUsername(ctx context.Context, username string) (bool, error)
 }
