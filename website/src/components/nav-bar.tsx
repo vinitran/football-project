@@ -75,7 +75,7 @@ export const NavBar = (props: Props) => {
 
   return (
     <>
-      <div className="nav-bar grid grid-cols-3 gap-4 pt-1 bg-[#0066ff]">
+      <div className="nav-bar grid grid-cols-3 gap-4 pt-1 bg-[--color-main]">
         <img
           className="h-[48px] w-[235px] ml-[8px] col-start-1 cursor-pointer"
           src={require('../assets/image/logo.png')}
@@ -85,7 +85,7 @@ export const NavBar = (props: Props) => {
           }}
         />
         <div className="flex-1 flex items-center justify-center uppercase col-start-2">
-          <Box sx={{ fontSize: '20px', bgcolor: '#0066ff' }}>
+          <Box sx={{ fontSize: '20px', bgcolor: '--color-main' }}>
             <StyledTabs value={nav} aria-label="styled tabs example" onChange={handleNavChange}>
               {navBarList.map((item, index) => (
                 <StyledTab key={index} label={item.label} />
@@ -94,19 +94,13 @@ export const NavBar = (props: Props) => {
           </Box>
         </div>
         <div className="flex items-center justify-end gap-2 mr-[8px] col-start-3">
-          <Button className="w-fit" variant="contained" color="success">
-            Đăng nhập
-          </Button>
-          <Button className="w-fit" variant="contained" color="success">
-            Đăng ký
-          </Button>
-          <div className="rounded-[50%] border-solid border-[2px] border-[#0066ff] p-2 flex items-center justify-center">
+          <div className="rounded-[50%] border-solid border-[2px] border-[--color-second] p-2 flex items-center justify-center">
             <svg
               className="w-[18px] h-[18px]"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512">
               <path
-                fill="#0066ff"
+                fill="white"
                 d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"
               />
             </svg>

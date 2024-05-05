@@ -3,25 +3,83 @@ import { useAxios } from '../../hooks/use-axios';
 import { Loading } from '../../components/commons/loading';
 import moment from 'moment';
 import { apis } from '../../consts/api.const';
+import { useEffect, useState } from 'react';
+import { _axios } from '../../configs/axiosconfiguartor';
+import { HotBar } from '../../components/hot-bar';
 
 export const NewsDetailPage = () => {
   const params = useParams();
-  const [{ response, loading }] = useAxios({
-    // url: `news/vebotv/detail/${params.id}`
-    url: apis.news.detail({id: params.id})
-  });
+  const [resDetailNews, setResDetailNews] = useState<any>();
+  const [resHotNews, setResHotNews] = useState([]);
+  const [resRelativeNews, setRelativeNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // FUNCTION
+  const fetchDetailNews = async () => {
+    setLoading(true)
+    const res1 = await _axios.get(apis.news.detail({ id: params.id }));
+    if (res1) {
+      setResDetailNews(res1.data?.data ?? []);
+    }
+    setLoading(false)
+  };
+  const fetchHotNews = async () => {
+    const res1 = await _axios.get(apis.news.hot());
+    if (res1) {
+      setResHotNews(res1.data?.data ?? []);
+    }
+  };
+  const fetchRelativeNews = async () => {
+    console.log('fetchRelative')
+    const res1 = await _axios.get(apis.news.relative({ id: params.id }));
+    if (res1) {
+      setRelativeNews(res1.data?.data ?? []);
+    }
+  };
+
+  useEffect(() => {
+    fetchDetailNews();
+    fetchHotNews();
+    fetchRelativeNews();
+  }, [params]);
+
   return (
     <>
+      <div className="hidden">{params.id}</div>
       <div className="news-detail flex justify-between p-5">
-        {!loading && response ? (
+        {resDetailNews && !loading ? (
           <>
-            <div className="main-left bg-[--color-background-content]">
-              <NewsDetailContent news={response.data.data} />
+            <div className="flex-1 flex flex-col mr-[24px]">
+              <div className="flex-1 main-left bg-[--color-background-content] w-full">
+                <NewsDetailContent news={resDetailNews} />
+              </div>
             </div>
-            {/* <div className="flex flex-col w-[350px]">
-              <NewsHot news={response.data.data_hot} />
-              <NewsRelative news={response.data.data_related} />
-            </div> */}
+            <div className="flex flex-col w-[400px]">
+              {resRelativeNews ? (
+                <HotBar
+                  title="Tin liên quan"
+                  ids={resRelativeNews}
+                  urlDetail={apis.news.detail}
+                  urlClick="/new-detail/"
+                />
+              ) : (
+                <div className="flex items-center justify-center">
+                  <Loading />
+                </div>
+              )}
+              {resHotNews ? (
+                <HotBar
+                  title="Tin nổi bật"
+                  ids={resHotNews}
+                  urlDetail={apis.news.detail}
+                  urlClick="/new-detail/"
+                />
+              ) : (
+                <div className="flex items-center justify-center">
+                  <Loading />
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <div className="flex items-center justify-center h-full w-full">
@@ -62,55 +120,73 @@ const NewsDetailContent = ({ news }: { news: INewsDetail }) => {
   );
 };
 
-const NewsHot = ({ news }: { news: INewsDetail[] }) => {
-  const navigate = useNavigate();
-  return (
-    <>
-      <div className="flex items-center ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Tin nổi bật</h4>
-      </div>
-      {news.map((item, index) => (
-        <>
-          <div
-            onClick={() => {
-              navigate(`/new-detail/${item.id}`);
-            }}
-            className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
-            <img className="w-[120px] h-[75px]" src={item.feature_image} alt="" />
-            <div className="w-[192px] overflow-hidden line-clamp-3">
-              <p className="">{item.name}</p>
-            </div>
-          </div>
-        </>
-      ))}
-    </>
-  );
-};
+// const NewsHot = ({ news }: { news: INewsDetail[] }) => {
+//   const navigate = useNavigate();
+//   return (
+//     <>
+//       <div className="flex items-center ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
+//         <h4 className="leading-5 text-[20px]">Tin nổi bật</h4>
+//       </div>
+//       {news.map((item, index) => (
+//         <>
+//           <div
+//             onClick={() => {
+//               navigate(`/new-detail/${item.id}`);
+//             }}
+//             className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
+//             <img className="w-[120px] h-[75px]" src={item.feature_image} alt="" />
+//             <div className="w-[192px] overflow-hidden line-clamp-3">
+//               <p className="">{item.name}</p>
+//             </div>
+//           </div>
+//         </>
+//       ))}
+//     </>
+//   );
+// };
 
-const NewsRelative = ({ news }: { news: INewsDetail[] }) => {
-  const navigate = useNavigate();
-  return (
-    <>
-      <div className="flex items-center mt-[30px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-        <h4 className="leading-5 text-[20px]">Tin liên quan</h4>
-      </div>
-      {news.map((item, index) => (
-        <>
-          <div
-            onClick={() => {
-              navigate(`/new-detail/${item.id}`);
-            }}
-            className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
-            <img className="w-[120px] h-[75px]" src={item.feature_image} alt="" />
-            <div className="w-[192px] overflow-hidden line-clamp-3">
-              <p className="">{item.name}</p>
-            </div>
-          </div>
-        </>
-      ))}
-    </>
-  );
-};
+// const NewsRelative = ({ newsIds }: { newsIds: string[] }) => {
+//   return (
+//     <>
+//       <div className="flex items-center mt-[30px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
+//         <h4 className="leading-5 text-[20px]">Tin liên quan</h4>
+//       </div>
+//       {newsIds
+//         ? newsIds.map((item, index) => (
+//             <>
+//               <ItemRelative id={item} />
+//             </>
+//           ))
+//         : ''}
+//     </>
+//   );
+// };
+
+// const ItemRelative = ({ id }: { id: string }) => {
+//   const navigate = useNavigate();
+//   const [{ data }] = useAxios({
+//     // url: `news/vebotv/detail/${params.id}`
+//     url: apis.news.detail({ id: id })
+//   });
+//   return (
+//     <>
+//       {data ? (
+//         <div
+//           onClick={() => {
+//             navigate(`/new-detail/${data.data.id}`);
+//           }}
+//           className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
+//           <img className="w-[120px] h-[75px]" src={data.data.feature_image} alt="" />
+//           <div className="w-[192px] overflow-hidden line-clamp-3">
+//             <p className="">{data.data.name}</p>
+//           </div>
+//         </div>
+//       ) : (
+//         <></>
+//       )}
+//     </>
+//   );
+// };
 
 interface INewsDetail {
   id: string;

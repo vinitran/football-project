@@ -48,5 +48,5 @@ func (ds *DatastoreUserPgx) Upsert(ctx context.Context, params *b.UserInforSette
 }
 
 func NewDatastoreUser(pool PGXPool) (*DatastoreUserPgx, error) {
-	return &DatastoreUserPgx{pool, &BobExecutorPgx{pool}}, nil
-}
+
+
