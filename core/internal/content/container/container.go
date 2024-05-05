@@ -1,7 +1,11 @@
 package container
 
 import (
+	"core/pkg/jwtx"
+	"crypto/ed25519"
+	"crypto/rand"
 	"net/http"
+	"time"
 
 	"core/internal/content"
 	"core/internal/content/datastore"
@@ -47,6 +51,7 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideServiceCrawler)
 	do.Provide(injector, ProvideServiceRecommender)
 	do.Provide(injector, ProvideServiceExtracter)
+	do.Provide(injector, ProvideJWTAuthority)
 
 	return injector
 }
@@ -146,4 +151,13 @@ func ProvideServiceExtracter(i *do.Injector) (*service.ServiceExtractKeywords, e
 
 func ProvideServiceTournament(i *do.Injector) (*service.ServiceTournament, error) {
 	return service.NewServiceTournament(i)
+}
+
+func ProvideJWTAuthority(i *do.Injector) (*jwtx.Authority, error) {
+	pub, priv, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		return nil, err
+	}
+
+	return jwtx.NewAuthority("vinitran", time.Hour*24*7, pub, priv)
 }

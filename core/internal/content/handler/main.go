@@ -44,6 +44,12 @@ func New(cfg *Config) (http.Handler, error) {
 		routesAPIv1.Use(cors)
 	}
 
+	groupAuth := &GroupAuth{cfg}
+	{
+		routesAPIv1.POST("/auth/register", groupAuth.Register)
+		routesAPIv1.POST("/auth/login", groupAuth.Login)
+	}
+
 	groupMatch := &GroupMatch{cfg}
 	{
 		routesAPIv1.GET("/matchs", groupMatch.Index)

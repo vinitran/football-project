@@ -189,7 +189,6 @@ func UserBobToRaw(v *b.UserInfor) *content.User {
 		ID:        v.ID,
 		Email:     v.Email.Ptr(),
 		Name:      v.Name,
-		Password:  v.Password,
 		Username:  v.Username,
 		CreatedAt: v.CreatedAt,
 		UpdatedAt: v.UpdatedAt,
