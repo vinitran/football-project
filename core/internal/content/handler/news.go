@@ -25,6 +25,17 @@ func (group *GroupNews) Show(c echo.Context) error {
 	return restAbort(c, item, err)
 }
 
+func (group *GroupNews) Total(c echo.Context) error {
+	ctx := c.Request().Context()
+	serviceNews, err := do.Invoke[*service.ServiceNews](group.cfg.Container)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	countUser, err := serviceNews.Total(ctx)
+	return restAbort(c, countUser, err)
+}
+
 func (group *GroupNews) Index(c echo.Context) error {
 	ctx := c.Request().Context()
 	serviceNews, err := do.Invoke[*service.ServiceNews](group.cfg.Container)

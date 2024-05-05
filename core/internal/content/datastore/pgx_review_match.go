@@ -3,6 +3,8 @@ package datastore
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/jackc/pgx/v5"
 	"log"
 
 	"github.com/aarondl/opt/omitnull"
@@ -56,6 +58,21 @@ func (ds *DatastoreReviewMatchPgx) FindByID(ctx context.Context, id string) (*co
 	}
 
 	return ReviewMatchBobToRaw(item), nil
+}
+
+func (ds *DatastoreReviewMatchPgx) Count(ctx context.Context) (int, error) {
+	query := fmt.Sprintf(`SELECT count(*) AS count FROM "%s" `, b.TableNames.ReviewMatchs)
+	rows, err := ds.pool.Query(ctx, query)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := pgx.CollectOneRow(rows, pgx.RowTo[int])
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func (ds *DatastoreReviewMatchPgx) Exists(ctx context.Context, id string) (bool, error) {

@@ -55,6 +55,7 @@ func New(cfg *Config) (http.Handler, error) {
 	{
 		routesAPIv1.GET("/news", groupNews.Index)
 		routesAPIv1.GET("/news/:id", groupNews.Show)
+		routesAPIv1.GET("/news/count", groupNews.Total)
 	}
 
 	groupRecommend := &GroupRecommend{cfg}
@@ -73,6 +74,7 @@ func New(cfg *Config) (http.Handler, error) {
 	{
 		routesAPIv1.GET("/rematchs", groupRematch.Index)
 		routesAPIv1.GET("/rematchs/:id", groupRematch.Show)
+		routesAPIv1.GET("/rematchs/count", groupRematch.Total)
 	}
 
 	return r, nil
