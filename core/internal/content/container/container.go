@@ -1,11 +1,12 @@
 package container
 
 import (
-	"core/pkg/jwtx"
 	"crypto/ed25519"
 	"crypto/rand"
 	"net/http"
 	"time"
+
+	"core/pkg/jwtx"
 
 	"core/internal/content"
 	"core/internal/content/datastore"

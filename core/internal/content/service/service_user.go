@@ -2,14 +2,16 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"core/internal/content"
 	b "core/internal/content/bob"
 	"core/internal/db"
-	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
-	"time"
 )
 
 type ServiceUser struct {

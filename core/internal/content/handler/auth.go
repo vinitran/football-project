@@ -1,19 +1,21 @@
 package handler
 
 import (
+	"fmt"
+	"time"
+
 	b "core/internal/content/bob"
 	"core/internal/content/service"
 	"core/internal/db"
 	"core/pkg/auth"
 	"core/pkg/errorx"
 	"core/pkg/jwtx"
-	"fmt"
+
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
 	"github.com/labstack/echo/v4"
 	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
-	"time"
 )
 
 type GroupAuth struct {
