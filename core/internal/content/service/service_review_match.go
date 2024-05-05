@@ -58,3 +58,9 @@ func (service *ServiceReviewMatch) List(ctx context.Context, params content.Matc
 	})
 	return items, err
 }
+
+func (service *ServiceReviewMatch) Total(ctx context.Context) (int, error) {
+	return db.UseCache(ctx, service.cache, cacheKeyReviewMatchByIDOrSlug("total"), time.Minute, func() (int, error) {
+		return service.datastoreReviewMatch.Count(ctx)
+	})
+}

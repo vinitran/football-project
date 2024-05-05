@@ -2,6 +2,7 @@ package content
 
 import (
 	"context"
+	"github.com/google/uuid"
 
 	b "core/internal/content/bob"
 	"github.com/stephenafamo/bob"
@@ -60,6 +61,7 @@ type DatastoreNews interface {
 	List(ctx context.Context, params NewsListParams) ([]*News, error)
 	FindByID(ctx context.Context, id string) (*News, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*News, error)
+	Count(ctx context.Context) (int, error)
 }
 
 type DatastoreReviewMatch interface {
@@ -69,4 +71,11 @@ type DatastoreReviewMatch interface {
 	Upsert(ctx context.Context, params *b.ReviewMatchSetter) (*ReviewMatch, error)
 	UpsertMany(ctx context.Context, params []*b.ReviewMatchSetter) ([]*ReviewMatch, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*ReviewMatch, error)
+	Count(ctx context.Context) (int, error)
+}
+
+type DatastoreUser interface {
+	FindByID(ctx context.Context, id uuid.UUID) (*User, error)
+	FindByEmail(ctx context.Context, email string) (*User, error)
+	Upsert(ctx context.Context, params *b.UserInforSetter) (*User, error)
 }

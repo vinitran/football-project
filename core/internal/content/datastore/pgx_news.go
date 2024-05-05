@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/jackc/pgx/v5"
 	"log"
 	"strings"
 
@@ -135,6 +136,21 @@ func (ds *DatastoreNewsPgx) UpsertMany(ctx context.Context, params []*b.NewsInfo
 	}
 
 	return arr.ArrMap(item, NewsBobToRaw), nil
+}
+
+func (ds *DatastoreNewsPgx) Count(ctx context.Context) (int, error) {
+	query := fmt.Sprintf(`SELECT count(*) AS count FROM "%s" `, b.TableNames.NewsInfors)
+	rows, err := ds.pool.Query(ctx, query)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := pgx.CollectOneRow(rows, pgx.RowTo[int])
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func NewDatastoreNews(pool PGXPool) (*DatastoreNewsPgx, error) {

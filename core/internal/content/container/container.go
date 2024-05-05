@@ -35,12 +35,14 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideDatastoreTeam)
 	do.Provide(injector, ProvideDatastoreTournament)
 	do.Provide(injector, ProvideDatastoreNews)
+	do.Provide(injector, ProvideDatastoreUsers)
 
 	do.Provide(injector, ProvideServiceMatch)
 	do.Provide(injector, ProvideServiceReviewMatch)
 	do.Provide(injector, ProvideServiceTeam)
 	do.Provide(injector, ProvideServiceTournament)
 	do.Provide(injector, ProvideServiceNews)
+	do.Provide(injector, ProvideServiceUsers)
 
 	do.Provide(injector, ProvideServiceCrawler)
 	do.Provide(injector, ProvideServiceRecommender)
@@ -101,8 +103,21 @@ func ProvideDatastoreNews(i *do.Injector) (content.DatastoreNews, error) {
 	return datastore.NewDatastoreNews(pool)
 }
 
+func ProvideDatastoreUsers(i *do.Injector) (content.DatastoreUser, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreUser(pool)
+}
+
 func ProvideServiceMatch(i *do.Injector) (*service.ServiceMatch, error) {
 	return service.NewServiceMatch(i)
+}
+
+func ProvideServiceUsers(i *do.Injector) (*service.ServiceUser, error) {
+	return service.NewServiceUser(i)
 }
 
 func ProvideServiceReviewMatch(i *do.Injector) (*service.ServiceReviewMatch, error) {

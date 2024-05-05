@@ -65,3 +65,14 @@ func (group *GroupReviewMatch) Index(c echo.Context) error {
 	items, err := serviceReviewMatch.List(ctx, params)
 	return restAbort(c, items, err)
 }
+
+func (group *GroupReviewMatch) Total(c echo.Context) error {
+	ctx := c.Request().Context()
+	serviceReviewMatch, err := do.Invoke[*service.ServiceReviewMatch](group.cfg.Container)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	countUser, err := serviceReviewMatch.Total(ctx)
+	return restAbort(c, countUser, err)
+}
