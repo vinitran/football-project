@@ -179,3 +179,19 @@ func ReviewMatchBobToRaw(v *b.ReviewMatch) *content.ReviewMatch {
 
 	return item
 }
+
+func UserBobToRaw(v *b.UserInfor) *content.User {
+	if v == nil {
+		return nil
+	}
+
+	return &content.User{
+		ID:        v.ID,
+		Email:     v.Email.Ptr(),
+		Name:      v.Name,
+		Password:  v.Password,
+		Username:  v.Username,
+		CreatedAt: v.CreatedAt,
+		UpdatedAt: v.UpdatedAt,
+	}
+}
