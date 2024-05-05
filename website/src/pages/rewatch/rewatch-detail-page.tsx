@@ -13,12 +13,16 @@ export const RewatchDetailPage = () => {
   const [resDetailRewatch, setResDetailRewatch] = useState<any>();
   const [resHotNews, setResHotNews] = useState([]);
   const [resRelativeNews, setRelativeNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   // FUNCTION
   const fetchDetailNews = async () => {
+    setLoading(true)
     const res1 = await _axios.get(apis.rewatch.detail({ id: params.id }));
     if (res1) {
       setResDetailRewatch(res1.data?.data ?? []);
     }
+    setLoading(false)
   };
   const fetchHotNews = async () => {
     const res1 = await _axios.get(apis.news.hot());
@@ -27,7 +31,7 @@ export const RewatchDetailPage = () => {
     }
   };
   const fetchRelativeNews = async () => {
-    const res1 = await _axios.get(apis.news.relative({ id: "YoKxsem" }));
+    const res1 = await _axios.get(apis.news.relative({ id: 'YoKxsem' }));
     if (res1) {
       setRelativeNews(res1.data?.data ?? []);
     }
@@ -36,22 +40,23 @@ export const RewatchDetailPage = () => {
     fetchDetailNews();
     fetchHotNews();
     fetchRelativeNews();
-  }, []);
+  }, [params]);
 
   return (
     <>
       <div className="news-detail flex justify-between p-5">
-        {resDetailRewatch ? (
+        {resDetailRewatch && !loading ? (
           <>
             <div className="main-left bg-[--color-background-content]">
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
-            <div className="flex flex-col w-[350px]">
+            <div className="flex flex-col w-[400px]">
               {resRelativeNews ? (
                 <HotBar
                   title="Tin liên quan"
                   ids={resRelativeNews}
                   urlDetail={apis.news.detail}
+                  urlClick="/rewatch-detail/"
                 />
               ) : (
                 <div className="flex items-center justify-center">
@@ -59,7 +64,12 @@ export const RewatchDetailPage = () => {
                 </div>
               )}
               {resHotNews ? (
-                <HotBar title="Tin nổi bật" ids={resHotNews} urlDetail={apis.news.detail} />
+                <HotBar
+                  title="Tin nổi bật"
+                  ids={resHotNews}
+                  urlDetail={apis.news.detail}
+                  urlClick="/rewatch-detail/"
+                />
               ) : (
                 <div className="flex items-center justify-center">
                   <Loading />
