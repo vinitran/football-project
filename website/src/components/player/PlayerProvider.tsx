@@ -90,7 +90,7 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://api.vebo.xyz/api/match/${videoId}/meta`);
+        const response = await fetch(`https://api.vebo.xyz/api/match/${videoId ?? 'm60Xipt'}/meta`);
         const data = await response.json();
 
         setMatche(data); // Assuming the API returns an array of matches
@@ -139,6 +139,8 @@ export const PlayerProvider: React.FC<PropsWithChildren<PlayerProps>> = ({
         dispatch(resetPlayer());
       };
     }
+    console.log("videoRef:", videoRef)
+    console.log("videoRef.current:", videoRef.current)
 
     const hls = new Hls();
     hls.loadSource(proxyUrl);
