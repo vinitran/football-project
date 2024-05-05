@@ -6,7 +6,6 @@ class AxiosConfiguration {
     const axiosInstance = axios.create({
       // baseURL: 'https://reqres.in/api', // URL cơ bản của API
       baseURL: baseURL, // URL cơ bản của API
-      timeout: 10000, // Thời gian chờ tối đa là 10 giây
       headers: {
         'Content-Type': 'application/json' // Đặt kiểu nội dung mặc định là JSON
       }
