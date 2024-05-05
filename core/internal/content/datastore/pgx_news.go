@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5"
 	"log"
 	"strings"
+
+	"github.com/jackc/pgx/v5"
 
 	"core/internal/content"
 	"core/pkg/arr"

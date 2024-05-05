@@ -1,11 +1,12 @@
 package handler
 
 import (
+	"log"
+
 	"core/internal/content/service"
 	"core/pkg/errorx"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/do"
-	"log"
 )
 
 type GroupRecommend struct {

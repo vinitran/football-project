@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/jackc/pgx/v5"
 	"log"
+
+	"github.com/jackc/pgx/v5"
 
 	"github.com/aarondl/opt/omitnull"
 	"github.com/stephenafamo/bob/dialect/psql/um"

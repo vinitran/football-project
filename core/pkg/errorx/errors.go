@@ -13,7 +13,7 @@ import (
 type Kind uint8
 
 func (k Kind) Error() string {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 

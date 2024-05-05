@@ -1,10 +1,11 @@
 package cert_test
 
 import (
-	"core/pkg/cert"
 	"crypto/ed25519"
 	"crypto/rand"
 	"testing"
+
+	"core/pkg/cert"
 
 	"github.com/stretchr/testify/assert"
 )
