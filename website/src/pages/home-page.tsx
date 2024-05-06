@@ -109,7 +109,7 @@ export const HomePage: React.FC<HomeProps> = () => {
           <div className="relative h-[705px]">
             <img
               className="absolute w-full"
-              src={require('../assets/image/bg1.jpg')}
+              src={require('../assets/image/bg3.jpg')}
               alt=""
             />
             <div className="absolute flex items-center justify-center w-full h-fit pt-[10px]">
