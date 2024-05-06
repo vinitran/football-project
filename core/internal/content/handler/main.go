@@ -38,7 +38,7 @@ func New(cfg *Config) (http.Handler, error) {
 			AllowOrigins:     cfg.Origins,
 			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 			AllowCredentials: true,
-			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+			AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodHead, http.MethodOptions},
 			MaxAge:           60 * 60,
 		})
 		routesAPIv1.Use(cors)
@@ -55,7 +55,7 @@ func New(cfg *Config) (http.Handler, error) {
 			AllowOrigins:     cfg.Origins,
 			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 			AllowCredentials: true,
-			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+			AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodHead, http.MethodOptions},
 			MaxAge:           60 * 60,
 		})
 		routesAPIv1WithAuth.Use(cors)
@@ -93,7 +93,7 @@ func New(cfg *Config) (http.Handler, error) {
 		routesAPIv1.GET("/recommend/:id/:category", groupRecommend.GetByUserAndCategory)
 		routesAPIv1.GET("/recommend/popular/:category", groupRecommend.GetPopularByItem)
 
-		routesAPIv1.POST("/recommend/feedback", groupRecommend.CreateFeedback)
+		routesAPIv1WithAuth.POST("/recommend/feedback", groupRecommend.CreateFeedback)
 
 		routesAPIv1.GET("/news/:id/neighbors", groupRecommend.GetByItem)
 		routesAPIv1.GET("/news/:id/neighbors/:category", groupRecommend.GetByItemAndCategory)

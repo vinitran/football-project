@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"core/pkg/auth"
 	"log"
+	"time"
 
 	"core/internal/content/service"
 	"core/pkg/errorx"
@@ -15,7 +17,7 @@ type GroupRecommend struct {
 
 func (group *GroupRecommend) CreateFeedback(c echo.Context) error {
 	ctx := c.Request().Context()
-	var payload service.Feedback
+	var payload FeedbackPayload
 	if err := c.Bind(&payload); err != nil {
 		return restAbort(c, nil, errorx.Wrap(err, errorx.Invalid))
 	}
@@ -25,7 +27,21 @@ func (group *GroupRecommend) CreateFeedback(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{payload})
+	sub, err := auth.ResolveValidSubjectUUID(ctx)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	feedback := service.Feedback{
+		FeedbackType: payload.FeedbackType,
+		UserId:       sub.String(),
+		ItemId:       payload.ItemId,
+		Timestamp:    time.Now().String(),
+	}
+
+	log.Println("feaaasd", feedback)
+
+	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{feedback})
 	return restAbort(c, "inserted feedback", err)
 }
 
@@ -114,3 +130,8 @@ func (group *GroupRecommend) GetPopularByItem(c echo.Context) error {
 //INSERT INTO items (item_id, labels, time_stamp, categories)
 //SELECT id, labels, created_at, '["rematch"]'::jsonb
 //FROM review_matchs;
+
+type FeedbackPayload struct {
+	FeedbackType string `json:"FeedbackType"`
+	ItemId       string `json:"ItemId"`
+}
