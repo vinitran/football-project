@@ -39,8 +39,6 @@ func (group *GroupRecommend) CreateFeedback(c echo.Context) error {
 		Timestamp:    time.Now().String(),
 	}
 
-	log.Println("feaaasd", feedback)
-
 	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{feedback})
 	return restAbort(c, "inserted feedback", err)
 }

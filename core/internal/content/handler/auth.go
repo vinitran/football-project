@@ -38,7 +38,7 @@ func (group *GroupAuth) Login(c echo.Context) error {
 	}
 
 	if !isExistUSer {
-		return restAbort(c, "user is invalid", err)
+		return restAbort(c, nil, errorx.Invalid)
 	}
 
 	user, err := serviceUser.FindByUsername(c.Request().Context(), payload.Username.GetOrZero())
@@ -86,7 +86,7 @@ func (group *GroupAuth) Register(c echo.Context) error {
 	}
 
 	if usernameExists {
-		return restAbort(c, "username is already exists", err)
+		return restAbort(c, nil, errorx.Exist)
 	}
 
 	if payload.Email.GetOrZero() != "" {
@@ -96,7 +96,7 @@ func (group *GroupAuth) Register(c echo.Context) error {
 		}
 
 		if emailExists {
-			return restAbort(c, "email is already exists", err)
+			return restAbort(c, nil, errorx.Exist)
 		}
 	}
 
