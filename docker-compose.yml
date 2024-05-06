@@ -38,7 +38,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/main migration --action up --cfg /app/config.toml"
+      - "/app/main migration --action up"
 
   gorse:
     image: zhenghaoz/gorse-in-one
@@ -78,7 +78,27 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/main migration --action down --cfg /app/config.toml"
+      - "/app/main migration --action down"
+
+  schedule-crawler:
+    container_name: schedule-crawler
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - football
+    volumes:
+      - ./core/internal/config/test.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/main crawler --schedule on"
+
 
   postgres:
     container_name: bridge_postgres

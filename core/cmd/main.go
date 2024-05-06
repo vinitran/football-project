@@ -33,10 +33,14 @@ var (
 		Required: true,
 	}
 	configExtracterActionFlag = cli.StringFlag{
-		Name:     config.FlagTable,
-		Value:    "news",
-		Usage:    "Configuration up or down in migration",
-		Required: true,
+		Name:  config.FlagTable,
+		Value: "news",
+		Usage: "Configuration up or down in migration",
+	}
+	configScheduleFlag = cli.StringFlag{
+		Name:  config.FlagSchedule,
+		Value: "off",
+		Usage: "Configuration on or off in schedule",
 	}
 	configFileFlag = cli.StringFlag{
 		Name:     config.FlagCfg,
@@ -88,7 +92,7 @@ func main() {
 			Aliases: []string{},
 			Usage:   "Run the crawler",
 			Action:  startCrawler,
-			Flags:   append(flags, &configExtracterActionFlag),
+			Flags:   append(flags, &configExtracterActionFlag, &configScheduleFlag),
 		},
 		{
 			Name:    "extracter",
