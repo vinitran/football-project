@@ -50,7 +50,6 @@ export const NavBar = (props: Props) => {
       // backgroundColor: 'transparent'
     },
     '& .MuiTabs-indicatorSpan': {
-      maxWidth: 40,
       width: '100%'
       // backgroundColor: '#635ee7'
     }
@@ -132,7 +131,7 @@ export const NavBar = (props: Props) => {
 
   return (
     <>
-      <div className="nav-bar grid grid-cols-3 gap-4 pt-1">
+      <div className="nav-bar grid grid-cols-3 gap-4 place-items-stretch">
         <img
           className="h-[48px] w-[235px] ml-[8px] col-start-1 cursor-pointer"
           src={require('../assets/image/logo.png')}
@@ -153,20 +152,20 @@ export const NavBar = (props: Props) => {
         <div className="flex items-center justify-end gap-2 mr-[8px] col-start-3">
           {!axiosConfiguration.getAxiosToken() ? (
             <>
-              <Button
-                className="!text-white"
+              <button
+                className="w-[100px] h-[40px] py-[2px] bg-[#008A00] rounded-[8px] text-white"
                 onClick={() => {
                   setIsOpenLogin(!isOpenLogin);
                 }}>
                 Đăng nhập
-              </Button>
-              <Button
-                className="!text-white"
+              </button>
+              <button
+                className="w-[100px] h-[40px] py-[2px] bg-[#008A00] rounded-[8px] text-white"
                 onClick={() => {
                   setIsOpenRegister(!isOpenRegister);
                 }}>
                 Đăng kí
-              </Button>
+              </button>
             </>
           ) : (
             <>
@@ -175,7 +174,7 @@ export const NavBar = (props: Props) => {
                   setIsOpenUserInfo(true);
                   toast.success(isOpenUserInfo);
                 }}
-                className="rounded-[50%] border-solid border-[2px] border-[--color-second] p-2 flex items-center justify-center">
+                className="cursor-pointer boxshadow-main rounded-[50%] border-solid border-[2px] border-[--color-second] p-2 flex items-center justify-center">
                 <div className="text-white">{isOpenUserInfo}</div>
                 <svg
                   className="w-[18px] h-[18px]"
