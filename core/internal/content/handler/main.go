@@ -44,10 +44,33 @@ func New(cfg *Config) (http.Handler, error) {
 		routesAPIv1.Use(cors)
 	}
 
+	routesAPIv1WithAuth := r.Group("/api/v1")
+	{
+		guard, err := do.Invoke[*auth.Guard](cfg.Container)
+		if err != nil {
+			return nil, err
+		}
+
+		cors := middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins:     cfg.Origins,
+			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+			AllowCredentials: true,
+			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+			MaxAge:           60 * 60,
+		})
+		routesAPIv1WithAuth.Use(cors)
+		routesAPIv1WithAuth.Use(httpx.Authn(guard))
+	}
+
 	groupAuth := &GroupAuth{cfg}
 	{
 		routesAPIv1.POST("/auth/register", groupAuth.Register)
 		routesAPIv1.POST("/auth/login", groupAuth.Login)
+	}
+
+	groupUser := &GroupUser{cfg}
+	{
+		routesAPIv1WithAuth.POST("/me", groupUser.ShowMe)
 	}
 
 	groupMatch := &GroupMatch{cfg}

@@ -27,6 +27,7 @@ require (
 )
 
 require (
+	github.com/MicahParks/jwkset v0.5.17 // indirect
 	github.com/aarondl/json v0.0.0-20221020222930-8b0db17ef1bf // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect

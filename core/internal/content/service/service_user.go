@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"core/pkg/auth"
+
 	"core/internal/content"
 	b "core/internal/content/bob"
 	"core/internal/db"
@@ -43,6 +45,21 @@ func NewServiceUser(container *do.Injector) (*ServiceUser, error) {
 	return &ServiceUser{container, datastoreUser, cache}, nil
 }
 
+func (service *ServiceUser) Show(ctx context.Context) (*content.User, error) {
+	sub, err := auth.ResolveValidSubjectUUID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := service.FindUID(ctx, sub)
+	if err != nil {
+		return nil, err
+	}
+
+	user.Password = ""
+	return user, nil
+}
+
 func (service *ServiceUser) FindUID(ctx context.Context, id uuid.UUID) (*content.User, error) {
 	return db.UseCache(ctx, service.cache, cacheKeyUserByID(id.String()), 12*time.Second, func() (*content.User, error) {
 		return service.datastoreUser.FindByID(ctx, id)
@@ -67,10 +84,6 @@ func (service *ServiceUser) ExistByUsername(ctx context.Context, username string
 
 func (service *ServiceUser) ExistByEmail(ctx context.Context, email string) (bool, error) {
 	return service.datastoreUser.ExistByEmail(ctx, email)
-}
-
-func (service *ServiceUser) PasswordByUsername(ctx context.Context, username string) (string, error) {
-	return service.datastoreUser.PasswordByUsername(ctx, username)
 }
 
 func (service *ServiceUser) Create(ctx context.Context, params *b.UserInforSetter) (*content.User, error) {

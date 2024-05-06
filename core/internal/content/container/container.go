@@ -1,10 +1,14 @@
 package container
 
 import (
-	"crypto/ed25519"
-	"crypto/rand"
+	"context"
 	"net/http"
 	"time"
+
+	"core/pkg/auth"
+	"core/pkg/cert"
+	"github.com/MicahParks/keyfunc"
+	"github.com/golang-jwt/jwt/v4"
 
 	"core/pkg/jwtx"
 
@@ -53,6 +57,7 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideServiceRecommender)
 	do.Provide(injector, ProvideServiceExtracter)
 	do.Provide(injector, ProvideJWTAuthority)
+	do.Provide(injector, ProvideGuard)
 
 	return injector
 }
@@ -155,10 +160,43 @@ func ProvideServiceTournament(i *do.Injector) (*service.ServiceTournament, error
 }
 
 func ProvideJWTAuthority(i *do.Injector) (*jwtx.Authority, error) {
-	pub, priv, err := ed25519.GenerateKey(rand.Reader)
+	certBytes := do.MustInvokeNamed[[]byte](i, "cert-bytes")
+	pub, priv, err := cert.LoadED25519Pair(certBytes, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	return jwtx.NewAuthority("vinitran", time.Hour*24*7, pub, priv)
+}
+
+func ProvideGuard(i *do.Injector) (*auth.Guard, error) {
+	certBytes := do.MustInvokeNamed[[]byte](i, "cert-bytes")
+
+	pub, _, err := cert.LoadED25519Pair(certBytes, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	authority, err := do.Invoke[*jwtx.Authority](i)
+	if err != nil {
+		return nil, err
+	}
+
+	jwk, err := authority.PublicJWK(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	jwks := keyfunc.NewGiven(map[string]keyfunc.GivenKey{
+		jwk.ID: keyfunc.NewGivenEdDSACustomWithOptions(pub, keyfunc.GivenKeyOptions{
+			Algorithm: jwt.SigningMethodEdDSA.Alg(),
+		}),
+	})
+
+	authz, err := auth.NewLadon(content.DefaultPolicies)
+	if err != nil {
+		return nil, err
+	}
+
+	return auth.NewGuard(jwks, authz)
 }
