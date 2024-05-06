@@ -1,20 +1,14 @@
 package handler
 
 import (
-	"fmt"
-	"time"
-
 	b "core/internal/content/bob"
 	"core/internal/content/service"
-	"core/internal/db"
 	"core/pkg/auth"
 	"core/pkg/errorx"
 	"core/pkg/jwtx"
-
 	"github.com/aarondl/opt/omit"
 	"github.com/aarondl/opt/omitnull"
 	"github.com/labstack/echo/v4"
-	"github.com/redis/go-redis/v9"
 	"github.com/samber/do"
 )
 
@@ -47,12 +41,12 @@ func (group *GroupAuth) Login(c echo.Context) error {
 		return restAbort(c, "user is invalid", err)
 	}
 
-	passwordHash, err := serviceUser.PasswordByUsername(c.Request().Context(), payload.Username.GetOrZero())
+	user, err := serviceUser.FindByUsername(c.Request().Context(), payload.Username.GetOrZero())
 	if err != nil {
 		return restAbort(c, nil, err)
 	}
 
-	err = auth.CheckPasswordHash(passwordHash, payload.Password.GetOrZero())
+	err = auth.CheckPasswordHash(user.Password, payload.Password.GetOrZero())
 	if err != nil {
 		return restAbort(c, nil, err)
 	}
@@ -62,23 +56,10 @@ func (group *GroupAuth) Login(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	dbRedis, err := do.Invoke[*redis.Client](group.cfg.Container)
+	_, tokenSigned, err := serviceJWTAuthority.IssueToken(c.Request().Context(), user.ID.String(), nil, nil)
 	if err != nil {
 		return restAbort(c, nil, err)
 	}
-
-	cache, err := db.NewCacheRedis(dbRedis)
-	if err != nil {
-		return restAbort(c, nil, err)
-	}
-
-	tokenSigned, err := db.UseCache(c.Request().Context(), cache, fmt.Sprintf("jwt: %s", payload.Username.GetOrZero()), 24*time.Hour, func() (string, error) {
-		_, tokenSigned, err := serviceJWTAuthority.IssueToken(c.Request().Context(), payload.Username.GetOrZero(), nil, nil)
-		if err != nil {
-			return "", err
-		}
-		return tokenSigned, nil
-	})
 
 	return restAbort(c, tokenSigned, err)
 }
@@ -108,7 +89,7 @@ func (group *GroupAuth) Register(c echo.Context) error {
 		return restAbort(c, "username is already exists", err)
 	}
 
-	if payload.Email.GetOrZero() == "" {
+	if payload.Email.GetOrZero() != "" {
 		emailExists, err := serviceUser.ExistByEmail(c.Request().Context(), payload.Email.GetOrZero())
 		if err != nil {
 			return restAbort(c, nil, err)

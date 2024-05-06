@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"core/pkg/cert"
 	"errors"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"time"
 
 	"core/internal/config"
@@ -23,6 +25,26 @@ func startAPIServer(c *cli.Context) error {
 	if !ok {
 		return errors.New("invalid service container")
 	}
+
+	//certPath := c.String("cert-path")
+	certPath := "key"
+	if _, err := os.Stat(certPath); os.IsNotExist(err) {
+		err := os.MkdirAll(filepath.Dir(certPath), 0o755)
+		if err != nil {
+			return err
+		}
+
+		_, _, err = cert.GenerateED25519Pair(certPath, nil)
+		if err != nil {
+			return err
+		}
+	}
+	certBytes, err := os.ReadFile(certPath)
+	if err != nil {
+		return err
+	}
+
+	do.ProvideNamedValue(container, "cert-bytes", certBytes)
 
 	router, err := do.Invoke[http.Handler](container)
 	if err != nil {
