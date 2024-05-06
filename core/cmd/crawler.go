@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/robfig/cron/v3"
 	"log"
 
 	"core/internal/config"
@@ -21,6 +22,22 @@ func startCrawler(c *cli.Context) error {
 	crawler, err := do.Invoke[*service.ServiceCrawler](container)
 	if err != nil {
 		return err
+	}
+
+	if c.String(config.FlagSchedule) == config.FlagOn {
+		schedule := cron.New()
+		_, err := schedule.AddFunc("@every 30s", func() {
+			err = crawler.CrawlMatch()
+			if err != nil {
+				log.Println(err)
+			}
+		})
+		if err != nil {
+			return err
+		}
+
+		schedule.Run()
+		return nil
 	}
 
 	switch c.String(config.FlagTable) {
