@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { NavBar } from '../nav-bar';
+import { LoginModal } from '../login-modal';
+import { axiosConfiguration } from '../../configs/axiosconfiguartor';
 
 type Props = {
   children?: any;
@@ -8,9 +10,11 @@ type Props = {
 export const LayoutWithNavBar = (props: Props) => {
   return (
     <>
-      <NavBar />
-      <div className="py-[24px] overflow-hidden">
-        <Outlet />
+      <div className="relative">
+        <NavBar />
+        <div className="py-[24px] overflow-hidden">
+          <Outlet />
+        </div>
       </div>
     </>
   );
