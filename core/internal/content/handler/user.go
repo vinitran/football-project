@@ -18,5 +18,9 @@ func (group *GroupUser) ShowMe(c echo.Context) error {
 	}
 
 	item, err := serviceUser.Show(ctx)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
 	return restAbort(c, item, err)
 }

@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"core/pkg/auth"
 	"log"
 	"time"
+
+	"core/pkg/auth"
 
 	"core/internal/content/service"
 	"core/pkg/errorx"
