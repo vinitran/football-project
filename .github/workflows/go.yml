@@ -16,6 +16,9 @@ jobs:
       with:
         go-version: '1.22.0'
 
+    - name: Change directory to core
+      run: cd core
+      
     - name: Build
       run: go build -v ./...
 
