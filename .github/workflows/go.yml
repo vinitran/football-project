@@ -1,8 +1,6 @@
 name: Go
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -21,3 +19,19 @@ jobs:
         cd core
         go build -v ./...
 
+  deploy:
+    runs-on: ubuntu-latest
+    name: Continuous Deployment
+    needs: [ build ]
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            git pull
+            make stop
+            make run-build
