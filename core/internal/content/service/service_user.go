@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
-	"core/pkg/auth"
 	"fmt"
 	"time"
+
+	"core/pkg/auth"
 
 	"core/internal/content"
 	b "core/internal/content/bob"

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"core/pkg/cert"
 	"errors"
 	"log"
 	"net/http"
@@ -10,6 +9,8 @@ import (
 	"os/signal"
 	"path/filepath"
 	"time"
+
+	"core/pkg/cert"
 
 	"core/internal/config"
 
@@ -26,7 +27,7 @@ func startAPIServer(c *cli.Context) error {
 		return errors.New("invalid service container")
 	}
 
-	//certPath := c.String("cert-path")
+	// certPath := c.String("cert-path")
 	certPath := "key"
 	if _, err := os.Stat(certPath); os.IsNotExist(err) {
 		err := os.MkdirAll(filepath.Dir(certPath), 0o755)
