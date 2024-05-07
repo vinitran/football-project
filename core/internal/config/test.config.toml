@@ -14,5 +14,5 @@ Environment = "development" # "production" or "development"
     Port = "6379"
 
 [Recommender]
-    Host = "gorse"
+    Host = "http://gorse"
     Port = "8088"
