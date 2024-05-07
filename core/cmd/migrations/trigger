@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION insert_review_match_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO items (item_id, labels, time_stamp, categories)
+    VALUES (NEW.id, NEW.labels, NEW.created_at, '["rematch"]'::jsonb);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_review_match_trigger
+AFTER UPDATE OF labels ON review_matchs
+FOR EACH ROW
+EXECUTE FUNCTION insert_review_match_trigger();
+
+
+
+
+
+CREATE OR REPLACE FUNCTION insert_news_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO items (item_id, labels, time_stamp, categories)
+    VALUES (NEW.id, NEW.labels, NEW.created_at, '["news"]'::jsonb);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_news_trigger
+AFTER UPDATE OF labels ON news_infor
+FOR EACH ROW
+EXECUTE FUNCTION insert_news_trigger();
