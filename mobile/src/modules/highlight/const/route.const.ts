@@ -5,6 +5,6 @@ export const highlightScreen = {
   },
   highlightDetail: {
     name: 'highlightDetail',
-    title: 'Highlight',
+    title: 'screen_title.highlight',
   },
 };

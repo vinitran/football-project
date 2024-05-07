@@ -56,13 +56,21 @@ export const MatchListScreen = () => {
 
   const navigateToLive = (match: Match) => {
     navigation.navigate(homeScreens.matchDetail.name, {
+      matchId: match.id,
+    });
+  };
+
+  const navigateToMatchBook = (match: Match) => {
+    navigation.navigate(homeScreens.matchBooking.name, {
       match,
     });
   };
 
   const renderItem = useCallback(
     ({ item }: RenderItemProps) => {
-      return <MatchCard match={item} onPress={navigateToLive} />;
+      return (
+        <MatchCard match={item} onPress={item.is_live ? navigateToLive : navigateToMatchBook} />
+      );
     },
     [navigateToLive]
   );

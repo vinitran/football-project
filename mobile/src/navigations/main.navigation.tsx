@@ -1,11 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { TabIcon } from './components/tab-icon.component';
-import { MatchListScreen } from '../modules/home/screen/match-list.screen';
 import { HomeNavigation } from './home.navigation';
 import { NewsNavigation } from './news.navigation';
 import { HighlightNavigation } from './highlight.navigation';
+import { AccountNavigation } from './account.navigation';
+import { useService } from '../hook/service.hook';
+import { useTranslation } from '../hook/translate.hook';
 
 interface TabNavigatorProps {
   name: string;
@@ -17,34 +19,48 @@ interface TabNavigatorProps {
 const TabNavigator = createBottomTabNavigator();
 
 export const MainNavigation = () => {
-  const theme = useTheme();
+  const { translateService, storageService } = useService();
+  const { t } = useTranslation();
+
   const routes: TabNavigatorProps[] = [
     {
-      name: 'bridge',
-      icon: 'bridge',
+      name: 'home',
+      icon: 'stadium',
       component: HomeNavigation,
-      tabName: 'Home',
+      tabName: t('tabName.match'),
     },
     {
-      name: 'faucet',
-      icon: 'faucet',
+      name: 'highlight',
+      icon: 'ball',
       component: HighlightNavigation,
-      tabName: 'Highlight',
+      tabName: t('tabName.highlight'),
     },
     {
-      name: 'swap',
-      icon: 'swap-outline',
+      name: 'news',
+      icon: 'news',
       component: NewsNavigation,
-      tabName: 'News',
+      tabName: t('tabName.news'),
     },
-
-    // {
-    //   name: 'account',
-    //   icon: 'account',
-    //   component: AccountScreen,
-    //   tabName: 'Account',
-    // },
+    {
+      name: 'account-tab',
+      icon: 'account',
+      component: AccountNavigation,
+      tabName: t('tabName.account'),
+    },
   ];
+
+  const initLanguage = async () => {
+    const appLanguage = await storageService.getAppLanguageType();
+    if (!appLanguage || appLanguage === 'vi') {
+      return;
+    }
+
+    translateService.changeLanguage(appLanguage);
+  };
+
+  useEffect(() => {
+    initLanguage();
+  }, [storageService, translateService]);
 
   return (
     <TabNavigator.Navigator screenOptions={{ tabBarHideOnKeyboard: true, headerShown: false }}>

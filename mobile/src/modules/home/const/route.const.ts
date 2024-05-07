@@ -5,6 +5,14 @@ export const homeScreens = {
   },
   matchDetail: {
     name: 'matchDetail',
-    title: 'Trực tiếp',
+    title: 'screen_title.match_live',
+  },
+  matchBooking: {
+    name: 'matchBooking',
+    title: '',
+  },
+  matchReviewDetail: {
+    name: 'matchReviewDetail',
+    title: '',
   },
 };

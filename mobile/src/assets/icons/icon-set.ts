@@ -1,4 +1,3 @@
-import icBridge from './bridge.svg';
 import icSwap from './swap.svg';
 import icMetamask from './metamask.svg';
 import icAccount from './account.svg';
@@ -10,16 +9,22 @@ import icChevronUp from './chevron-up.svg';
 import icChevronDownDark from './chevron-down-dark.svg';
 import icChevronUpDark from './chevron-up-dark.svg';
 import icArrowRight from './arrow-right.svg';
-import icFaucet from './faucet.svg';
 import icCheckboxOutline from './checkbox-outline.svg';
 import icCheckboxFill from './checkbox-fill.svg';
 import icCheckboxNone from './checkbox-none.svg';
 import icLive from './live.svg';
 import icReddot from './red-dot.svg';
 import icPlay from './play.svg';
+import icNews from './news.svg';
+import icStadium from './stadium.svg';
+import icBall from './ball.svg';
+import icNodata from './no-data.svg';
+import icSearch from './search.svg';
+import icSetting from './setting.svg';
+import icEye from './eye.svg';
+import icEyeSlash from './eye-slash.svg';
 
 export const iconSet: { [key: string]: string } = {
-  bridge: icBridge,
   swap: icSwap,
   metamask: icMetamask,
   account: icAccount,
@@ -31,11 +36,18 @@ export const iconSet: { [key: string]: string } = {
   'chevron-down-dark': icChevronDownDark,
   'chevron-up-dark': icChevronUpDark,
   'arrow-right': icArrowRight,
-  faucet: icFaucet,
   'checkbox-outline': icCheckboxOutline,
   'checkbox-fill': icCheckboxFill,
   'checkbox-none': icCheckboxNone,
   live: icLive,
   'red-dot': icReddot,
   play: icPlay,
+  news: icNews,
+  stadium: icStadium,
+  ball: icBall,
+  nodata: icNodata,
+  search: icSearch,
+  setting: icSetting,
+  eye: icEye,
+  'eye-slash': icEyeSlash,
 };

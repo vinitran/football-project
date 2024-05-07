@@ -121,15 +121,19 @@ const initStyles = (theme: AppTheme) => {
     tabBar: {
       flexDirection: 'row',
       backgroundColor: theme.backgroundColor,
+      width: '100%',
+      borderBottomColor: theme.neutralColor400,
+      borderBottomWidth: 2,
     },
     tabItem: {
-      flex: 1,
       alignItems: 'center',
       flexDirection: 'row',
       borderBottomWidth: 2,
       justifyContent: 'center',
       paddingVertical: theme.spaceMS,
       borderColor: theme.neutralColor400,
+      paddingHorizontal: theme.spaceM,
+      marginBottom: -2,
     },
     tabItemText: {
       fontWeight: '700',

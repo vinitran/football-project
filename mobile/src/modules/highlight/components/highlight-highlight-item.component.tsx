@@ -3,6 +3,7 @@ import { News } from '../../../interface/news.interface';
 import { useTheme } from '../../../hook/theme.hook';
 import { AppTheme } from '../../../theme/theme';
 import { Icon } from '../../../components/icon/icon.component';
+import { removeCommentorName } from '../../../utils/string.helper';
 
 interface NewsItemProps {
   news: News;
@@ -24,7 +25,7 @@ export const NewsHighlightItem = ({ news, onPress }: NewsItemProps) => {
           <Icon name="play" style={styles.icon} />
         </ImageBackground>
       </View>
-      <Text style={styles.text}>{news.name}</Text>
+      <Text style={styles.text}>{removeCommentorName(news.name)}</Text>
     </TouchableOpacity>
   );
 };

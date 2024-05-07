@@ -3,6 +3,7 @@ import { useTheme } from '../../../hook/theme.hook';
 import { AppTheme } from '../../../theme/theme';
 import { Highlight } from '../../../interface/highlight.interface';
 import { Icon } from '../../../components/icon/icon.component';
+import { removeCommentorName } from '../../../utils/string.helper';
 
 interface HightlightItemProps {
   news: Highlight;
@@ -18,7 +19,7 @@ export const HighlightItem = ({ news, onPress }: HightlightItemProps) => {
       <ImageBackground source={{ uri: news.feature_image }} style={styles.image} resizeMode="cover">
         <Icon name="play" style={styles.icon} />
       </ImageBackground>
-      <Text style={styles.text}>{news.name}</Text>
+      <Text style={styles.text}>{removeCommentorName(news.name)}</Text>
     </TouchableOpacity>
   );
 };

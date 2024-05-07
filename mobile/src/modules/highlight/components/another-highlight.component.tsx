@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { highlightScreen } from '../const/route.const';
 import { HighlightItem } from './highlight-item.component';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useTranslation } from '../../../hook/translate.hook';
 
 interface AnotherHighlightProps {
   hot: Highlight[];
@@ -24,6 +25,7 @@ interface RenderItemProps {
 }
 
 export const AnotherHighlight = ({ hot, related }: AnotherHighlightProps) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const styles = initStyles(theme);
   const navigation = useNavigation<StackNavigationProp<any>>();
@@ -57,11 +59,11 @@ export const AnotherHighlight = ({ hot, related }: AnotherHighlightProps) => {
     return [
       {
         key: Tab.HOT,
-        title: 'Highlight Hot',
+        title: t('highlight.highlight_hot'),
       },
       {
         key: Tab.RELATED,
-        title: 'Highlight Nổi bật',
+        title: t('highlight.highlight_related'),
       },
     ] as any;
   }, []);

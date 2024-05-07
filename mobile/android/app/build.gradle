@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -84,10 +85,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
+            storeFile file('football.keystore')
+            storePassword 'football'
             keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            keyPassword 'football'
         }
     }
     buildTypes {

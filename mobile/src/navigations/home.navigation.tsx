@@ -5,11 +5,14 @@ import { MatchListScreen } from '../modules/home/screen/match-list.screen';
 import { StackNavigation } from './components/stack.navigation';
 import { MatchDetailScreen } from '../modules/home/screen/match-detail.screen';
 import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from '@react-navigation/native';
+import { MatchBookEventScreen } from '../modules/home/screen/match-book-envent.component';
+import { HomeScreen } from '../modules/home/screen/home.screen';
+import { MatchReviewDetailScreen } from '../modules/home/screen/match-review-detail.screen';
 
 const homeScreens: ScreenStack[] = [
   {
     route: screens.matchList,
-    component: MatchListScreen,
+    component: HomeScreen,
     options: {
       headerShown: false,
     },
@@ -17,6 +20,14 @@ const homeScreens: ScreenStack[] = [
   {
     route: screens.matchDetail,
     component: MatchDetailScreen,
+  },
+  {
+    route: screens.matchBooking,
+    component: MatchBookEventScreen,
+  },
+  {
+    route: screens.matchReviewDetail,
+    component: MatchReviewDetailScreen,
   },
 ];
 

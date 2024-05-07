@@ -2,13 +2,14 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { News } from '../../../interface/news.interface';
 import { useTheme } from '../../../hook/theme.hook';
 import { AppTheme } from '../../../theme/theme';
+import React from 'react';
 
 interface NewsItemProps {
   news: News;
   onPress: (id: string) => void;
 }
 
-export const NewsItem = ({ news, onPress }: NewsItemProps) => {
+export const NewsItem = React.memo(({ news, onPress }: NewsItemProps) => {
   const theme = useTheme();
   const styles = initStyles(theme);
 
@@ -18,7 +19,7 @@ export const NewsItem = ({ news, onPress }: NewsItemProps) => {
       <Text style={styles.text}>{news.name}</Text>
     </TouchableOpacity>
   );
-};
+});
 
 const initStyles = (theme: AppTheme) => {
   return StyleSheet.create({

@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 
 import { MainNavigation } from './navigations/main.navigation';
@@ -8,20 +8,34 @@ import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { AppWrapper } from './components/app-wrapper/app-wrapper.component';
 import { AppProvider } from './providers/app.provider';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { screens } from './navigations/const/screens.const';
+import { useService } from './hook/service.hook';
 
-function App(): React.JSX.Element {
+GoogleSignin.configure({
+  webClientId: '1027985649693-qbibsoqi1tgjoh49sn5s1pp7cndg1gq2.apps.googleusercontent.com',
+});
+
+function Layout(): React.JSX.Element {
   useEffect(() => {
     Appearance.setColorScheme('light');
   }, []);
 
+  const linking: LinkingOptions<{}> = {
+    prefixes: ['football://'],
+    config: {
+      screens: {
+        [screens.matchDetail.name]: 'match-live/:matchId',
+      },
+    },
+  };
+
   return (
     <Provider store={store}>
       <AppWrapper>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <ThemeProvider>
-            <AppProvider>
-              <MainNavigation />
-            </AppProvider>
+            <MainNavigation />
           </ThemeProvider>
         </NavigationContainer>
       </AppWrapper>
@@ -29,4 +43,10 @@ function App(): React.JSX.Element {
   );
 }
 
-export default App;
+export function App() {
+  return (
+    <AppProvider>
+      <Layout />
+    </AppProvider>
+  );
+}

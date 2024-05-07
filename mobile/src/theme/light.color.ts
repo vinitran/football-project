@@ -18,6 +18,7 @@ export interface AppColor {
   secondaryColor100: string;
   secondaryColor200: string;
   semanticSuccessColor500: string;
+  errorColor: string;
 }
 
 export const LightColor: AppColor = {
@@ -40,4 +41,5 @@ export const LightColor: AppColor = {
   secondaryColor100: '#C2DAFA',
   secondaryColor200: '#91BDF6',
   semanticSuccessColor500: '#00B64B',
+  errorColor: '#F44336',
 };

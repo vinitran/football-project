@@ -17,8 +17,6 @@ export const MatchCard = ({ match, onPress }: MatchCardProps) => {
   const time = new Date(match.timestamp);
 
   const onPressCard = () => {
-    if (!match.is_live) return;
-
     onPress(match);
   };
 

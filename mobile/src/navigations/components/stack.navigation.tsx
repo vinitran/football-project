@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator, StackNavigationOptions } from '@react-navigation/stack';
 import { ReactNode } from 'react';
 import { ScreenStack } from '../../interface/screen-stack.interface';
+import { useTranslation } from '../../hook/translate.hook';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +13,7 @@ export interface StackNavigationProps {
 }
 
 export const StackNavigation = (props: StackNavigationProps) => {
+  const { t } = useTranslation();
   const defaultProps = {
     safeAreaInsets: { top: 0 },
   };
@@ -27,7 +29,7 @@ export const StackNavigation = (props: StackNavigationProps) => {
           name={screen.route.name}
           component={screen.component as any}
           options={{
-            title: screen.route.title,
+            title: t(screen.route.title),
             ...screen.options,
           }}
         />
