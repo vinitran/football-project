@@ -116,6 +116,11 @@ func (group *GroupAuth) Register(c echo.Context) error {
 	}
 
 	user, err := serviceUser.Create(c.Request().Context(), userSetter)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	user.Password = ""
 	return restAbort(c, user, err)
 }
 

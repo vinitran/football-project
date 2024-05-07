@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/google/uuid"
 	"log"
 	"time"
 
@@ -36,6 +37,29 @@ func (group *GroupRecommend) CreateFeedback(c echo.Context) error {
 	feedback := service.Feedback{
 		FeedbackType: payload.FeedbackType,
 		UserId:       sub.String(),
+		ItemId:       payload.ItemId,
+		Timestamp:    time.Now().String(),
+	}
+
+	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{feedback})
+	return restAbort(c, "inserted feedback", err)
+}
+
+func (group *GroupRecommend) CreateFeedbackWithoutAuth(c echo.Context) error {
+	ctx := c.Request().Context()
+	var payload FeedbackPayload
+	if err := c.Bind(&payload); err != nil {
+		return restAbort(c, nil, errorx.Wrap(err, errorx.Invalid))
+	}
+
+	serviceRecommender, err := do.Invoke[*service.ServiceRecommender](group.cfg.Container)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	feedback := service.Feedback{
+		FeedbackType: payload.FeedbackType,
+		UserId:       uuid.New().String(),
 		ItemId:       payload.ItemId,
 		Timestamp:    time.Now().String(),
 	}
