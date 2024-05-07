@@ -28,6 +28,47 @@ export const LoginScreen = () => {
     setPassword(password);
   };
 
+  const onChangeUsername = (username: string) => {
+    setError1('');
+    setUsername(username);
+  };
+
+  const onChangePassword = (password: string) => {
+    setError2('');
+    setPassword(password);
+  };
+
+  const onValidateUsername = () => {
+    if (username.length === 0) {
+      setError2(t('validation.no_username'));
+      return false;
+    }
+
+    return true;
+  };
+
+  const onValidatePasword = () => {
+    if (password.length === 0) {
+      setError2(t('validation.no_password'));
+      return false;
+    }
+
+    if (password.length < 8) {
+      setError2(t('validation.short_password'));
+      return false;
+    }
+
+    return true;
+  };
+
+  const onValidate = () => {
+    return onValidateUsername() && onValidatePasword();
+  };
+
+  const onSubmit = () => {
+    if (!onValidate()) return;
+  };
+
   return (
     <View style={styles.screen}>
       <View style={styles.wrapper}>
