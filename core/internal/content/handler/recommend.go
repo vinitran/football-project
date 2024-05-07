@@ -125,11 +125,6 @@ func (group *GroupRecommend) GetPopularByItem(c echo.Context) error {
 	return restAbort(c, items, err)
 }
 
-//
-//INSERT INTO items (item_id, labels, time_stamp, categories)
-//SELECT id, labels, created_at, '["rematch"]'::jsonb
-//FROM review_matchs;
-
 type FeedbackPayload struct {
 	FeedbackType string `json:"FeedbackType"`
 	ItemId       string `json:"ItemId"`

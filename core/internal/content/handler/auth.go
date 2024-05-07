@@ -27,7 +27,7 @@ func (group *GroupAuth) Login(c echo.Context) error {
 
 	err := payload.validate()
 	if err != nil {
-		return restAbort(c, nil, errorx.Wrap(errors.New("invalid data"), errorx.Validation))
+		return restAbort(c, nil, errorx.Wrap(errors.New("Tài khoản hoặc mật khẩu không hợp lệ"), errorx.Validation))
 	}
 
 	serviceUser, err := do.Invoke[*service.ServiceUser](group.cfg.Container)
@@ -41,7 +41,7 @@ func (group *GroupAuth) Login(c echo.Context) error {
 	}
 
 	if !isExistUSer {
-		return restAbort(c, nil, errorx.Wrap(errors.New("user is not exists"), errorx.NotExist))
+		return restAbort(c, nil, errorx.Wrap(errors.New("Tài khoản không tồn tại"), errorx.NotExist))
 	}
 
 	user, err := serviceUser.FindByUsername(c.Request().Context(), payload.Username.GetOrZero())
@@ -51,7 +51,7 @@ func (group *GroupAuth) Login(c echo.Context) error {
 
 	err = auth.CheckPasswordHash(user.Password, payload.Password.GetOrZero())
 	if err != nil {
-		return restAbort(c, nil, errorx.Wrap(errors.New("invalid password"), errorx.Authn))
+		return restAbort(c, nil, errorx.Wrap(errors.New("Mật khẩu không chính xác"), errorx.Authn))
 	}
 
 	serviceJWTAuthority, err := do.Invoke[*jwtx.Authority](group.cfg.Container)
@@ -89,7 +89,7 @@ func (group *GroupAuth) Register(c echo.Context) error {
 	}
 
 	if usernameExists {
-		return restAbort(c, nil, errorx.Wrap(errors.New("user is already exists"), errorx.Exist))
+		return restAbort(c, nil, errorx.Wrap(errors.New("Tài khoản đã tồn tại"), errorx.Exist))
 	}
 
 	if payload.Email.GetOrZero() != "" {
@@ -99,7 +99,7 @@ func (group *GroupAuth) Register(c echo.Context) error {
 		}
 
 		if emailExists {
-			return restAbort(c, nil, errorx.Wrap(errors.New("email is already exists"), errorx.Exist))
+			return restAbort(c, nil, errorx.Wrap(errors.New("Email đã được sử dụng"), errorx.Exist))
 		}
 	}
 
