@@ -16,25 +16,39 @@ export const NewsDetailPage = () => {
 
   // FUNCTION
   const fetchDetailNews = async () => {
-    setLoading(true)
-    const res1 = await _axios.get(apis.news.detail({ id: params.id }));
-    if (res1) {
-      setResDetailNews(res1.data?.data ?? []);
-    }
-    setLoading(false)
+    setLoading(true);
+    _axios
+      .get(apis.news.detail({ id: params.id }))
+      .then((res) => {
+        if (res) {
+          setResDetailNews(res.data?.data ?? []);
+        }
+      })
+      .catch((err) => {})
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const fetchHotNews = async () => {
-    const res1 = await _axios.get(apis.news.hot());
-    if (res1) {
-      setResHotNews(res1.data?.data ?? []);
-    }
+    _axios
+      .get(apis.news.hot())
+      .then((res) => {
+        if (res) {
+          setResHotNews(res.data?.data ?? []);
+        }
+      })
+      .catch((err) => {});
   };
   const fetchRelativeNews = async () => {
-    console.log('fetchRelative')
-    const res1 = await _axios.get(apis.news.relative({ id: params.id }));
-    if (res1) {
-      setRelativeNews(res1.data?.data ?? []);
-    }
+    console.log('fetchRelative');
+    _axios
+      .get(apis.news.relative({ id: params.id }))
+      .then((res) => {
+        if (res) {
+          setRelativeNews(res.data?.data ?? []);
+        }
+      })
+      .catch((err) => {});
   };
 
   useEffect(() => {

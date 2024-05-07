@@ -82,46 +82,77 @@ export const NavBar = (props: Props) => {
 
   // FUNCTION
   const fetchLogin = async (username: string, password: string) => {
-    const res = await _axios.post('auth/login', { username: username, password: password });
-    if (res) {
-      axiosConfiguration.setAxiosToken(res.data.data, true);
-      axiosConfiguration.setUserInfo({
-        username: 'username',
-        name: 'name',
-        email: 'email'
+    _axios
+      .post('auth/login', { username: username, password: password })
+      .then((res) => {
+        if (res) {
+          if (res.data && res.data.data) {
+            console.log('into3');
+            axiosConfiguration.setAxiosToken(res.data.data, true);
+            axiosConfiguration.setUserInfo({
+              username: 'username',
+              name: 'name',
+              email: 'email'
+            });
+            toast.success('Đăng nhập thành công', {
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'light'
+            });
+          }
+        }
+        setIsOpenLogin(false);
+      })
+      .catch((err) => {
+        toast.warning(err.response.data.message, {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
+        });
       });
-      toast.success('Đăng nhập thành công', {
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light'
-      });
-    }
-    setIsOpenLogin(false);
   };
   const fetchRegister = async (formRegister: IFormRegister) => {
-    const res = await _axios.post('auth/register', {
-      username: formRegister.username,
-      name: formRegister.name,
-      email: formRegister.email,
-      password: formRegister.password
-    });
-    if (res) {
-      toast.success('Đăng kí tài khoản thành công', {
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light'
+    _axios
+      .post('auth/register', {
+        username: formRegister.username,
+        name: formRegister.name,
+        email: formRegister.email,
+        password: formRegister.password
+      })
+      .then((res) => {
+        if (res) {
+          toast.success('Đăng kí tài khoản thành công', {
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light'
+          });
+        }
+        setIsOpenRegister(false);
+        setIsOpenLogin(true);
+      })
+      .catch((err) => {
+        toast.warning(err.response.data.message, {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
+        });
       });
-    }
-    setIsOpenRegister(false);
-    setIsOpenLogin(true);
   };
 
   // EFFECT

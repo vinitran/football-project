@@ -19,23 +19,37 @@ export const RewatchDetailPage = () => {
   // FUNCTION
   const fetchDetailNews = async () => {
     setLoading(true);
-    const res1 = await _axios.get(apis.rewatch.detail({ id: params.id }));
-    if (res1) {
-      setResDetailRewatch(res1.data?.data ?? []);
-    }
-    setLoading(false);
+    _axios
+      .get(apis.rewatch.detail({ id: params.id }))
+      .then((res) => {
+        if (res) {
+          setResDetailRewatch(res.data?.data ?? []);
+        }
+      })
+      .catch((err) => {})
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const fetchHotNews = async () => {
-    const res1 = await _axios.get(apis.news.hot());
-    if (res1) {
-      setResHotNews(res1.data?.data ?? []);
-    }
+    _axios
+      .get(apis.news.hot())
+      .then((res) => {
+        if (res) {
+          setResHotNews(res.data?.data ?? []);
+        }
+      })
+      .catch(() => {});
   };
   const fetchRelativeNews = async () => {
-    const res1 = await _axios.get(apis.news.relative({ id: 'YoKxsem' }));
-    if (res1) {
-      setRelativeNews(res1.data?.data ?? []);
-    }
+    _axios
+      .get(apis.news.relative({ id: 'YoKxsem' }))
+      .then((res1) => {
+        if (res1) {
+          setRelativeNews(res1.data?.data ?? []);
+        }
+      })
+      .catch(() => {});
   };
   useEffect(() => {
     fetchDetailNews();
@@ -110,7 +124,7 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
           </p>
         </div>
       </div>
-      <div className='p-[12px]'>
+      <div className="p-[12px]">
         <VideoPlayer src={filterUrl(rewatch.video_url)} />
       </div>
       <div className="article-news block px-5 pt-[-15px]">

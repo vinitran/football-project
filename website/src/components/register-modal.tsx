@@ -44,7 +44,7 @@ export const RegisterModal = (props: Props) => {
             {/* Username */}
             <div className="flex gap-[8px]">
               <img
-                className="w-[24px] h-[24px]"
+                className="w-[24px] h-[24px] p-[2px]"
                 src={require('../assets/image/logo2.png')}
                 alt=""
               />
@@ -57,7 +57,7 @@ export const RegisterModal = (props: Props) => {
             {/* Name */}
             <div className="flex gap-[8px]">
               <img
-                className="w-[24px] h-[24px]"
+                className="w-[24px] h-[24px] p-[2px]"
                 src={require('../assets/image/logo2.png')}
                 alt=""
               />

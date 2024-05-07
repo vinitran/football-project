@@ -24,25 +24,39 @@ export const NewPage = (props: Props) => {
   // FUNCTION
   const fetchListNews = async () => {
     setLoading(true);
-    const res1 = await _axios.get(
-      apis.news.list({ limit: pagination.pageSize, page: pagination.pageNum, search: searching })
-    );
-    if (res1) {
-      setResListNews(res1.data?.data ?? []);
-    }
-    setLoading(false);
+    _axios
+      .get(
+        apis.news.list({ limit: pagination.pageSize, page: pagination.pageNum, search: searching })
+      )
+      .then((res) => {
+        if (res) {
+          setResListNews(res.data?.data ?? []);
+        }
+      })
+      .catch((err) => {})
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const fetchTotalListNews = async () => {
-    const res1 = await _axios.get(apis.rewatch.count());
-    if (res1) {
-      setResTotalListNews(res1.data?.data ?? 0);
-    }
+    _axios
+      .get(apis.rewatch.count())
+      .then((res) => {
+        if (res) {
+          setResTotalListNews(res.data?.data ?? 0);
+        }
+      })
+      .catch(() => {});
   };
   const fetchHotNews = async () => {
-    const res1 = await _axios.get(apis.news.hot());
-    if (res1) {
-      setResHotNews(res1.data?.data ?? []);
-    }
+    _axios
+      .get(apis.news.hot())
+      .then((res) => {
+        if (res) {
+          setResHotNews(res.data?.data ?? []);
+        }
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -73,10 +87,8 @@ export const NewPage = (props: Props) => {
                 </div>
                 <Pagination
                   color="primary"
-                  count={
-                    resTotalListNews ? Math.ceil(resTotalListNews / pagination.pageSize) : 0
-                  }
-                  className='cursor-pointer'
+                  count={resTotalListNews ? Math.ceil(resTotalListNews / pagination.pageSize) : 0}
+                  className="cursor-pointer"
                   page={pagination.pageNum}
                   onChange={handlePaginationChange}
                 />
