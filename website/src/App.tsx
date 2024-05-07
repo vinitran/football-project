@@ -9,7 +9,7 @@ import { NavBar } from './components/nav-bar';
 export const App = () => {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
       <RouterProvider router={router} />
     </>
   );

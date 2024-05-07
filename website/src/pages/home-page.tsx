@@ -106,9 +106,9 @@ export const HomePage: React.FC<HomeProps> = () => {
         </PageLoading>
       ) : (
         <div className="relative mt-[-24px] mb-[-26px]">
-          <div className="relative h-[705px]">
+          <div className="h-[705px]">
             <img
-              className="absolute w-full"
+              className="fixed top-0 left-0 right-0 bottom-0 z-[-1] w-full"
               src={require('../assets/image/bg3.jpg')}
               alt=""
             />
