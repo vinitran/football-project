@@ -82,44 +82,42 @@ export const NavBar = (props: Props) => {
 
   // FUNCTION
   const fetchLogin = async (username: string, password: string) => {
-    try {
-      _axios
-        .post('auth/login', { username: username, password: password })
-        .then((res) => {
-          if (res) {
-            if (res.data && res.data.data) {
-              console.log('into3');
-              axiosConfiguration.setAxiosToken(res.data.data, true);
-              axiosConfiguration.setUserInfo({
-                username: 'username',
-                name: 'name',
-                email: 'email'
-              });
-              toast.success('Đăng nhập thành công', {
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: 'light'
-              });
-            }
+    _axios
+      .post('auth/login', { username: username, password: password })
+      .then((res) => {
+        if (res) {
+          if (res.data && res.data.data) {
+            console.log('into3');
+            axiosConfiguration.setAxiosToken(res.data.data, true);
+            axiosConfiguration.setUserInfo({
+              username: 'username',
+              name: 'name',
+              email: 'email'
+            });
+            toast.success('Đăng nhập thành công', {
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'light'
+            });
           }
-          setIsOpenLogin(false);
-        })
-        .catch((err) => {
-          toast.warning(err.response.data.message, {
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light'
-          });
+        }
+        setIsOpenLogin(false);
+      })
+      .catch((err) => {
+        toast.warning(err.response.data.message, {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light'
         });
-    } catch (error) {}
+      });
   };
   const fetchRegister = async (formRegister: IFormRegister) => {
     _axios

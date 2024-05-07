@@ -41,7 +41,7 @@ export const LoginModal = (props: Props) => {
             {/* Username */}
             <div className="flex gap-[8px]">
               <img
-                className="w-[24px] h-[24px]"
+                className="w-[24px] h-[24px] p-[2px]"
                 src={require('../assets/image/logo2.png')}
                 alt=""
               />
@@ -55,7 +55,7 @@ export const LoginModal = (props: Props) => {
             <div className="flex gap-[8px]">
               <img
                 className="w-[24px] h-[24px]"
-                src={require('../assets/image/logo2.png')}
+                src={require('../assets/image/logo-password.png')}
                 alt=""
               />
               <input

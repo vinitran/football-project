@@ -24,31 +24,49 @@ export const RewatchPage = (props: Props) => {
   // FUNCTION
   const fetchListRewatch = async () => {
     setLoading(true);
-    const res1 = await _axios.get(
-      apis.rewatch.list({ limit: pagination.pageSize, page: pagination.pageNum, search: searching })
-    );
-    if (res1) {
-      setResListRewatch(res1.data?.data ?? []);
-    }
-    setLoading(false);
+    _axios
+      .get(
+        apis.rewatch.list({
+          limit: pagination.pageSize,
+          page: pagination.pageNum,
+          search: searching
+        })
+      )
+      .then((res) => {
+        if (res) {
+          setResListRewatch(res.data?.data ?? []);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const fetchTotalListRewatch = async () => {
-    const res1 = await _axios.get(apis.rewatch.count());
-    if (res1) {
-      setResTotalListRewatch(res1.data?.data ?? 0);
-    }
+    _axios
+      .get(apis.rewatch.count())
+      .then((res) => {
+        if (res) {
+          setResTotalListRewatch(res.data?.data ?? 0);
+        }
+      })
+      .catch(() => {});
   };
-  const fetchHotNews = async () => {
-    const res1 = await _axios.get(apis.rewatch.hot());
-    if (res1) {
-      setResHotRewatch(res1.data?.data ?? []);
-    }
+  const fetchHotRewatch = async () => {
+    _axios
+      .get(apis.rewatch.hot())
+      .then((res) => {
+        if (res) {
+          setResHotRewatch(res.data?.data ?? []);
+        }
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
     fetchListRewatch();
     fetchTotalListRewatch();
-    fetchHotNews();
+    fetchHotRewatch();
   }, []);
 
   useEffect(() => {
@@ -85,7 +103,7 @@ export const RewatchPage = (props: Props) => {
               <div className="flex flex-col w-[400px]">
                 {resHotRewatch ? (
                   <HotBar
-                    title="Tin nổi bật"
+                    title="Các trận nổi bật"
                     ids={resHotRewatch}
                     urlDetail={apis.rewatch.detail}
                     urlClick="/rewatch-detail/"
