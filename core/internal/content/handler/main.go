@@ -94,6 +94,7 @@ func New(cfg *Config) (http.Handler, error) {
 		routesAPIv1.GET("/recommend/popular/:category", groupRecommend.GetPopularByItem)
 
 		routesAPIv1WithAuth.POST("/recommend/feedback", groupRecommend.CreateFeedback)
+		routesAPIv1.POST("/recommend/anonymous/feedback", groupRecommend.CreateFeedbackWithoutAuth)
 
 		routesAPIv1.GET("/news/:id/neighbors", groupRecommend.GetByItem)
 		routesAPIv1.GET("/news/:id/neighbors/:category", groupRecommend.GetByItemAndCategory)
