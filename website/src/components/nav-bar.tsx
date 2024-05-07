@@ -170,11 +170,6 @@ export const NavBar = (props: Props) => {
       .catch(() => {});
   };
 
-  // EFFECT
-  useEffect(() => {
-    toast.warning('user change');
-  }, [axiosConfiguration.getAxiosToken()]);
-
   return (
     <>
       <div className="nav-bar grid grid-cols-3 gap-4 place-items-stretch">
