@@ -31,12 +31,14 @@ func Authn(guard Guard) echo.MiddlewareFunc {
 
 			parts := strings.Split(header, "Bearer")
 			if len(parts) != 2 {
-				return next(c)
+				Abort(c, errorx.Wrap(errors.New("invalid access token"), errorx.Authn), -1)
+				return nil
 			}
 
 			token := strings.TrimSpace(parts[1])
 			if len(token) == 0 {
-				return next(c)
+				Abort(c, errorx.Wrap(errors.New("invalid access token"), errorx.Authn), -1)
+				return nil
 			}
 
 			_, claims, err := guard.AuthenticateJWT(c.Request().Context(), token)
