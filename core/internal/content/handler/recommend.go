@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/google/uuid"
-	"log"
 	"time"
 
 	"core/pkg/auth"
@@ -106,7 +105,7 @@ func (group *GroupRecommend) GetByUserAndCategory(c echo.Context) error {
 
 func (group *GroupRecommend) GetByItem(c echo.Context) error {
 	ctx := c.Request().Context()
-	log.Println("item")
+
 	itemId := c.Param("id")
 
 	limit := queryParamInt(c, "limit", 10)
