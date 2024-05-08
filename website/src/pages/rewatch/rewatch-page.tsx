@@ -19,6 +19,7 @@ export const RewatchPage = (props: Props) => {
   const [resListRewatch, setResListRewatch] = useState([]);
   const [resTotalListRewatch, setResTotalListRewatch] = useState(0);
   const [resHotRewatch, setResHotRewatch] = useState([]);
+  const [resRecommentRewatch, setResRecommentRewatch] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // FUNCTION
@@ -61,6 +62,9 @@ export const RewatchPage = (props: Props) => {
         }
       })
       .catch(() => {});
+  };
+  const fetchRecommentNews = async () => {
+
   };
 
   useEffect(() => {

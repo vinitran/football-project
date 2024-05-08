@@ -10,6 +10,7 @@ import axios from 'axios';
 import { apis } from '../../consts/api.const';
 import { HotBar } from '../../components/hot-bar';
 import { SearchBar } from '../../components/search-bar';
+import { localStorageKey } from '../../consts/local-storage-key.const';
 
 type Props = {};
 
@@ -19,7 +20,9 @@ export const NewPage = (props: Props) => {
   const [resListNews, setResListNews] = useState([]);
   const [resTotalListNews, setResTotalListNews] = useState(0);
   const [resHotNews, setResHotNews] = useState([]);
+  const [resRecommentNews, setResRecommentNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setAuthenticated] = useState<string | null>();
 
   // FUNCTION
   const fetchListNews = async () => {
@@ -58,16 +61,40 @@ export const NewPage = (props: Props) => {
       })
       .catch(() => {});
   };
+  const fetchRecommentNews = async () => {
+    const token = localStorage.getItem(localStorageKey.token);
+    if (token) {
+      axiosConfiguration.setAxiosToken(token, true);
+      await _axios
+        .get(apis.news.recomment())
+        .then((res) => {
+          if (res) {
+            setResRecommentNews(res.data?.data ?? []);
+          }
+        })
+        .catch(() => {});
+    }
+  };
 
   useEffect(() => {
     fetchListNews();
     fetchTotalListNews();
     fetchHotNews();
+    fetchRecommentNews();
   }, []);
 
   useEffect(() => {
     fetchListNews();
   }, [searching, pagination]);
+
+  useEffect(() => {
+    fetchRecommentNews();
+  }, [isAuthenticated]);
+
+  // LISTENER
+  window.addEventListener('onChangeAuthentication', () => {
+    setAuthenticated(localStorage.getItem(localStorageKey.token));
+  });
 
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPagination({ ...pagination, pageNum: value });
@@ -95,6 +122,18 @@ export const NewPage = (props: Props) => {
               </div>
 
               <div className="flex flex-col w-[400px]">
+                {isAuthenticated ? (
+                  <HotBar
+                    title="Tin đề xuất"
+                    ids={resRecommentNews}
+                    urlDetail={apis.news.detail}
+                    urlClick="/new-detail/"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <Loading />
+                  </div>
+                )}
                 {resHotNews ? (
                   <HotBar
                     title="Tin nổi bật"

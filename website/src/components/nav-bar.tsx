@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { UserInforModal } from './user-info-modal';
 import { IUserInfo } from '../interfaces/entites/user-info';
 import { apis } from '../consts/api.const';
+import { localStorageKey } from '../consts/local-storage-key.const';
 
 type Props = {
   children?: any;
@@ -94,6 +95,7 @@ export const NavBar = (props: Props) => {
         if (res) {
           if (res.data && res.data.data) {
             axiosConfiguration.setAxiosToken(res.data.data, true);
+            localStorage.setItem(localStorageKey.token, res.data.data);
             toast.success('Đăng nhập thành công', {
               autoClose: 5000,
               hideProgressBar: false,
@@ -107,6 +109,7 @@ export const NavBar = (props: Props) => {
         }
         await fetchUserInfo();
         setIsOpenLogin(false);
+        window.dispatchEvent(new Event('onChangeAuthentication'));
       })
       .catch((err) => {
         toast.warning(err.response.data.message, {
@@ -191,7 +194,7 @@ export const NavBar = (props: Props) => {
           </Box>
         </div>
         <div className="flex items-center justify-end gap-2 mr-[8px] col-start-3">
-          {!axiosConfiguration.getAxiosToken() ? (
+          {!localStorage.getItem(localStorageKey.token) ? (
             <>
               <button
                 className="w-[100px] h-[40px] py-[2px] bg-[#008A00] rounded-[8px] text-white"
@@ -262,6 +265,8 @@ export const NavBar = (props: Props) => {
             axiosConfiguration.deleteAxiosToken();
             setUserInfo(undefined);
             setIsOpenUserInfo(false);
+            localStorage.removeItem(localStorageKey.token);
+            window.dispatchEvent(new Event('onChangeAuthentication'));
             toast.success('Đã đăng xuất');
           }}
           onCancel={() => {
