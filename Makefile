@@ -45,7 +45,7 @@ run-build:
 	$(RUN_REDIS)
 	sleep 1
 	$(RUN_CRAWLER_SCHEDULE) --build
-	$(STOP_CRAWLER_EXTRACTER) --build
+	$(RUN_CRAWLER_EXTRACTER) --build
 	$(RUN_GORSE) --build
 	$(RUN_API) --build
 
