@@ -86,7 +86,6 @@ func (group *GroupRecommend) GetByUser(c echo.Context) error {
 func (group *GroupRecommend) GetByUserAndCategory(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	userId := c.Param("id")
 	category := c.Param("category")
 
 	limit := queryParamInt(c, "limit", 10)
@@ -96,7 +95,12 @@ func (group *GroupRecommend) GetByUserAndCategory(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	items, err := serviceRecommender.GetRecommend(ctx, userId, category, limit)
+	sub, err := auth.ResolveValidSubjectUUID(ctx)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	items, err := serviceRecommender.GetRecommend(ctx, sub.String(), category, limit)
 	return restAbort(c, items, err)
 }
 

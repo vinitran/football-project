@@ -29,18 +29,20 @@ func New(cfg *Config) (http.Handler, error) {
 	}))
 	r.Use(middleware.Recover())
 
+	cors := middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     cfg.Origins,
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+		AllowCredentials: true,
+		AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodHead, http.MethodOptions},
+		MaxAge:           60 * 60,
+	})
+
 	r.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "hello world")
 	})
+
 	routesAPIv1 := r.Group("/api/v1")
 	{
-		cors := middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowOrigins:     cfg.Origins,
-			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
-			AllowCredentials: true,
-			AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodHead, http.MethodOptions},
-			MaxAge:           60 * 60,
-		})
 		routesAPIv1.Use(cors)
 	}
 
@@ -51,13 +53,6 @@ func New(cfg *Config) (http.Handler, error) {
 			return nil, err
 		}
 
-		cors := middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowOrigins:     cfg.Origins,
-			AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
-			AllowCredentials: true,
-			AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodHead, http.MethodOptions},
-			MaxAge:           60 * 60,
-		})
 		routesAPIv1WithAuth.Use(cors)
 		routesAPIv1WithAuth.Use(httpx.Authn(guard))
 	}
@@ -89,10 +84,9 @@ func New(cfg *Config) (http.Handler, error) {
 
 	groupRecommend := &GroupRecommend{cfg}
 	{
-		routesAPIv1.GET("/recommend/:id", groupRecommend.GetByUser)
-		routesAPIv1.GET("/recommend/:id/:category", groupRecommend.GetByUserAndCategory)
 		routesAPIv1.GET("/recommend/popular/:category", groupRecommend.GetPopularByItem)
 
+		routesAPIv1WithAuth.GET("/recommend/user/:category", groupRecommend.GetByUserAndCategory)
 		routesAPIv1WithAuth.POST("/recommend/feedback", groupRecommend.CreateFeedback)
 		routesAPIv1.POST("/recommend/anonymous/feedback", groupRecommend.CreateFeedbackWithoutAuth)
 
