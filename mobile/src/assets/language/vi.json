@@ -16,7 +16,8 @@
     "hot_match": "Trận đấu Hot",
     "related_match": "Trận đấu tương tự",
     "no_data": "Không có trận đấu",
-    "placeholder": "Tìm kiếm trận đấu"
+    "placeholder": "Tìm kiếm trận đấu",
+    "comment": "Bình luận"
   },
   "highlight": {
     "highlight_hot": "Video nổi bật",
@@ -41,11 +42,25 @@
     "password_placeholder": "Nhập mật khẩu",
     "username": "Tên đăng nhập",
     "password": "Mật khẩu",
-    "no_account": "Chưa có tài khoản. Vui lòng "
+    "no_account": "Chưa có tài khoản. Vui lòng ",
+    "name": "Tên tài khoản",
+    "email": "Địa chỉ email",
+    "name_placeholder": "Nhập tên tài khoản",
+    "email_placeholder": "Nhập địa chỉ email",
+    "logout": "Đăng xuất",
+    "setting": "Cài đặt",
+    "register_success": "Đăng ký thành công",
+    "login_success": "Đăng nhập thành công",
+    "login_again": "Vui lòng đăng nhập",
+    "language": "Ngôn ngữ",
+    "choose_language": "Chọn ngôn ngữ"
   },
   "validation": {
-    "short_password": "Mật khẩu quá ngắn",
+    "short_password": "Mật khẩu tối thiểu 8 kí tự",
     "no_password": "Vui lòng nhập mật khẩu",
-    "no_username": "Vui lòng nhập tên đăng nhập"
+    "no_username": "Vui lòng nhập tên đăng nhập",
+    "no_name": "Vui lòng nhập tên tài khoản",
+    "no_email": "Vui lòng nhập địa chỉ email",
+    "invalid_email": "Địa chỉ email không hợp lệ"
   }
 }

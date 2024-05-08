@@ -1,24 +1,19 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useService } from '../../../hook/service.hook';
 import { useTheme } from '../../../hook/theme.hook';
 import { AppTheme } from '../../../theme/theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getLiveMetadata } from '../api/get-live-metadata.api';
 import { Match } from '../../../interface/match.interface';
 import { getVideoUrl } from '../../../utils/app.helper';
 import { VideoPlayer } from '../../../components/video-player/video-player.component';
-import { forkJoin, switchMap, take, tap } from 'rxjs';
-import { MatchCard } from '../components/match-card.component';
-import { getFutureMatch } from '../api/get-future-match.api';
+import { forkJoin, take } from 'rxjs';
 import { getLiveData } from '../api/get-live-match-data.api';
 import { LoadingSpinner } from '../../../components/loading-indicator/loading-indicator.component';
-import { homeScreens } from '../const/route.const';
 import { useTranslation } from '../../../hook/translate.hook';
-
-interface RenderItemProps {
-  item: Match;
-}
+import { LiveMatchTabView } from '../components/live-match-tabview.component';
+import { MatchContext } from '../context/live-match.context';
 
 export const MatchDetailScreen = () => {
   const { apiService: api } = useService();
@@ -26,7 +21,6 @@ export const MatchDetailScreen = () => {
   const theme = useTheme();
   const styles = initStyles(theme);
 
-  const [matches, setMatches] = useState<Match[]>();
   const [currentMatch, setCurrentMatches] = useState<Match>();
   const [streamUri, setUri] = useState<string>();
   const [isLoading, setLoading] = useState(false);
@@ -37,11 +31,10 @@ export const MatchDetailScreen = () => {
 
   useEffect(() => {
     setLoading(true);
-    forkJoin(getLiveMetadata(api, matchId), getLiveData(api, matchId), getFutureMatch(api))
+    forkJoin(getLiveMetadata(api, matchId), getLiveData(api, matchId))
       .pipe(take(1))
-      .subscribe(([metadata, currentMatch, matches]) => {
+      .subscribe(([metadata, currentMatch]) => {
         setCurrentMatches(currentMatch);
-        setMatches(matches);
         if (!metadata?.play_urls || metadata.play_urls.length < 1) {
           return;
         }
@@ -53,19 +46,6 @@ export const MatchDetailScreen = () => {
       });
     setLoading(false);
   }, []);
-
-  const navigateToLive = (match: Match) => {
-    navigation.navigate(homeScreens.matchDetail.name, {
-      matchId: match.id,
-    });
-  };
-
-  const renderItem = useCallback(
-    ({ item }: RenderItemProps) => {
-      return <MatchCard match={item} onPress={navigateToLive} />;
-    },
-    [navigateToLive]
-  );
 
   return (
     <View style={styles.container}>
@@ -82,14 +62,9 @@ export const MatchDetailScreen = () => {
       ) : (
         <></>
       )}
-      {matches ? (
-        <>
-          <Text style={styles.anotherMatch}>{t('match.another_match')}</Text>
-          <FlatList data={matches} renderItem={renderItem} style={styles.flatList} />
-        </>
-      ) : (
-        <></>
-      )}
+      <MatchContext.Provider value={{ matchId: matchId }}>
+        <LiveMatchTabView />
+      </MatchContext.Provider>
     </View>
   );
 };
@@ -98,7 +73,7 @@ const initStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.secondaryColor50,
+      backgroundColor: theme.backgroundColor,
       alignItems: 'center',
     },
     matchName: {

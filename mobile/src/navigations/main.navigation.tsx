@@ -8,6 +8,8 @@ import { HighlightNavigation } from './highlight.navigation';
 import { AccountNavigation } from './account.navigation';
 import { useService } from '../hook/service.hook';
 import { useTranslation } from '../hook/translate.hook';
+import { useAppDispatch } from '../store/store';
+import { setAccessToken } from '../store/user.slice';
 
 interface TabNavigatorProps {
   name: string;
@@ -20,6 +22,7 @@ const TabNavigator = createBottomTabNavigator();
 
 export const MainNavigation = () => {
   const { translateService, storageService } = useService();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const routes: TabNavigatorProps[] = [
@@ -58,8 +61,18 @@ export const MainNavigation = () => {
     translateService.changeLanguage(appLanguage);
   };
 
+  const initAccessToken = async () => {
+    const accessToken = await storageService.getAccessToken();
+    if (!accessToken || !accessToken.length) {
+      return;
+    }
+
+    dispatch(setAccessToken(accessToken));
+  };
+
   useEffect(() => {
     initLanguage();
+    initAccessToken();
   }, [storageService, translateService]);
 
   return (

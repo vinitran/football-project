@@ -3,5 +3,5 @@ import { ApiService } from '../../../services/api.services';
 import { Match } from '../../../interface/match.interface';
 
 export const getFutureMatch = (api: ApiService): Observable<Match[]> => {
-  return api.get('https://api.vebo.xyz/api/match/featured').pipe(pluck('data'), take(1));
+  return api.get('https://api.vebo.xyz/api/match/featured?limit=24').pipe(pluck('data'), take(1));
 };

@@ -25,7 +25,7 @@ const initStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     container: {
       flexDirection: 'row',
-      paddingVertical: theme.spaceS,
+      paddingVertical: theme.spaceM,
       paddingHorizontal: theme.spaceMS,
       borderTopColor: theme.neutralColor200,
       alignItems: 'center',

@@ -9,10 +9,12 @@ export interface User {
 
 interface AccountSlice {
   user?: User;
+  accessToken?: string;
 }
 
 const defaultState: AccountSlice = {
   user: undefined,
+  accessToken: undefined,
 };
 
 const userSlice = createSlice({
@@ -22,9 +24,12 @@ const userSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
     },
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setAccessToken } = userSlice.actions;
 
 export default userSlice.reducer;

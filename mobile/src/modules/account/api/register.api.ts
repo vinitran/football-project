@@ -11,8 +11,10 @@ interface Response {
 interface LoginPayload {
   username: string;
   password: string;
+  name: string;
+  email: string;
 }
 
-export const showme = (api: ApiService, payload: LoginPayload): Observable<Response> => {
-  return api.post(`http://94.72.119.5:3030/api/v1/me`, payload).pipe(take(1), pluck('data'));
+export const register = (api: ApiService, payload: LoginPayload): Observable<Response> => {
+  return api.post(`http://94.72.119.5:3030/api/v1/auth/register`, payload).pipe(take(1));
 };

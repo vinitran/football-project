@@ -11,4 +11,8 @@ export const accountScreens = {
     name: 'register',
     title: 'account.register',
   },
+  setting: {
+    name: 'setting',
+    title: 'account.setting',
+  },
 };

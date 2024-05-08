@@ -2,13 +2,11 @@ import { Observable, of } from 'rxjs';
 import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { catchError, pluck } from 'rxjs/operators';
 import { objectToQueryString } from '../utils/app.helper';
+import { Alert } from 'react-native';
 
 const handleError = (error: AjaxResponse<any>) => {
   const { response, request } = error;
-  if (error.request.url?.includes('/file/images')) {
-    try {
-    } catch (err) {}
-  }
+  Alert.alert('', response.message, [{ text: 'OK', onPress: () => {} }]);
 
   console.log('api error', request.url, response);
   return of(null);
