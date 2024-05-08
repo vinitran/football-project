@@ -88,7 +88,6 @@ func (service *ServiceExtractKeywords) ExtractNews() error {
 				return err
 			}
 		}
-		page++
 	}
 }
 
@@ -148,6 +147,8 @@ func (service *ServiceExtractKeywords) ExtractNewsDescription(ctx context.Contex
 		log.Println(id)
 		return err
 	}
+
+	log.Println("complete", id)
 
 	return nil
 }
@@ -209,7 +210,6 @@ func (service *ServiceExtractKeywords) ExtractReviewMatchs() error {
 				return err
 			}
 		}
-		page++
 	}
 }
 
