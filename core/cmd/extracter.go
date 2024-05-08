@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/robfig/cron/v3"
 	"log"
 
 	"core/internal/config"
@@ -21,6 +22,32 @@ func startExtracter(c *cli.Context) error {
 	extractor, err := do.Invoke[*service.ServiceExtractKeywords](container)
 	if err != nil {
 		return err
+	}
+
+	if c.String(config.FlagSchedule) == config.FlagOn {
+		schedule := cron.New()
+		_, err = schedule.AddFunc("@midnight", func() {
+			errNews := extractor.ExtractNews()
+			if errNews != nil {
+				log.Println(errNews)
+			}
+		})
+		if err != nil {
+			return err
+		}
+
+		_, err = schedule.AddFunc("@midnight", func() {
+			errReMatch := extractor.ExtractReviewMatchs()
+			if errReMatch != nil {
+				log.Println(errReMatch)
+			}
+		})
+		if err != nil {
+			return err
+		}
+
+		schedule.Run()
+		return nil
 	}
 
 	switch c.String(config.FlagTable) {

@@ -99,7 +99,7 @@ func main() {
 			Aliases: []string{},
 			Usage:   "Run the crawler",
 			Action:  startExtracter,
-			Flags:   append(flags, &configExtracterActionFlag),
+			Flags:   append(flags, &configExtracterActionFlag, &configScheduleFlag),
 		},
 	}
 
