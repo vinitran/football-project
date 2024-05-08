@@ -124,7 +124,7 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
           </p>
         </div>
       </div>
-      <div className="p-[12px]">
+      <div className="p-[12px] w-full">
         <VideoPlayer src={filterUrl(rewatch.video_url)} />
       </div>
       <div className="article-news block px-5 pt-[-15px]">

@@ -16,7 +16,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
     }
   }, [src]);
 
-  return <video ref={videoRef} controls autoPlay />;
+  return <video className='w-full' ref={videoRef} controls autoPlay />;
 };
 
 export default VideoPlayer;

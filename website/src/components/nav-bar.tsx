@@ -12,6 +12,7 @@ import { IFormRegister } from '../interfaces/entites/form-register';
 import { toast } from 'react-toastify';
 import { UserInforModal } from './user-info-modal';
 import { IUserInfo } from '../interfaces/entites/user-info';
+import { apis } from '../consts/api.const';
 
 type Props = {
   children?: any;
@@ -23,6 +24,11 @@ export const NavBar = (props: Props) => {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
   const [isOpenRegister, setIsOpenRegister] = useState(false);
   const [isOpenUserInfo, setIsOpenUserInfo] = useState(false);
+  const [userInfo, setUserInfo] = useState<IUserInfo | undefined>({
+    username: '',
+    name: '',
+    email: ''
+  });
 
   const handleNavChange = (event?: React.SyntheticEvent | undefined, newValue?: number) => {
     const filterResult = navBarList.filter((navBar) => navBar.id === newValue);
@@ -83,17 +89,11 @@ export const NavBar = (props: Props) => {
   // FUNCTION
   const fetchLogin = async (username: string, password: string) => {
     _axios
-      .post('auth/login', { username: username, password: password })
-      .then((res) => {
+      .post(apis.auth.login(), { username: username, password: password })
+      .then(async (res) => {
         if (res) {
           if (res.data && res.data.data) {
-            console.log('into3');
             axiosConfiguration.setAxiosToken(res.data.data, true);
-            axiosConfiguration.setUserInfo({
-              username: 'username',
-              name: 'name',
-              email: 'email'
-            });
             toast.success('Đăng nhập thành công', {
               autoClose: 5000,
               hideProgressBar: false,
@@ -105,6 +105,7 @@ export const NavBar = (props: Props) => {
             });
           }
         }
+        await fetchUserInfo();
         setIsOpenLogin(false);
       })
       .catch((err) => {
@@ -121,7 +122,7 @@ export const NavBar = (props: Props) => {
   };
   const fetchRegister = async (formRegister: IFormRegister) => {
     _axios
-      .post('auth/register', {
+      .post(apis.auth.register(), {
         username: formRegister.username,
         name: formRegister.name,
         email: formRegister.email,
@@ -154,11 +155,20 @@ export const NavBar = (props: Props) => {
         });
       });
   };
-
-  // EFFECT
-  useEffect(() => {
-    toast.warning('user change');
-  }, [axiosConfiguration.getAxiosToken()]);
+  const fetchUserInfo = () => {
+    _axios
+      .post(apis.auth.me())
+      .then((res) => {
+        if (res) {
+          setUserInfo({
+            username: res.data.data.username,
+            name: res.data.data.name,
+            email: res.data.data.email
+          });
+        }
+      })
+      .catch(() => {});
+  };
 
   return (
     <>
@@ -203,10 +213,8 @@ export const NavBar = (props: Props) => {
               <div
                 onClick={() => {
                   setIsOpenUserInfo(true);
-                  toast.success(isOpenUserInfo);
                 }}
                 className="cursor-pointer boxshadow-main rounded-[50%] border-solid border-[2px] border-[--color-second] p-2 flex items-center justify-center">
-                <div className="text-white">{isOpenUserInfo}</div>
                 <svg
                   className="w-[18px] h-[18px]"
                   xmlns="http://www.w3.org/2000/svg"
@@ -249,14 +257,17 @@ export const NavBar = (props: Props) => {
       )}
       {isOpenUserInfo && (
         <UserInforModal
-          userInfo={axiosConfiguration.getUserInfo()}
+          userInfo={userInfo}
           onLogout={() => {
             axiosConfiguration.deleteAxiosToken();
-            axiosConfiguration.setUserInfo(undefined);
+            setUserInfo(undefined);
             setIsOpenUserInfo(false);
             toast.success('Đã đăng xuất');
           }}
-          onCancel={() => setIsOpenUserInfo(false)}
+          onCancel={() => {
+            setIsOpenUserInfo(false);
+            console.log('isOpenUserInfo:', isOpenUserInfo);
+          }}
         />
       )}
     </>

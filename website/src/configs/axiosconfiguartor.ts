@@ -82,7 +82,7 @@ export const axiosConfiguration = new AxiosConfiguration();
 export const _axios = axiosConfiguration.initAxiosInstance();
 
 export let _userInfo: IUserInfo | undefined = {
-  username: 'aaaaaaaaaaaa',
-  name: 'aaaaaaaaaaaaa',
-  email: 'aaaaaaaaa'
+  username: '',
+  name: '',
+  email: ''
 };
