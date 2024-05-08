@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/jackc/pgx/v5"
@@ -124,8 +123,6 @@ func (ds *DatastoreNewsPgx) UpdateLabelByID(ctx context.Context, id string, labe
 	if err != nil {
 		return nil, err
 	}
-
-	log.Println("complete", item.ID)
 
 	return NewsBobToRaw(item), nil
 }
