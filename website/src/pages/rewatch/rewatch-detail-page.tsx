@@ -180,7 +180,12 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
         </div>
       </div>
       <div className="p-[12px] w-full">
-        <VideoPlayer src={filterUrl(rewatch.video_url)} />
+        {/* <VideoPlayer src={filterUrl(rewatch.video_url)} /> */}
+        <VideoPlayer
+          src={filterUrl2(
+            'https://vb90xltcvg.nsnd.live/live/_definst_/stream_1_1bda7@daoSD/playlist.m3u8'
+          )}
+        />
       </div>
       <div className="article-news block px-5 pt-[-15px]">
         <p className="mt-10" dangerouslySetInnerHTML={{ __html: rewatch.content }}></p>
@@ -191,6 +196,11 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
 
 const filterUrl = (url?: string) => {
   return `https://stream.vinitran1245612.workers.dev?apiurl=${url}&is_m3u8=true`;
+};
+
+const filterUrl2 = (url?: string) => {
+  const updatedUrl = url ? url.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8') : '';
+  return `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
 };
 
 interface IRewatchDetail {
