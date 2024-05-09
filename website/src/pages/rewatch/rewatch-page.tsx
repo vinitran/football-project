@@ -136,8 +136,8 @@ export const RewatchPage = (props: Props) => {
                   <HotBar
                     title="Tin đề xuất"
                     ids={resRecommentRewatch}
-                    urlDetail={apis.news.detail}
-                    urlClick="/new-detail/"
+                    urlDetail={apis.rewatch.detail}
+                    urlClick="/rewatch-detail/"
                   />
                 ) : (
                   <div className="flex flex-col items-start justify-center w-full">
