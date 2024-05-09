@@ -22,7 +22,7 @@ export const NewPage = (props: Props) => {
   const [resHotNews, setResHotNews] = useState([]);
   const [resRecommentNews, setResRecommentNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setAuthenticated] = useState<string | null>();
+  const [token, setToken] = useState<string | null>();
 
   // FUNCTION
   const fetchListNews = async () => {
@@ -62,7 +62,6 @@ export const NewPage = (props: Props) => {
       .catch(() => {});
   };
   const fetchRecommentNews = async () => {
-    const token = localStorage.getItem(localStorageKey.token);
     if (token) {
       axiosConfiguration.setAxiosToken(token, true);
       await _axios
@@ -73,9 +72,12 @@ export const NewPage = (props: Props) => {
           }
         })
         .catch(() => {});
+    } else {
+      setResRecommentNews([]);
     }
   };
 
+  // EFFECT
   useEffect(() => {
     fetchListNews();
     fetchTotalListNews();
@@ -89,11 +91,11 @@ export const NewPage = (props: Props) => {
 
   useEffect(() => {
     fetchRecommentNews();
-  }, [isAuthenticated]);
+  }, [token]);
 
   // LISTENER
   window.addEventListener('onChangeAuthentication', () => {
-    setAuthenticated(localStorage.getItem(localStorageKey.token));
+    setToken(localStorage.getItem(localStorageKey.token));
   });
 
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -122,7 +124,7 @@ export const NewPage = (props: Props) => {
               </div>
 
               <div className="flex flex-col w-[400px]">
-                {isAuthenticated ? (
+                {!!resRecommentNews.length ? (
                   <HotBar
                     title="Tin đề xuất"
                     ids={resRecommentNews}
@@ -130,11 +132,16 @@ export const NewPage = (props: Props) => {
                     urlClick="/new-detail/"
                   />
                 ) : (
-                  <div className="flex items-center justify-center">
-                    <Loading />
+                  <div className="flex flex-col items-start justify-center w-full">
+                    <div className="flex items-center mt-[12px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
+                      <h4 className="leading-5 text-[20px]">Tin đề xuất</h4>
+                    </div>
+                    <div className="flex justify-center w-full">
+                      <p>Đăng nhập để xem tin mà bạn có thể sẽ thích</p>
+                    </div>
                   </div>
                 )}
-                {resHotNews ? (
+                {!!resHotNews.length ? (
                   <HotBar
                     title="Tin nổi bật"
                     ids={resHotNews}
@@ -143,7 +150,7 @@ export const NewPage = (props: Props) => {
                   />
                 ) : (
                   <div className="flex items-center justify-center">
-                    <Loading />
+                    <Loading/>
                   </div>
                 )}
               </div>

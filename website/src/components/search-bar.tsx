@@ -9,15 +9,16 @@ export const SearchBar = (props: Props) => {
   const [searching, setSearching] = useState('');
   return (
     <div className="search-bar flex justify-center w-full h-[40px] mb-[12px]">
-      <div className="flex w-[95%] rounded-[16px] border-[1px] border-solid border-[--color-stroke] overflow-hidden cursor-pointer">
-        <input
-          // className=" w-full border-[2px] border-solid border-[--color-stroke] outline-none"
-          onChange={(e) => setSearching(e.target.value)}
-          className="flex-1 outline-none py-2 px-[18px]"
-          placeholder={props.placeholder}
-        />
+      <div className="flex w-[95%]">
+        <div className="rounded-s-[16px] border-[1px] border-solid border-[--color-stroke] overflow-hidden w-full">
+          <input
+            onChange={(e) => setSearching(e.target.value)}
+            className="flex-1 outline-none py-2 px-[18px] w-full"
+            placeholder={props.placeholder}
+          />
+        </div>
         <button
-          className="flex justify-center bg-[--color-main] w-[60px] p-[8px]"
+          className="rounded-e-[16px] flex justify-center bg-[--color-three] w-[60px] p-[8px] cursor-pointer"
           onClick={() => {
             props.onSearch(searching);
           }}>

@@ -30,6 +30,7 @@ export const NavBar = (props: Props) => {
     name: '',
     email: ''
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleNavChange = (event?: React.SyntheticEvent | undefined, newValue?: number) => {
     const filterResult = navBarList.filter((navBar) => navBar.id === newValue);
@@ -89,6 +90,7 @@ export const NavBar = (props: Props) => {
 
   // FUNCTION
   const fetchLogin = async (username: string, password: string) => {
+    setIsLoading(true);
     _axios
       .post(apis.auth.login(), { username: username, password: password })
       .then(async (res) => {
@@ -121,9 +123,13 @@ export const NavBar = (props: Props) => {
           progress: undefined,
           theme: 'light'
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const fetchRegister = async (formRegister: IFormRegister) => {
+    setIsLoading(true);
     _axios
       .post(apis.auth.register(), {
         username: formRegister.username,
@@ -156,11 +162,14 @@ export const NavBar = (props: Props) => {
           progress: undefined,
           theme: 'light'
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const fetchUserInfo = () => {
     _axios
-      .post(apis.auth.me())
+      .get(apis.auth.me())
       .then((res) => {
         if (res) {
           setUserInfo({
@@ -236,6 +245,7 @@ export const NavBar = (props: Props) => {
       {/* Modal */}
       {isOpenLogin ? (
         <LoginModal
+          isLoading={isLoading}
           onSubmit={(username: string, password: string) => {
             fetchLogin(username, password);
           }}
@@ -248,6 +258,7 @@ export const NavBar = (props: Props) => {
       )}
       {isOpenRegister ? (
         <RegisterModal
+          isLoading={isLoading}
           onSubmit={(formRegister: IFormRegister) => {
             fetchRegister(formRegister);
           }}

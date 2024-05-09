@@ -1,9 +1,14 @@
 import { Box, CircularProgress } from '@mui/material';
 
-export const Loading = () => {
+type Props = {
+  color?: string;
+  children?: any;
+};
+
+export const Loading = (props: Props) => {
   return (
     <Box sx={{}}>
-      <CircularProgress />
+      <CircularProgress style={{ color: `${props.color ?? 'var(--color-three)'}` }} />
     </Box>
   );
 };
