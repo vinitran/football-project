@@ -150,7 +150,7 @@ export const NewPage = (props: Props) => {
                   />
                 ) : (
                   <div className="flex items-center justify-center">
-                    <Loading/>
+                    <Loading />
                   </div>
                 )}
               </div>

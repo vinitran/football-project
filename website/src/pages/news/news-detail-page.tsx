@@ -11,7 +11,6 @@ import { localStorageKey } from '../../consts/local-storage-key.const';
 export const NewsDetailPage = () => {
   const params = useParams();
   const [resDetailNews, setResDetailNews] = useState<any>();
-  const [resHotNews, setResHotNews] = useState([]);
   const [resRelativeNews, setRelativeNews] = useState([]);
   const [resRecommentNews, setResRecommentNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,16 +30,6 @@ export const NewsDetailPage = () => {
       .finally(() => {
         setLoading(false);
       });
-  };
-  const fetchHotNews = async () => {
-    _axios
-      .get(apis.news.hot())
-      .then((res) => {
-        if (res) {
-          setResHotNews(res.data?.data ?? []);
-        }
-      })
-      .catch((err) => {});
   };
   const fetchRelativeNews = async () => {
     console.log('fetchRelative');
@@ -72,7 +61,6 @@ export const NewsDetailPage = () => {
   // EFFECT
   useEffect(() => {
     fetchDetailNews();
-    fetchHotNews();
     fetchRelativeNews();
     fetchRecommentNews();
   }, [params]);
@@ -98,18 +86,6 @@ export const NewsDetailPage = () => {
               </div>
             </div>
             <div className="flex flex-col w-[400px]">
-              {resRelativeNews.length ? (
-                <HotBar
-                  title="Tin liên quan"
-                  ids={resRelativeNews}
-                  urlDetail={apis.news.detail}
-                  urlClick="/new-detail/"
-                />
-              ) : (
-                <div className="flex items-center justify-center">
-                  <Loading />
-                </div>
-              )}
               {!!resRecommentNews.length ? (
                 <HotBar
                   title="Tin đề xuất"
@@ -125,6 +101,18 @@ export const NewsDetailPage = () => {
                   <div className="flex justify-center w-full">
                     <p>Đăng nhập để xem tin mà bạn có thể sẽ thích</p>
                   </div>
+                </div>
+              )}
+              {resRelativeNews.length ? (
+                <HotBar
+                  title="Tin liên quan"
+                  ids={resRelativeNews}
+                  urlDetail={apis.news.detail}
+                  urlClick="/new-detail/"
+                />
+              ) : (
+                <div className="flex items-center justify-center">
+                  <Loading />
                 </div>
               )}
             </div>

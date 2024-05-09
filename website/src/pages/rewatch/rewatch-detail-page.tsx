@@ -5,16 +5,18 @@ import ReactPlayer from 'react-player';
 import moment from 'moment';
 import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
-import { _axios } from '../../configs/axiosconfiguartor';
+import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import { HotBar } from '../../components/hot-bar';
 import VideoPlayer from '../../components/video-player';
+import { localStorageKey } from '../../consts/local-storage-key.const';
 
 export const RewatchDetailPage = () => {
   const params = useParams();
   const [resDetailRewatch, setResDetailRewatch] = useState<any>();
-  const [resHotNews, setResHotNews] = useState([]);
-  const [resRelativeNews, setRelativeNews] = useState([]);
+  const [resHotRewatch, setResHotRewatch] = useState([]);
+  const [resRecommentRewatch, setResRecommentRewatch] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>();
 
   // FUNCTION
   const fetchDetailNews = async () => {
@@ -31,31 +33,46 @@ export const RewatchDetailPage = () => {
         setLoading(false);
       });
   };
-  const fetchHotNews = async () => {
+  const fetchHotRewatch = async () => {
     _axios
-      .get(apis.news.hot())
+      .get(apis.rewatch.hot())
       .then((res) => {
         if (res) {
-          setResHotNews(res.data?.data ?? []);
+          setResHotRewatch(res.data?.data ?? []);
         }
       })
       .catch(() => {});
   };
-  const fetchRelativeNews = async () => {
-    _axios
-      .get(apis.news.relative({ id: 'YoKxsem' }))
-      .then((res1) => {
-        if (res1) {
-          setRelativeNews(res1.data?.data ?? []);
-        }
-      })
-      .catch(() => {});
+  const fetchRecommentRewatch = async () => {
+    if (token) {
+      axiosConfiguration.setAxiosToken(token, true);
+      await _axios
+        .get(apis.news.recomment())
+        .then((res) => {
+          if (res) {
+            setResRecommentRewatch(res.data?.data ?? []);
+          }
+        })
+        .catch(() => {});
+    } else {
+      setResRecommentRewatch([]);
+    }
   };
+
   useEffect(() => {
     fetchDetailNews();
-    fetchHotNews();
-    fetchRelativeNews();
+    fetchHotRewatch();
+    fetchRecommentRewatch();
   }, [params]);
+
+  useEffect(() => {
+    fetchRecommentRewatch();
+  }, [token]);
+
+  // LISTENER
+  window.addEventListener('onChangeAuthentication', () => {
+    setToken(localStorage.getItem(localStorageKey.token));
+  });
 
   return (
     <>
@@ -66,23 +83,28 @@ export const RewatchDetailPage = () => {
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
             <div className="flex flex-col w-[400px]">
-              {resRelativeNews ? (
+              {!!resRecommentRewatch.length ? (
                 <HotBar
-                  title="Tin liên quan"
-                  ids={resRelativeNews}
-                  urlDetail={apis.news.detail}
+                  title="Trận đấu đề xuất"
+                  ids={resRecommentRewatch}
+                  urlDetail={apis.rewatch.detail}
                   urlClick="/rewatch-detail/"
                 />
               ) : (
-                <div className="flex items-center justify-center">
-                  <Loading />
+                <div className="flex flex-col items-start justify-center w-full">
+                  <div className="flex items-center mt-[12px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
+                    <h4 className="leading-5 text-[20px]">Trận đấu đề xuất</h4>
+                  </div>
+                  <div className="flex justify-center w-full">
+                    <p>Đăng nhập để xem trận đấu mà bạn có thể sẽ thích</p>
+                  </div>
                 </div>
               )}
-              {resHotNews ? (
+              {!!resHotRewatch.length ? (
                 <HotBar
-                  title="Tin nổi bật"
-                  ids={resHotNews}
-                  urlDetail={apis.news.detail}
+                  title="Trận đấu nổi bật"
+                  ids={resHotRewatch}
+                  urlDetail={apis.rewatch.detail}
                   urlClick="/rewatch-detail/"
                 />
               ) : (
