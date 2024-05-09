@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import { HotBar } from '../../components/hot-bar';
 import { localStorageKey } from '../../consts/local-storage-key.const';
+import { feedbackEnum } from '../../consts/feedback-type.const';
+import { toast } from 'react-toastify';
 
 export const NewsDetailPage = () => {
   const params = useParams();
@@ -14,7 +16,8 @@ export const NewsDetailPage = () => {
   const [resRelativeNews, setRelativeNews] = useState([]);
   const [resRecommentNews, setResRecommentNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>();
+  const [token, setToken] = useState<string | null>(localStorage.getItem(localStorageKey.token));
+  const [isCanFeedbackReadAll, setIsCanFeedbackReadAll] = useState(false);
 
   // FUNCTION
   const fetchDetailNews = async () => {
@@ -32,7 +35,6 @@ export const NewsDetailPage = () => {
       });
   };
   const fetchRelativeNews = async () => {
-    console.log('fetchRelative');
     _axios
       .get(apis.news.relative({ id: params.id }))
       .then((res) => {
@@ -57,8 +59,21 @@ export const NewsDetailPage = () => {
       setResRecommentNews([]);
     }
   };
+  const fetchFeedback = (feedbackType: feedbackEnum) => {
+    if (token) {
+      console.log(`send feed back ${feedbackType} - ${params.id}`);
+      axiosConfiguration.setAxiosToken(token, true);
+      _axios.post(apis.feedback(), {
+        FeedbackType: feedbackType,
+        ItemId: params.id
+      });
+    }
+  };
 
   // EFFECT
+  useEffect(() => {
+    fetchFeedback(feedbackEnum.READ);
+  }, []);
   useEffect(() => {
     fetchDetailNews();
     fetchRelativeNews();
@@ -68,6 +83,25 @@ export const NewsDetailPage = () => {
   useEffect(() => {
     fetchRecommentNews();
   }, [token]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = winScroll / height;
+
+      if (scrolled >= 0.99 && !isCanFeedbackReadAll) {
+        setIsCanFeedbackReadAll(true);
+        fetchFeedback(feedbackEnum.READ_ALL);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isCanFeedbackReadAll]);
 
   // LISTENER
   window.addEventListener('onChangeAuthentication', () => {

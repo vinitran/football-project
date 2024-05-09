@@ -9,6 +9,7 @@ import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import { HotBar } from '../../components/hot-bar';
 import VideoPlayer from '../../components/video-player';
 import { localStorageKey } from '../../consts/local-storage-key.const';
+import { feedbackEnum } from '../../consts/feedback-type.const';
 
 export const RewatchDetailPage = () => {
   const params = useParams();
@@ -16,7 +17,8 @@ export const RewatchDetailPage = () => {
   const [resHotRewatch, setResHotRewatch] = useState([]);
   const [resRecommentRewatch, setResRecommentRewatch] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>();
+  const [token, setToken] = useState<string | null>(localStorage.getItem(localStorageKey.token));
+  const [isCanFeedbackReadAll, setIsCanFeedbackReadAll] = useState(false);
 
   // FUNCTION
   const fetchDetailNews = async () => {
@@ -58,16 +60,47 @@ export const RewatchDetailPage = () => {
       setResRecommentRewatch([]);
     }
   };
+  const fetchFeedback = (feedbackType: feedbackEnum) => {
+    if (token) {
+      console.log(`send feed back ${feedbackType} - ${params.id}`);
+      axiosConfiguration.setAxiosToken(token, true);
+      _axios.post(apis.feedback(), {
+        FeedbackType: feedbackType,
+        ItemId: params.id
+      });
+    }
+  };
 
+  // EFFECT
+  useEffect(() => {
+    fetchFeedback(feedbackEnum.READ);
+  }, []);
   useEffect(() => {
     fetchDetailNews();
     fetchHotRewatch();
     fetchRecommentRewatch();
   }, [params]);
-
   useEffect(() => {
     fetchRecommentRewatch();
   }, [token]);
+  useEffect(() => {
+    const handleScroll = () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = winScroll / height;
+
+      if (scrolled >= 0.99 && !isCanFeedbackReadAll) {
+        setIsCanFeedbackReadAll(true);
+        fetchFeedback(feedbackEnum.READ_ALL);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isCanFeedbackReadAll]);
 
   // LISTENER
   window.addEventListener('onChangeAuthentication', () => {
