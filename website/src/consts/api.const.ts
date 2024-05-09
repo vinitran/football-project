@@ -57,5 +57,6 @@ export const apis: any = {
     login: () => `auth/login`,
     register: () => `auth/register`,
     me: () => `me`
-  }
+  },
+  feedback: () => `recommend/feedback`
 };

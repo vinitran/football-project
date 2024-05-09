@@ -22,7 +22,7 @@ export const NewPage = (props: Props) => {
   const [resHotNews, setResHotNews] = useState([]);
   const [resRecommentNews, setResRecommentNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>();
+  const [token, setToken] = useState<string | null>(localStorage.getItem(localStorageKey.token));
 
   // FUNCTION
   const fetchListNews = async () => {

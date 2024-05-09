@@ -11,6 +11,7 @@ import { apis } from '../../consts/api.const';
 import { HotBar } from '../../components/hot-bar';
 import { SearchBar } from '../../components/search-bar';
 import { localStorageKey } from '../../consts/local-storage-key.const';
+import { toast } from 'react-toastify';
 
 type Props = {};
 
@@ -22,7 +23,7 @@ export const RewatchPage = (props: Props) => {
   const [resHotRewatch, setResHotRewatch] = useState([]);
   const [resRecommentRewatch, setResRecommentRewatch] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState<string | null>();
+  const [token, setToken] = useState<string | null>(localStorage.getItem(localStorageKey.token));
 
   // FUNCTION
   const fetchListRewatch = async () => {
@@ -92,6 +93,7 @@ export const RewatchPage = (props: Props) => {
   useEffect(() => {
     fetchListRewatch();
   }, [searching, pagination]);
+
   useEffect(() => {
     fetchRecommentRewatch();
   }, [token]);

@@ -47,7 +47,6 @@ class AxiosConfiguration {
   };
 
   setAxiosToken = (token: string, deleteIfExists: boolean) => {
-    console.log('token:', token);
     if (!token || token.trim() === '') {
       return;
     }
