@@ -41,20 +41,16 @@ func New(cfg *Config) (http.Handler, error) {
 		return c.String(http.StatusOK, "hello world")
 	})
 
+	guard, err := do.Invoke[*auth.Guard](cfg.Container)
+	if err != nil {
+		return nil, err
+	}
+
+	authorized := httpx.Authn(guard)
+
 	routesAPIv1 := r.Group("/api/v1")
 	{
 		routesAPIv1.Use(cors)
-	}
-
-	routesAPIv1WithAuth := r.Group("/api/v1")
-	{
-		guard, err := do.Invoke[*auth.Guard](cfg.Container)
-		if err != nil {
-			return nil, err
-		}
-
-		routesAPIv1WithAuth.Use(cors)
-		routesAPIv1WithAuth.Use(httpx.Authn(guard))
 	}
 
 	groupAuth := &GroupAuth{cfg}
@@ -65,7 +61,7 @@ func New(cfg *Config) (http.Handler, error) {
 
 	groupUser := &GroupUser{cfg}
 	{
-		routesAPIv1WithAuth.POST("/me", groupUser.ShowMe)
+		routesAPIv1.GET("/me", authorized(groupUser.ShowMe))
 	}
 
 	groupMatch := &GroupMatch{cfg}
@@ -86,8 +82,8 @@ func New(cfg *Config) (http.Handler, error) {
 	{
 		routesAPIv1.GET("/recommend/popular/:category", groupRecommend.GetPopularByItem)
 
-		routesAPIv1WithAuth.GET("/recommend/user/:category", groupRecommend.GetByUserAndCategory)
-		routesAPIv1WithAuth.POST("/recommend/feedback", groupRecommend.CreateFeedback)
+		routesAPIv1.GET("/recommend/user/:category", authorized(groupRecommend.GetByUserAndCategory))
+		routesAPIv1.POST("/recommend/feedback", authorized(groupRecommend.CreateFeedback))
 		routesAPIv1.POST("/recommend/anonymous/feedback", groupRecommend.CreateFeedbackWithoutAuth)
 
 		routesAPIv1.GET("/news/:id/neighbors", groupRecommend.GetByItem)
