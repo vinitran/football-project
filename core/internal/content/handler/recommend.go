@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 
 	"core/pkg/auth"
 

@@ -3,8 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/robfig/cron/v3"
 	"log"
+
+	"github.com/robfig/cron/v3"
 
 	"core/internal/config"
 	"core/internal/content/service"
