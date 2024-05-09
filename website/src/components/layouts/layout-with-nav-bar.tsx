@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { NavBar } from '../nav-bar';
+import { NavBar } from '../nav-bar2';
 import { LoginModal } from '../login-modal';
 import { axiosConfiguration } from '../../configs/axiosconfiguartor';
 
