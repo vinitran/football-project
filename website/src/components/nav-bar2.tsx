@@ -190,14 +190,14 @@ export const NavBar = (props: Props) => {
           onClick={() => {
             navigate('/');
           }}>
-          <div className="text-[24px] logo italic flex items-center">TIN BÓNG ĐÁ</div>
-          <img className="h-[40px]  " src={require('../assets/image/logo4.png')} alt="" />
+          <div className="text-[28px] logo italic flex items-center">TIN BÓNG ĐÁ</div>
+          <img className="h-[40px]" src={require('../assets/image/logo4.png')} alt="" />
         </div>
         <div className="flex-1 flex items-center justify-center uppercase col-start-2">
           {navBarList.map((item) => {
             return (
               <button
-                className="w-[100px] h-full py-[2px] bg-transparent text-bold text-[--text-title] text-white"
+                className="min-w-[120px] h-full py-[2px] bg-transparent text-bold text-[20px] text-white"
                 onClick={() => {
                   navigate(item.url);
                 }}>
