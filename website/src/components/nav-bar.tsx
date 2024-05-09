@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { UserInforModal } from './user-info-modal';
 import { IUserInfo } from '../interfaces/entites/user-info';
 import { apis } from '../consts/api.const';
+import { localStorageKey } from '../consts/local-storage-key.const';
 
 type Props = {
   children?: any;
@@ -29,6 +30,7 @@ export const NavBar = (props: Props) => {
     name: '',
     email: ''
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleNavChange = (event?: React.SyntheticEvent | undefined, newValue?: number) => {
     const filterResult = navBarList.filter((navBar) => navBar.id === newValue);
@@ -88,12 +90,14 @@ export const NavBar = (props: Props) => {
 
   // FUNCTION
   const fetchLogin = async (username: string, password: string) => {
+    setIsLoading(true);
     _axios
       .post(apis.auth.login(), { username: username, password: password })
       .then(async (res) => {
         if (res) {
           if (res.data && res.data.data) {
             axiosConfiguration.setAxiosToken(res.data.data, true);
+            localStorage.setItem(localStorageKey.token, res.data.data);
             toast.success('Đăng nhập thành công', {
               autoClose: 5000,
               hideProgressBar: false,
@@ -107,6 +111,7 @@ export const NavBar = (props: Props) => {
         }
         await fetchUserInfo();
         setIsOpenLogin(false);
+        window.dispatchEvent(new Event('onChangeAuthentication'));
       })
       .catch((err) => {
         toast.warning(err.response.data.message, {
@@ -118,9 +123,13 @@ export const NavBar = (props: Props) => {
           progress: undefined,
           theme: 'light'
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const fetchRegister = async (formRegister: IFormRegister) => {
+    setIsLoading(true);
     _axios
       .post(apis.auth.register(), {
         username: formRegister.username,
@@ -153,11 +162,14 @@ export const NavBar = (props: Props) => {
           progress: undefined,
           theme: 'light'
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   const fetchUserInfo = () => {
     _axios
-      .post(apis.auth.me())
+      .get(apis.auth.me())
       .then((res) => {
         if (res) {
           setUserInfo({
@@ -191,7 +203,7 @@ export const NavBar = (props: Props) => {
           </Box>
         </div>
         <div className="flex items-center justify-end gap-2 mr-[8px] col-start-3">
-          {!axiosConfiguration.getAxiosToken() ? (
+          {!localStorage.getItem(localStorageKey.token) ? (
             <>
               <button
                 className="w-[100px] h-[40px] py-[2px] bg-[#008A00] rounded-[8px] text-white"
@@ -233,6 +245,7 @@ export const NavBar = (props: Props) => {
       {/* Modal */}
       {isOpenLogin ? (
         <LoginModal
+          isLoading={isLoading}
           onSubmit={(username: string, password: string) => {
             fetchLogin(username, password);
           }}
@@ -245,6 +258,7 @@ export const NavBar = (props: Props) => {
       )}
       {isOpenRegister ? (
         <RegisterModal
+          isLoading={isLoading}
           onSubmit={(formRegister: IFormRegister) => {
             fetchRegister(formRegister);
           }}
@@ -262,6 +276,8 @@ export const NavBar = (props: Props) => {
             axiosConfiguration.deleteAxiosToken();
             setUserInfo(undefined);
             setIsOpenUserInfo(false);
+            localStorage.removeItem(localStorageKey.token);
+            window.dispatchEvent(new Event('onChangeAuthentication'));
             toast.success('Đã đăng xuất');
           }}
           onCancel={() => {

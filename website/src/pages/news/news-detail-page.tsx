@@ -4,15 +4,17 @@ import { Loading } from '../../components/commons/loading';
 import moment from 'moment';
 import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
-import { _axios } from '../../configs/axiosconfiguartor';
+import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import { HotBar } from '../../components/hot-bar';
+import { localStorageKey } from '../../consts/local-storage-key.const';
 
 export const NewsDetailPage = () => {
   const params = useParams();
   const [resDetailNews, setResDetailNews] = useState<any>();
-  const [resHotNews, setResHotNews] = useState([]);
   const [resRelativeNews, setRelativeNews] = useState([]);
+  const [resRecommentNews, setResRecommentNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>();
 
   // FUNCTION
   const fetchDetailNews = async () => {
@@ -29,16 +31,6 @@ export const NewsDetailPage = () => {
         setLoading(false);
       });
   };
-  const fetchHotNews = async () => {
-    _axios
-      .get(apis.news.hot())
-      .then((res) => {
-        if (res) {
-          setResHotNews(res.data?.data ?? []);
-        }
-      })
-      .catch((err) => {});
-  };
   const fetchRelativeNews = async () => {
     console.log('fetchRelative');
     _axios
@@ -50,12 +42,37 @@ export const NewsDetailPage = () => {
       })
       .catch((err) => {});
   };
+  const fetchRecommentNews = async () => {
+    if (token) {
+      axiosConfiguration.setAxiosToken(token, true);
+      await _axios
+        .get(apis.news.recomment())
+        .then((res) => {
+          if (res) {
+            setResRecommentNews(res.data?.data ?? []);
+          }
+        })
+        .catch(() => {});
+    } else {
+      setResRecommentNews([]);
+    }
+  };
 
+  // EFFECT
   useEffect(() => {
     fetchDetailNews();
-    fetchHotNews();
     fetchRelativeNews();
+    fetchRecommentNews();
   }, [params]);
+
+  useEffect(() => {
+    fetchRecommentNews();
+  }, [token]);
+
+  // LISTENER
+  window.addEventListener('onChangeAuthentication', () => {
+    setToken(localStorage.getItem(localStorageKey.token));
+  });
 
   return (
     <>
@@ -69,22 +86,27 @@ export const NewsDetailPage = () => {
               </div>
             </div>
             <div className="flex flex-col w-[400px]">
-              {resRelativeNews ? (
+              {!!resRecommentNews.length ? (
                 <HotBar
-                  title="Tin liên quan"
-                  ids={resRelativeNews}
+                  title="Tin đề xuất"
+                  ids={resRecommentNews}
                   urlDetail={apis.news.detail}
                   urlClick="/new-detail/"
                 />
               ) : (
-                <div className="flex items-center justify-center">
-                  <Loading />
+                <div className="flex flex-col items-start justify-center w-full">
+                  <div className="flex items-center mt-[12px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
+                    <h4 className="leading-5 text-[20px]">Tin đề xuất</h4>
+                  </div>
+                  <div className="flex justify-center w-full">
+                    <p>Đăng nhập để xem tin mà bạn có thể sẽ thích</p>
+                  </div>
                 </div>
               )}
-              {resHotNews ? (
+              {resRelativeNews.length ? (
                 <HotBar
-                  title="Tin nổi bật"
-                  ids={resHotNews}
+                  title="Tin liên quan"
+                  ids={resRelativeNews}
                   urlDetail={apis.news.detail}
                   urlClick="/new-detail/"
                 />
@@ -133,74 +155,6 @@ const NewsDetailContent = ({ news }: { news: INewsDetail }) => {
     </>
   );
 };
-
-// const NewsHot = ({ news }: { news: INewsDetail[] }) => {
-//   const navigate = useNavigate();
-//   return (
-//     <>
-//       <div className="flex items-center ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-//         <h4 className="leading-5 text-[20px]">Tin nổi bật</h4>
-//       </div>
-//       {news.map((item, index) => (
-//         <>
-//           <div
-//             onClick={() => {
-//               navigate(`/new-detail/${item.id}`);
-//             }}
-//             className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
-//             <img className="w-[120px] h-[75px]" src={item.feature_image} alt="" />
-//             <div className="w-[192px] overflow-hidden line-clamp-3">
-//               <p className="">{item.name}</p>
-//             </div>
-//           </div>
-//         </>
-//       ))}
-//     </>
-//   );
-// };
-
-// const NewsRelative = ({ newsIds }: { newsIds: string[] }) => {
-//   return (
-//     <>
-//       <div className="flex items-center mt-[30px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
-//         <h4 className="leading-5 text-[20px]">Tin liên quan</h4>
-//       </div>
-//       {newsIds
-//         ? newsIds.map((item, index) => (
-//             <>
-//               <ItemRelative id={item} />
-//             </>
-//           ))
-//         : ''}
-//     </>
-//   );
-// };
-
-// const ItemRelative = ({ id }: { id: string }) => {
-//   const navigate = useNavigate();
-//   const [{ data }] = useAxios({
-//     // url: `news/vebotv/detail/${params.id}`
-//     url: apis.news.detail({ id: id })
-//   });
-//   return (
-//     <>
-//       {data ? (
-//         <div
-//           onClick={() => {
-//             navigate(`/new-detail/${data.data.id}`);
-//           }}
-//           className="flex flex-row items-start justify-start mx-[15px] mt-[15px] w-[350px] h-[90px] gap-2 overflow-hidden bg-[--color-background-content] cursor-pointer">
-//           <img className="w-[120px] h-[75px]" src={data.data.feature_image} alt="" />
-//           <div className="w-[192px] overflow-hidden line-clamp-3">
-//             <p className="">{data.data.name}</p>
-//           </div>
-//         </div>
-//       ) : (
-//         <></>
-//       )}
-//     </>
-//   );
-// };
 
 interface INewsDetail {
   id: string;

@@ -28,6 +28,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+button:hover {
+  box-shadow: var(--color-three) 0px 0px 10px, var(--color-three) 0px 0px 1px;
+}
+
 .App {
   text-align: center;
 }
@@ -62,6 +66,7 @@ code {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

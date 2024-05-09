@@ -10,6 +10,7 @@ import axios from 'axios';
 import { apis } from '../../consts/api.const';
 import { HotBar } from '../../components/hot-bar';
 import { SearchBar } from '../../components/search-bar';
+import { localStorageKey } from '../../consts/local-storage-key.const';
 
 type Props = {};
 
@@ -19,7 +20,9 @@ export const RewatchPage = (props: Props) => {
   const [resListRewatch, setResListRewatch] = useState([]);
   const [resTotalListRewatch, setResTotalListRewatch] = useState(0);
   const [resHotRewatch, setResHotRewatch] = useState([]);
+  const [resRecommentRewatch, setResRecommentRewatch] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>();
 
   // FUNCTION
   const fetchListRewatch = async () => {
@@ -62,17 +65,43 @@ export const RewatchPage = (props: Props) => {
       })
       .catch(() => {});
   };
+  const fetchRecommentRewatch = async () => {
+    if (token) {
+      axiosConfiguration.setAxiosToken(token, true);
+      await _axios
+        .get(apis.rewatch.recomment())
+        .then((res) => {
+          if (res) {
+            setResRecommentRewatch(res.data?.data ?? []);
+          }
+        })
+        .catch(() => {});
+    } else {
+      setResRecommentRewatch([]);
+    }
+  };
 
+  // EFFECT
   useEffect(() => {
     fetchListRewatch();
     fetchTotalListRewatch();
     fetchHotRewatch();
+    fetchRecommentRewatch();
   }, []);
 
   useEffect(() => {
     fetchListRewatch();
   }, [searching, pagination]);
+  useEffect(() => {
+    fetchRecommentRewatch();
+  }, [token]);
 
+  // LISTENER
+  window.addEventListener('onChangeAuthentication', () => {
+    setToken(localStorage.getItem(localStorageKey.token));
+  });
+
+  // EVENT
   const handlePaginationChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPagination({ ...pagination, pageNum: value });
   };
@@ -101,9 +130,26 @@ export const RewatchPage = (props: Props) => {
               </div>
 
               <div className="flex flex-col w-[400px]">
-                {resHotRewatch ? (
+                {!!resRecommentRewatch.length ? (
                   <HotBar
-                    title="Các trận nổi bật"
+                    title="Tin đề xuất"
+                    ids={resRecommentRewatch}
+                    urlDetail={apis.news.detail}
+                    urlClick="/new-detail/"
+                  />
+                ) : (
+                  <div className="flex flex-col items-start justify-center w-full">
+                    <div className="flex items-center mt-[12px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
+                      <h4 className="leading-5 text-[20px]">Trận đấu đề xuất</h4>
+                    </div>
+                    <div className="flex justify-center w-full">
+                      <p>Đăng nhập để xem trận đấu mà bạn có thể sẽ thích</p>
+                    </div>
+                  </div>
+                )}
+                {!!resHotRewatch.length ? (
+                  <HotBar
+                    title="Trận nổi bật"
                     ids={resHotRewatch}
                     urlDetail={apis.rewatch.detail}
                     urlClick="/rewatch-detail/"

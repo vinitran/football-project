@@ -1,8 +1,10 @@
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { Loading } from './commons/loading';
 
 type Props = {
+  isLoading?: boolean;
   onCancel: () => void;
   onSubmit: (username: string, password: string) => void;
   children?: any;
@@ -67,11 +69,17 @@ export const LoginModal = (props: Props) => {
           </div>
 
           {/* Button */}
-          <button
-            className="w-[180px] h-[50px] bg-[#008A00] rounded-[8px] mb-[20px]"
-            onClick={() => props.onSubmit(formLogin.username, formLogin.password)}>
-            ĐĂNG NHẬP
-          </button>
+          {props.isLoading ? (
+            <div className="w-[180px] h-[50px] mb-[20px] flex items-center justify-center">
+              <Loading color="white" />
+            </div>
+          ) : (
+            <button
+              className="w-[180px] h-[50px] bg-[#008A00] rounded-[8px] mb-[20px]"
+              onClick={() => props.onSubmit(formLogin.username, formLogin.password)}>
+              ĐĂNG NHẬP
+            </button>
+          )}
         </div>
         <div className="z-[100] absolute top-0 left-0 right-0 bottom-0 opacity-[0.3] bg-white"></div>
       </div>
