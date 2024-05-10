@@ -4,6 +4,7 @@ import { _axios } from '../../configs/axiosconfiguartor';
 import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
 import { Loading } from '../../components/commons/loading';
+import { localStorageKey } from '../../consts/local-storage-key.const';
 
 interface Meta {
   name: string;
@@ -17,7 +18,6 @@ type Props = {};
 export const LiveDetailPage = (props: Props) => {
   const params = useParams();
   const [meta, setMeta] = useState<Meta[]>([]);
-  const [countGetServer, setLoading] = useState(true);
 
   // API
   const fetchLiveMeta = () => {
@@ -73,14 +73,20 @@ const LiveDetailContent = ({ meta }: { meta: Meta[] }) => {
   }, []);
 
   return (
-    <div className="live-detail-item flex flex-col gap-[8px]">
+    <div className="live-detail-item flex flex-col gap-[16px]">
+      <h4 className="align-middle pl-4 border-l-4 border-green-500 border-solid leading-[28px] text-[20px] uppercase">
+        <p>
+          {`${localStorage.getItem(localStorageKey.liveTournamentName)} : ${localStorage.getItem(localStorageKey.liveHomeName)} VS ${localStorage.getItem(localStorageKey.liveAwayName)}`}
+        </p>
+      </h4>
       <VideoPlayer src={filterUrl2(liveUrl)} />
       {/* <VideoPlayer
         src={filterUrl2(
           'https://vb90xltcvg.nsnd.live/live/_definst_/stream_1_1bda7@daoSD/playlist.m3u8'
         )}
       /> */}
-      <div className="flex gap-[4px]">
+      <div className="flex items-end gap-[4px]">
+        <p>Chọn máy chủ phát:</p>
         {meta.map((item) => {
           return (
             <>

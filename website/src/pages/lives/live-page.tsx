@@ -3,6 +3,7 @@ import { _axios } from '../../configs/axiosconfiguartor';
 import { apis } from '../../consts/api.const';
 import { Loading } from '../../components/commons/loading';
 import { useNavigate } from 'react-router-dom';
+import { localStorageKey } from '../../consts/local-storage-key.const';
 type Props = {};
 
 export const LivePage = (props: Props) => {
@@ -46,6 +47,9 @@ export const LivePage = (props: Props) => {
             <div
               onClick={() => {
                 if (live.is_live) {
+                  localStorage.setItem(localStorageKey.liveTournamentName, live.tournament.name);
+                  localStorage.setItem(localStorageKey.liveHomeName, live.home.name);
+                  localStorage.setItem(localStorageKey.liveAwayName, live.away.name);
                   navigate('/watch/' + live.id);
                 }
               }}
