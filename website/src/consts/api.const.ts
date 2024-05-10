@@ -53,6 +53,9 @@ export const apis: any = {
     hot: () => `recommend/popular/rematch`,
     recomment: (limit?: number) => `recommend/user/rematch?limit=${limit ? limit : 5}`
   },
+  live: {
+    meta: (liveId: string) => `matchs/${liveId}/meta`
+  },
   auth: {
     login: () => `auth/login`,
     register: () => `auth/register`,

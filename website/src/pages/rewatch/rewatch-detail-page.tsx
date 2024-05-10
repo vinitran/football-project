@@ -112,7 +112,7 @@ export const RewatchDetailPage = () => {
       <div className="news-detail flex justify-between p-5">
         {resDetailRewatch && !loading ? (
           <>
-            <div className="main-left bg-[--color-background-content] mr-[24px]">
+            <div className="main-left w-full bg-[--color-background-content] mr-[24px]">
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
             <div className="flex flex-col w-[400px]">
@@ -180,12 +180,7 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
         </div>
       </div>
       <div className="p-[12px] w-full">
-        {/* <VideoPlayer src={filterUrl(rewatch.video_url)} /> */}
-        <VideoPlayer
-          src={filterUrl2(
-            'https://vb90xltcvg.nsnd.live/live/_definst_/stream_1_1bda7@daoSD/playlist.m3u8'
-          )}
-        />
+        <VideoPlayer src={filterUrl(rewatch.video_url)} />
       </div>
       <div className="article-news block px-5 pt-[-15px]">
         <p className="mt-10" dangerouslySetInnerHTML={{ __html: rewatch.content }}></p>

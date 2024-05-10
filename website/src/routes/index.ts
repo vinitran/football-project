@@ -8,13 +8,14 @@ import { WatchPage } from '../pages/watch-page';
 import { NewsDetailPage } from '../pages/news/news-detail-page';
 import { RewatchPage } from '../pages/rewatch/rewatch-page';
 import { RewatchDetailPage } from '../pages/rewatch/rewatch-detail-page';
+import { LiveDetailPage } from '../pages/lives/live-detail-page';
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: LayoutWithNavBar,
     children: [
       { path: '/', Component: HomePage },
-      { path: '/watch/:id', Component: WatchPage },
+      { path: '/watch/:id', Component: LiveDetailPage },
       { path: '/home', Component: HomePage },
       { path: '/schedule-battle', Component: HomePage },
       { path: '/new', Component: NewPage },
