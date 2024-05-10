@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
       { path: '/', Component: HomePage },
       { path: '/watch/:id', Component: LiveDetailPage },
       { path: '/home', Component: HomePage },
-      { path: '/schedule-battle', Component: HomePage },
+      { path: '/schedule-battle', Component: LivePage },
       { path: '/new', Component: NewPage },
       { path: '/new-detail/:id', Component: NewsDetailPage },
       { path: '/rewatch', Component: RewatchPage },
