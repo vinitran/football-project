@@ -63,11 +63,13 @@ const filterUrl2 = (url?: string) => {
 const LiveDetailContent = ({ meta }: { meta: Meta[] }) => {
   const [liveUrl, setLiveUrl] = useState('');
   const [serverName, setServerName] = useState('');
+  const [serverKey, setServerKey] = useState('');
 
   // EFFECT
   useEffect(() => {
     if (!!meta.length) {
       setServerName(meta.slice(0, 1)[0].name);
+      setServerKey(meta.slice(0, 1)[0].cdn);
       setLiveUrl(meta.slice(0, 1)[0].url);
     }
   }, []);
@@ -91,9 +93,10 @@ const LiveDetailContent = ({ meta }: { meta: Meta[] }) => {
           return (
             <>
               <button
-                className={`w-[100px] h-[40px] py-[2px] rounded-[8px] text-white ${serverName === item.name ? 'button-selected-server' : ' bg-[--color-three]'}`}
+                className={`w-[100px] h-[40px] py-[2px] rounded-[8px] text-white ${serverName === item.name && serverKey === item.cdn ? 'button-selected-server' : ' bg-[--color-three]'}`}
                 onClick={() => {
                   setServerName(item.name);
+                  setServerKey(item.cdn);
                   setLiveUrl(item.url);
                 }}>
                 {item.name}
