@@ -9,6 +9,7 @@ import { NewsDetailPage } from '../pages/news/news-detail-page';
 import { RewatchPage } from '../pages/rewatch/rewatch-page';
 import { RewatchDetailPage } from '../pages/rewatch/rewatch-detail-page';
 import { LiveDetailPage } from '../pages/lives/live-detail-page';
+import { LivePage } from '../pages/lives/live-page';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
       { path: '/new-detail/:id', Component: NewsDetailPage },
       { path: '/rewatch', Component: RewatchPage },
       { path: '/rewatch-detail/:id', Component: RewatchDetailPage },
-      { path: '/test', Component: TestPage },
+      { path: '/test', Component: LivePage },
       { path: '/test2', Component: Test2Page }
     ]
   }
