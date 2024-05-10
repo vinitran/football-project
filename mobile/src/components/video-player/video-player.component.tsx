@@ -85,40 +85,40 @@ export const VideoPlayer = ({ uri, isLive = false }: VideoPlayerProps) => {
 
   const handleError = (errorObj: any) => {
     console.log(errorObj);
-    if (errorObj?.error?.errorCode === 'INVALID_URL') {
-      return;
-    }
+    // if (errorObj?.error?.errorCode === 'INVALID_URL') {
+    //   return;
+    // }
 
-    if (
-      errorObj &&
-      errorObj.error &&
-      (errorObj.error.localizedDescription || errorObj.error.localizedFailureReason)
-    ) {
-      let errorMessage = `${errorObj.error.code ? `${errorObj.error.code} : ` : ''} ${
-        errorObj.error.localizedFailureReason
-          ? errorObj.error.localizedFailureReason
-          : errorObj.error.localizedDescription
-          ? errorObj.error.localizedDescription
-          : ''
-      }`;
-      Alert.alert('Error!', errorMessage, [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    } else {
-      Alert.alert('Error!', 'An error occured while playing the video.' + uri, [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    }
+    // if (
+    //   errorObj &&
+    //   errorObj.error &&
+    //   (errorObj.error.localizedDescription || errorObj.error.localizedFailureReason)
+    // ) {
+    //   let errorMessage = `${errorObj.error.code ? `${errorObj.error.code} : ` : ''} ${
+    //     errorObj.error.localizedFailureReason
+    //       ? errorObj.error.localizedFailureReason
+    //       : errorObj.error.localizedDescription
+    //       ? errorObj.error.localizedDescription
+    //       : ''
+    //   }`;
+    //   Alert.alert('Error!', errorMessage, [
+    //     {
+    //       text: 'Cancel',
+    //       onPress: () => console.log('Cancel Pressed'),
+    //       style: 'cancel',
+    //     },
+    //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //   ]);
+    // } else {
+    //   Alert.alert('Error!', 'An error occured while playing the video.' + uri, [
+    //     {
+    //       text: 'Cancel',
+    //       onPress: () => console.log('Cancel Pressed'),
+    //       style: 'cancel',
+    //     },
+    //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //   ]);
+    // }
   };
 
   return (

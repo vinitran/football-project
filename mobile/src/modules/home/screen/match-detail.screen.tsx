@@ -42,6 +42,7 @@ export const MatchDetailScreen = () => {
         const url = getVideoUrl(metadata.play_urls);
         const updatedUrl = url ? url.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8') : '';
         const proxyUrl = `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
+        console.log(proxyUrl);
         setUri(proxyUrl);
       });
     setLoading(false);
