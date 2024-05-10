@@ -112,7 +112,7 @@ export const RewatchDetailPage = () => {
       <div className="news-detail flex justify-between p-5">
         {resDetailRewatch && !loading ? (
           <>
-            <div className="main-left bg-[--color-background-content] mr-[24px]">
+            <div className="main-left w-full bg-[--color-background-content] mr-[24px]">
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
             <div className="flex flex-col w-[400px]">
@@ -191,6 +191,11 @@ const RewatchDetailContent = ({ rewatch }: { rewatch: IRewatchDetail }) => {
 
 const filterUrl = (url?: string) => {
   return `https://stream.vinitran1245612.workers.dev?apiurl=${url}&is_m3u8=true`;
+};
+
+const filterUrl2 = (url?: string) => {
+  const updatedUrl = url ? url.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8') : '';
+  return `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
 };
 
 interface IRewatchDetail {
