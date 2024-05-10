@@ -177,6 +177,14 @@ export const NavBar = (props: Props) => {
             name: res.data.data.name,
             email: res.data.data.email
           });
+          localStorage.setItem(
+            localStorageKey.userInfo,
+            JSON.stringify({
+              username: res.data.data.username,
+              name: res.data.data.name,
+              email: res.data.data.email
+            })
+          );
         }
       })
       .catch(() => {});
@@ -271,12 +279,12 @@ export const NavBar = (props: Props) => {
       )}
       {isOpenUserInfo && (
         <UserInforModal
-          userInfo={userInfo}
           onLogout={() => {
             axiosConfiguration.deleteAxiosToken();
             setUserInfo(undefined);
             setIsOpenUserInfo(false);
             localStorage.removeItem(localStorageKey.token);
+            localStorage.removeItem(localStorageKey.userInfo);
             window.dispatchEvent(new Event('onChangeAuthentication'));
             toast.success('Đã đăng xuất');
           }}
