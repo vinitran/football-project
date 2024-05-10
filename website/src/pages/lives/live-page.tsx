@@ -4,6 +4,7 @@ import { apis } from '../../consts/api.const';
 import { Loading } from '../../components/commons/loading';
 import { useNavigate } from 'react-router-dom';
 import { localStorageKey } from '../../consts/local-storage-key.const';
+import moment from 'moment';
 type Props = {};
 
 export const LivePage = (props: Props) => {
@@ -67,8 +68,10 @@ export const LivePage = (props: Props) => {
                   />
                   <p className="text-center text-[14px] font-live-item">{live.home.name}</p>
                 </div>
-                <div className="col-start-2 flex items-start justify-center font-live-item text-[23px]">
-                  <p className="mt-[24px]">{`${live.scores.home} - ${live.scores.away}`}</p>
+                <div className="col-start-2 flex flex-col items-center justify-start font-live-item text-[23px] gap-[4px]">
+                  <p className="text-[16px]">{moment(live.timestamp).format('DD-MM-YYYY')}</p>
+                  <p className="text-[16px]">{moment(live.timestamp).format('HH:mm')}</p>
+                  <p>{`${live.scores.home} - ${live.scores.away}`}</p>
                 </div>
                 <div className="col-start-3 flex flex-col items-center justify-start">
                   <img
@@ -89,6 +92,7 @@ export interface Live {
   id: string;
   date: string;
   is_live: boolean;
+  timestamp: number;
   tournament: {
     name: string;
   };

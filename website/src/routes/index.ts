@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
       { path: '/new-detail/:id', Component: NewsDetailPage },
       { path: '/rewatch', Component: RewatchPage },
       { path: '/rewatch-detail/:id', Component: RewatchDetailPage },
-      { path: '/test', Component: LivePage },
+      { path: '/test', Component: HomePage },
       { path: '/test2', Component: Test2Page }
     ]
   }
