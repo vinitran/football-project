@@ -34,11 +34,13 @@ export const HotBar = ({
 const HotItem = ({ id, urlDetail, urlClick }: { id: string; urlDetail: any; urlClick: string }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<IHotItem | undefined>();
-  const fetchData = async () => {
-    const res = await _axios.get(urlDetail({ id: id }));
-    if (res) {
-      setData(res.data?.data ?? undefined);
-    }
+  const fetchData = () => {
+    _axios.get(urlDetail({ id: id })).then((res) => {
+      if (res) {
+        setData(res.data?.data ?? undefined);
+      }
+    }).catch(() => {})
+   
   };
   useEffect(() => {
     fetchData();
