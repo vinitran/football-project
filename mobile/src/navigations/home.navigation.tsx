@@ -8,6 +8,8 @@ import { getFocusedRouteNameFromRoute, useNavigation, useRoute } from '@react-na
 import { MatchBookEventScreen } from '../modules/home/screen/match-book-envent.component';
 import { HomeScreen } from '../modules/home/screen/home.screen';
 import { MatchReviewDetailScreen } from '../modules/home/screen/match-review-detail.screen';
+import { LoginScreen } from '../modules/home/screen/login.screen';
+import { RegisterScreen } from '../modules/home/screen/register.screen';
 
 const homeScreens: ScreenStack[] = [
   {
@@ -28,6 +30,14 @@ const homeScreens: ScreenStack[] = [
   {
     route: screens.matchReviewDetail,
     component: MatchReviewDetailScreen,
+  },
+  {
+    route: screens.login,
+    component: LoginScreen,
+  },
+  {
+    route: screens.register,
+    component: RegisterScreen,
   },
 ];
 

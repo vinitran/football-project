@@ -57,7 +57,7 @@ export const AccountScreen = () => {
       <View style={styles.signinWrapper}>
         <Image
           source={
-            user ? getAvatarFromId(user.username) : require('../../../assets/images/user-photo.png')
+            user ? getAvatarFromId(user.name) : require('../../../assets/images/user-photo.png')
           }
           style={styles.avatar}
         />

@@ -59,3 +59,16 @@ export const getAvatarFromId = (id: string) => {
 
   return avatars[resultMod10];
 };
+
+export function formatTime(date: Date) {
+  // Get hours and minutes from the date object
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+
+  // Add leading zero if necessary
+  const formatHour = hours < 10 ? '0' + hours : hours;
+  const formatMinute = minutes < 10 ? '0' + minutes : minutes;
+
+  // Concatenate hours and minutes in the desired format
+  return formatHour + ':' + formatMinute;
+}

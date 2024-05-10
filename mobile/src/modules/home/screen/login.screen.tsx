@@ -5,15 +5,14 @@ import { useTranslation } from '../../../hook/translate.hook';
 import { useState } from 'react';
 import { Icon } from '../../../components/icon/icon.component';
 import { Button } from '../../../components/button/button.component';
-import { login } from '../api/login.api';
 import { useService } from '../../../hook/service.hook';
 import { of, switchMap } from 'rxjs';
-import { showme } from '../api/show-me.api';
 import { useAppDispatch } from '../../../store/store';
 import { setAccessToken, setUser } from '../../../store/user.slice';
 import { useNavigation } from '@react-navigation/native';
-import { accountScreens } from '../const/route.const';
 import Toast from 'react-native-toast-message';
+import { login } from '../../account/api/login.api';
+import { showme } from '../../account/api/show-me.api';
 
 export const LoginScreen = () => {
   const { apiService: api, storageService } = useService();
@@ -29,10 +28,6 @@ export const LoginScreen = () => {
   const [error2, setError2] = useState('');
   const [secure, setSecure] = useState(false);
   const [isLoading, setLoading] = useState(false);
-
-  const goToRegister = () => {
-    navigation.navigate(accountScreens.register.name);
-  };
 
   const onChangeUsername = (username: string) => {
     setError1('');
@@ -141,12 +136,6 @@ export const LoginScreen = () => {
         <View style={{ opacity: isLoading ? 0.8 : 1, paddingHorizontal: theme.spaceS }}>
           <Button disable={isLoading} label={t('account.login')} onPress={onSubmit} />
         </View>
-        <Text style={styles.textWrapper}>
-          <Text style={styles.label}>{t('account.no_account')}</Text>
-          <Text style={styles.link} onPress={goToRegister}>
-            {t('account.register')}
-          </Text>
-        </Text>
       </View>
     </View>
   );

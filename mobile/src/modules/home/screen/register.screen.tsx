@@ -5,48 +5,82 @@ import { useTranslation } from '../../../hook/translate.hook';
 import { useState } from 'react';
 import { Icon } from '../../../components/icon/icon.component';
 import { Button } from '../../../components/button/button.component';
-import { login } from '../api/login.api';
 import { useService } from '../../../hook/service.hook';
-import { of, switchMap } from 'rxjs';
-import { showme } from '../api/show-me.api';
-import { useAppDispatch } from '../../../store/store';
-import { setAccessToken, setUser } from '../../../store/user.slice';
 import { useNavigation } from '@react-navigation/native';
-import { accountScreens } from '../const/route.const';
 import Toast from 'react-native-toast-message';
+import { register } from '../../account/api/register.api';
+import { of, switchMap } from 'rxjs';
+import { login } from '../../account/api/login.api';
+import { showme } from '../../account/api/show-me.api';
+import { setAccessToken, setUser } from '../../../store/user.slice';
+import { useAppDispatch } from '../../../store/store';
 
-export const LoginScreen = () => {
+export const RegisterScreen = () => {
   const { apiService: api, storageService } = useService();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const theme = useTheme();
   const styles = initStyles(theme);
-  const dispatch = useAppDispatch();
   const navigation = useNavigation();
 
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error1, setError1] = useState('');
   const [error2, setError2] = useState('');
-  const [secure, setSecure] = useState(false);
+  const [error3, setError3] = useState('');
+  const [error4, setError4] = useState('');
+  const [secure, setSecure] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
-  const goToRegister = () => {
-    navigation.navigate(accountScreens.register.name);
+  const onChangeName = (name: string) => {
+    setError1('');
+    setName(name);
+  };
+
+  const onChangeEmail = (email: string) => {
+    setError2('');
+    setEmail(email);
   };
 
   const onChangeUsername = (username: string) => {
-    setError1('');
+    setError3('');
     setUsername(username);
   };
 
   const onChangePassword = (password: string) => {
-    setError2('');
+    setError4('');
     setPassword(password);
+  };
+
+  const onValidateName = () => {
+    if (name.length === 0) {
+      setError1(t('validation.no_name'));
+      return false;
+    }
+
+    return true;
+  };
+
+  const onValidateEmail = () => {
+    if (email.length === 0) {
+      setError2(t('validation.no_email'));
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError2(t('validation.invalid_email'));
+      return false;
+    }
+    return true;
   };
 
   const onValidateUsername = () => {
     if (username.length === 0) {
-      setError1(t('validation.no_username'));
+      setError3(t('validation.no_username'));
       return false;
     }
 
@@ -55,7 +89,7 @@ export const LoginScreen = () => {
 
   const onValidatePasword = () => {
     if (password.length === 0) {
-      setError2(t('validation.no_password'));
+      setError4(t('validation.no_password'));
       return false;
     }
 
@@ -68,9 +102,11 @@ export const LoginScreen = () => {
   };
 
   const onValidate = () => {
+    const isValidName = onValidateName();
+    const isValidEmail = onValidateEmail();
     const isValidUsername = onValidateUsername();
     const isValidPassword = onValidatePasword();
-    return isValidUsername && isValidPassword;
+    return isValidName && isValidEmail && isValidUsername && isValidPassword;
   };
 
   const onSubmit = () => {
@@ -78,18 +114,24 @@ export const LoginScreen = () => {
 
     Keyboard.dismiss();
     setLoading(true);
-    login(api, {
+    register(api, {
       username: username.trim(),
       password: password.trim(),
+      name: name.trim(),
+      email: email.trim(),
     })
       .pipe(
         switchMap((data) => {
           if (!data) return of(null);
 
-          Toast.show({
-            type: 'success',
-            text1: t('account.login_success'),
+          return login(api, {
+            username: username.trim(),
+            password: password.trim(),
           });
+        }),
+        switchMap((data) => {
+          if (!data) return of(null);
+
           api.setHeaderToken(data.data);
           storageService.saveAcessToken(data.data);
           dispatch(setAccessToken(data.data));
@@ -108,6 +150,30 @@ export const LoginScreen = () => {
   return (
     <View style={styles.screen}>
       <View style={styles.wrapper}>
+        <Text style={styles.label}>{t('account.name')}</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            onChangeText={onChangeName}
+            placeholder={t('account.name_placeholder')}
+            placeholderTextColor={theme.neutralColor400}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.errorWrapper}>
+          <Text style={styles.error}>{error1}</Text>
+        </View>
+        <Text style={styles.label}>{t('account.email')}</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            onChangeText={onChangeEmail}
+            placeholder={t('account.email_placeholder')}
+            placeholderTextColor={theme.neutralColor400}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.errorWrapper}>
+          <Text style={styles.error}>{error2}</Text>
+        </View>
         <Text style={styles.label}>{t('account.username')}</Text>
         <View style={styles.inputWrapper}>
           <TextInput
@@ -118,7 +184,7 @@ export const LoginScreen = () => {
           />
         </View>
         <View style={styles.errorWrapper}>
-          <Text style={styles.error}>{error1}</Text>
+          <Text style={styles.error}>{error3}</Text>
         </View>
         <Text style={styles.label}>{t('account.password')}</Text>
         <View style={styles.inputWrapper}>
@@ -136,17 +202,11 @@ export const LoginScreen = () => {
           )}
         </View>
         <View style={styles.errorWrapper}>
-          <Text style={styles.error}>{error2}</Text>
+          <Text style={styles.error}>{error4}</Text>
         </View>
         <View style={{ opacity: isLoading ? 0.8 : 1, paddingHorizontal: theme.spaceS }}>
-          <Button disable={isLoading} label={t('account.login')} onPress={onSubmit} />
+          <Button disable={isLoading} label={t('account.register')} onPress={onSubmit} />
         </View>
-        <Text style={styles.textWrapper}>
-          <Text style={styles.label}>{t('account.no_account')}</Text>
-          <Text style={styles.link} onPress={goToRegister}>
-            {t('account.register')}
-          </Text>
-        </Text>
       </View>
     </View>
   );
@@ -160,7 +220,7 @@ const initStyles = (theme: AppTheme) => {
       padding: theme.spaceS,
     },
     errorWrapper: {
-      height: theme.spaceXL,
+      height: theme.spaceLL,
       justifyContent: 'center',
       paddingHorizontal: theme.spaceS,
     },

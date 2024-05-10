@@ -3,6 +3,7 @@ import { createStackNavigator, StackNavigationOptions } from '@react-navigation/
 import { ReactNode } from 'react';
 import { ScreenStack } from '../../interface/screen-stack.interface';
 import { useTranslation } from '../../hook/translate.hook';
+import { useTheme } from '../../hook/theme.hook';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,7 @@ export interface StackNavigationProps {
 
 export const StackNavigation = (props: StackNavigationProps) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const defaultProps = {
     safeAreaInsets: { top: 0 },
   };
@@ -30,6 +32,11 @@ export const StackNavigation = (props: StackNavigationProps) => {
           component={screen.component as any}
           options={{
             title: t(screen.route.title),
+            headerTitleStyle: {
+              fontWeight: '600',
+              fontSize: theme.fontM,
+              color: theme.neutralColor800,
+            },
             ...screen.options,
           }}
         />

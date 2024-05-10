@@ -6,7 +6,7 @@ import { Alert } from 'react-native';
 
 const handleError = (error: AjaxResponse<any>) => {
   const { response, request } = error;
-  Alert.alert('', response.message, [{ text: 'OK', onPress: () => {} }]);
+  Alert.alert('', response?.message, [{ text: 'OK', onPress: () => {} }]);
 
   console.log('api error', request.url, response);
   return of(null);

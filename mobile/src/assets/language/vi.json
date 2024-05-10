@@ -17,7 +17,9 @@
     "related_match": "Trận đấu tương tự",
     "no_data": "Không có trận đấu",
     "placeholder": "Tìm kiếm trận đấu",
-    "comment": "Bình luận"
+    "comment": "Bình luận",
+    "comment_placeholder": "Nhập bình luận",
+    "login_to_comment": "Đăng nhập để bình luận"
   },
   "highlight": {
     "highlight_hot": "Video nổi bật",

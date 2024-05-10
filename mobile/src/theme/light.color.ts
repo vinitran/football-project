@@ -17,6 +17,8 @@ export interface AppColor {
   secondaryColor50: string;
   secondaryColor100: string;
   secondaryColor200: string;
+  secondaryColor500: string;
+  secondaryColor600: string;
   semanticSuccessColor500: string;
   errorColor: string;
 }
@@ -40,6 +42,8 @@ export const LightColor: AppColor = {
   secondaryColor50: '#F2F7FF',
   secondaryColor100: '#C2DAFA',
   secondaryColor200: '#91BDF6',
+  secondaryColor500: '#0066EC',
+  secondaryColor600: '#055CCB',
   semanticSuccessColor500: '#00B64B',
   errorColor: '#F44336',
 };
