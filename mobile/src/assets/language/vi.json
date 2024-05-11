@@ -19,7 +19,8 @@
     "placeholder": "Tìm kiếm trận đấu",
     "comment": "Bình luận",
     "comment_placeholder": "Nhập bình luận",
-    "login_to_comment": "Đăng nhập để bình luận"
+    "login_to_comment": "Đăng nhập để bình luận",
+    "schedule": "Lịch thi đấu"
   },
   "highlight": {
     "highlight_hot": "Video nổi bật",

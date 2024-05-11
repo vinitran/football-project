@@ -28,6 +28,8 @@ import icVi from './vi.svg';
 import icEn from './en.svg';
 import icCheck from './check.svg';
 import icSend from './send.svg';
+import icChervonLeft from './chervon-left.svg';
+import icChervonRightBlue from './chervon-right-blue.svg';
 
 export const iconSet: { [key: string]: string } = {
   swap: icSwap,
@@ -60,4 +62,6 @@ export const iconSet: { [key: string]: string } = {
   en: icEn,
   check: icCheck,
   send: icSend,
+  'chervon-left': icChervonLeft,
+  'chervon-right-blue': icChervonRightBlue,
 };

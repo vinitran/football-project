@@ -36,6 +36,8 @@ export const LiveMatchComment = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
 
+  const flatListRef = useRef<FlatList>(null);
+
   const initMatchComment = async () => {
     firestore()
       .collection('matchs')
@@ -68,7 +70,7 @@ export const LiveMatchComment = () => {
       .collection('matchs')
       .doc(matchDocId)
       .collection('comments')
-      .orderBy('timestamp', 'asc')
+      .orderBy('timestamp', 'desc')
       .onSnapshot((snapShot) => {
         setComments((snapShot.docs.map((doc) => doc.data()) ?? []) as unknown as Comment[]);
       });
@@ -96,9 +98,11 @@ export const LiveMatchComment = () => {
       .doc(matchDocId)
       .collection('comments')
       .add(payload)
-      .then((data) => {
-        console.log(data.id);
-      });
+      .then((data) => {});
+
+    flatListRef.current?.scrollToOffset({
+      offset: 0,
+    });
   };
 
   const onCommentNotUser = () => {
@@ -120,6 +124,8 @@ export const LiveMatchComment = () => {
         data={comments}
         renderItem={renderItem}
         keyExtractor={(item) => item.timestamp + item.sender}
+        inverted={true}
+        ref={flatListRef}
       />
       <TouchableOpacity disabled={!!name} style={styles.inputWrapper} onPress={onCommentNotUser}>
         <View style={styles.inputInnerWrapper}>
@@ -158,7 +164,7 @@ const initStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     flatList: {
       flex: 1,
-      backgroundColor: theme.secondaryColor50,
+      backgroundColor: theme.backgroundColor,
     },
     inputWrapper: {
       borderTopColor: theme.neutralColor200,

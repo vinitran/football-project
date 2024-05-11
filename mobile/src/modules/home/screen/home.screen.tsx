@@ -2,10 +2,12 @@ import { TabView } from '../../../components/tabview/tabview.component';
 import { useTranslation } from '../../../hook/translate.hook';
 import { MatchListScreen } from './match-list.screen';
 import { MatchReviewScreen } from './match-review.screen';
+import { MatchScheduleScreen } from './match-schedule.screen';
 
 enum HomeTab {
   LIVE,
   WATCH,
+  SCHEDULE,
 }
 
 export const HomeScreen = () => {
@@ -16,6 +18,10 @@ export const HomeScreen = () => {
       title: t('match.live'),
     },
     {
+      key: HomeTab.SCHEDULE,
+      title: t('match.schedule'),
+    },
+    {
       key: HomeTab.WATCH,
       title: t('match.rematch'),
     },
@@ -24,6 +30,7 @@ export const HomeScreen = () => {
   const renderScene = {
     [HomeTab.LIVE]: MatchListScreen,
     [HomeTab.WATCH]: MatchReviewScreen,
+    [HomeTab.SCHEDULE]: MatchScheduleScreen,
   };
 
   return (

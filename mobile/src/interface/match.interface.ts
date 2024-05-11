@@ -46,7 +46,7 @@ interface Away {
   id: string;
 }
 
-interface Tournament {
+export interface Tournament {
   name: string;
   logo: string;
   unique_tournament: UniqueTournament;

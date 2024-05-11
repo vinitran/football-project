@@ -1,4 +1,12 @@
+import dayjs from 'dayjs';
 import { PlayUrl } from '../interface/match.interface';
+import isoWeek from 'dayjs/plugin/isoWeek';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+
+dayjs.extend(isoWeek);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 export const objectToQueryString = (obj: any, prefix?: any): any => {
   const str = [];

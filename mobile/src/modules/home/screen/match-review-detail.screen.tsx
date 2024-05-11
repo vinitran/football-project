@@ -36,8 +36,6 @@ export const MatchReviewDetailScreen = () => {
     getData();
   }, []);
 
-  console.log(hightlight?.video_url);
-
   return (
     <View style={styles.container}>
       <VideoPlayer uri={hightlight?.video_url} />

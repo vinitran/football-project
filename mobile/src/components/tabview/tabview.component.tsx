@@ -130,15 +130,15 @@ const initStyles = (theme: AppTheme) => {
       flexDirection: 'row',
       borderBottomWidth: 2,
       justifyContent: 'center',
-      paddingVertical: theme.spaceMS,
+      paddingVertical: theme.spaceXS,
       borderColor: theme.neutralColor400,
       paddingHorizontal: theme.spaceM,
       marginBottom: -2,
     },
     tabItemText: {
-      fontWeight: '700',
       textAlign: 'center',
       color: theme.textColor,
+      fontSize: theme.fontS,
     },
     activeTabItem: {
       color: theme.primaryColor,

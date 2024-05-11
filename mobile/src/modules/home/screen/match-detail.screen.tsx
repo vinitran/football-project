@@ -35,6 +35,15 @@ export const MatchDetailScreen = () => {
       .pipe(take(1))
       .subscribe(([metadata, currentMatch]) => {
         setCurrentMatches(currentMatch);
+        navigation.setOptions({
+          title:
+            currentMatch?.home.name +
+            ' - ' +
+            currentMatch?.away.name +
+            ' | ' +
+            currentMatch?.tournament.name,
+        });
+
         if (!metadata?.play_urls || metadata.play_urls.length < 1) {
           return;
         }
@@ -42,7 +51,6 @@ export const MatchDetailScreen = () => {
         const url = getVideoUrl(metadata.play_urls);
         const updatedUrl = url ? url.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8') : '';
         const proxyUrl = `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
-        console.log(proxyUrl);
         setUri(proxyUrl);
       });
     setLoading(false);
@@ -79,9 +87,9 @@ const initStyles = (theme: AppTheme) => {
     },
     matchName: {
       color: theme.neutralColor900,
-      fontSize: theme.fontM,
+      fontSize: theme.fontS,
       fontWeight: '700',
-      marginVertical: theme.spaceMS,
+      marginVertical: theme.spaceS,
       paddingHorizontal: theme.spaceS,
       textAlign: 'left',
       width: '100%',

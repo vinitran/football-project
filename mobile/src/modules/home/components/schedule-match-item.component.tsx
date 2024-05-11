@@ -1,60 +1,21 @@
-import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../hook/theme.hook';
-import { AppTheme } from '../../../theme/theme';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { Match } from '../../../interface/match.interface';
-import { Button } from '../../../components/button/button.component';
-import { useEffect } from 'react';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useService } from '../../../hook/service.hook';
+import { AppTheme } from '../../../theme/theme';
 
-export const MatchBookEventScreen = () => {
+export const ScheduleMatchItem = ({
+  match,
+  onPress,
+}: {
+  match: Match;
+  onPress: (match: Match) => void;
+}) => {
   const theme = useTheme();
   const styles = initStyles(theme);
-
-  const { params } = useRoute();
-  const match = params?.match as Match;
   const time = new Date(match.timestamp);
-  const navigation = useNavigation<StackNavigationProp<any>>();
-  const { calendarService } = useService();
-
-  useEffect(() => {
-    if (!match) return;
-
-    navigation.setOptions({
-      title: match?.home.name + ' - ' + match?.away.name + ' | ' + match?.tournament.name,
-    });
-  }, [match]);
-
-  const onBookCalendarEvent = async () => {
-    if (Platform.OS === 'ios') {
-      return calendarService.addToIosCalendar(
-        match?.home.name + ' - ' + match?.away.name + ' | ' + match?.tournament.name,
-        time.toISOString(),
-        new Date(time.getTime() + 90 * 1000 * 60).toISOString(),
-        `football://match-live/${match.id}`
-      );
-    }
-
-    calendarService.addAndroidCalendarEvent({
-      title: match?.home.name + ' - ' + match?.away.name + ' | ' + match?.tournament.name,
-      // startDate: time.toISOString(),
-      // endDate: new Date(time.getTime() + 90 * 1000 * 60).toISOString(),
-      url: `football://match-live/${match.id}`,
-      startDate: new Date(new Date().getTime() + 90 * 1000 * 2).toISOString(),
-      endDate: new Date(new Date().getTime() + 90 * 1000 * 60).toISOString(),
-    });
-  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.betweenRow}>
-        <View style={styles.tournamentWrapper}>
-          <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
-            {match.tournament.name}
-          </Text>
-        </View>
-      </View>
+    <TouchableOpacity activeOpacity={0.9} style={styles.wrapper} onPress={() => onPress(match)}>
       <View style={styles.aroundRow}>
         <View style={styles.teamWrapper}>
           <Image source={{ uri: match.home.logo }} style={styles.logo} resizeMode="cover" />
@@ -63,11 +24,11 @@ export const MatchBookEventScreen = () => {
           </Text>
         </View>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={styles.time}>{`${match.date.substring(6, 8)}/${match.date.substring(
+          <Text>{`${match.date.substring(6, 8)}/${match.date.substring(
             4,
             6
           )}/${match.date.substring(0, 4)}`}</Text>
-          <Text style={styles.time}>
+          <Text>
             {' '}
             {`${time.getHours().toString().padStart(2, '0')}:${time
               .getMinutes()
@@ -82,20 +43,12 @@ export const MatchBookEventScreen = () => {
           </Text>
         </View>
       </View>
-      <View style={styles.bookView}>
-        <Button label="Đặt lịch" onPress={onBookCalendarEvent} />
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const initStyles = (theme: AppTheme) => {
   return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.backgroundColor,
-      alignItems: 'center',
-    },
     betweenRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -106,7 +59,6 @@ const initStyles = (theme: AppTheme) => {
       justifyContent: 'space-around',
       alignItems: 'center',
       marginTop: theme.spaceMS,
-      marginBottom: theme.spaceML,
     },
     liveContainer: {
       borderRadius: theme.radiusCircle,
@@ -117,23 +69,24 @@ const initStyles = (theme: AppTheme) => {
       alignItems: 'center',
     },
     wrapper: {
-      borderRadius: theme.radiusMS,
       backgroundColor: theme.backgroundColor,
       paddingBottom: theme.spaceMS,
       paddingHorizontal: theme.spaceS,
-      marginVertical: theme.spaceS,
       width: '100%',
+      borderBottomColor: theme.neutralColor100,
+      borderTopColor: theme.neutralColor100,
+      borderBottomWidth: 1,
+      borderTopWidth: 1,
     },
     contrastText: {
       color: theme.textContrastColor,
       marginRight: theme.spaceXXS,
     },
-    text: {
-      color: theme.textColor,
-      fontWeight: '700',
-      fontSize: theme.fontM,
-    },
+    text: {},
     tournamentWrapper: {
+      borderBottomLeftRadius: theme.radiusS,
+      borderBottomRightRadius: theme.radiusS,
+      backgroundColor: theme.neutralColor200,
       paddingHorizontal: theme.spaceS,
       paddingVertical: theme.spaceS,
       marginHorizontal: theme.spaceXS,
@@ -143,8 +96,8 @@ const initStyles = (theme: AppTheme) => {
       opacity: 0,
     },
     logo: {
-      width: 2 * theme.spaceXXL,
-      height: 2 * theme.spaceXXL,
+      width: theme.spaceXXL,
+      height: theme.spaceXXL,
       marginBottom: theme.spaceMS,
     },
     scoreWrapper: {
@@ -167,19 +120,10 @@ const initStyles = (theme: AppTheme) => {
     },
     teamName: {
       color: theme.neutralColor900,
-      fontSize: theme.fontL,
-      fontWeight: '700',
+      fontSize: theme.fontM,
     },
     matchTime: {
       color: theme.semanticSuccessColor500,
-    },
-    time: {
-      color: theme.neutralColor800,
-      fontWeight: '600',
-    },
-    bookView: {
-      width: '100%',
-      paddingHorizontal: theme.spaceML,
     },
   });
 };

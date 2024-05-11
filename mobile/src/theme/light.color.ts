@@ -6,6 +6,8 @@ export interface AppColor {
   border: string;
   notification: string;
   textContrastColor: string;
+  neutralColor50: string;
+  neutralColor100: string;
   neutralColor200: string;
   neutralColor300: string;
   neutralColor400: string;
@@ -17,8 +19,12 @@ export interface AppColor {
   secondaryColor50: string;
   secondaryColor100: string;
   secondaryColor200: string;
+  secondaryColor300: string;
+  secondaryColor400: string;
   secondaryColor500: string;
   secondaryColor600: string;
+  secondaryColor800: string;
+  secondaryColor900: string;
   semanticSuccessColor500: string;
   errorColor: string;
 }
@@ -31,6 +37,8 @@ export const LightColor: AppColor = {
   border: 'rgb(216, 216, 216)',
   notification: 'rgb(255, 59, 48)',
   textContrastColor: '#eeeeee',
+  neutralColor50: '#FAFAFA',
+  neutralColor100: '#F5F5F5',
   neutralColor200: '#cfcfcf',
   neutralColor300: '#E0E0E0',
   neutralColor400: '#BDBDBD',
@@ -42,8 +50,12 @@ export const LightColor: AppColor = {
   secondaryColor50: '#F2F7FF',
   secondaryColor100: '#C2DAFA',
   secondaryColor200: '#91BDF6',
+  secondaryColor300: '#61A0F1',
+  secondaryColor400: '#3083ED',
   secondaryColor500: '#0066EC',
   secondaryColor600: '#055CCB',
+  primaryColor800: '#0E4790',
+  primaryColor900: '#133D73',
   semanticSuccessColor500: '#00B64B',
   errorColor: '#F44336',
 };
