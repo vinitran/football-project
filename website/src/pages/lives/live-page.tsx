@@ -56,10 +56,13 @@ export const LivePage = (props: Props) => {
               }}
               className={`${live.is_live ? 'cursor-pointer' : ''} w-[308px] h-[160px] flex flex-col items-center relative bg-[#3F4148] rounded-[8px]`}>
               {live.is_live ? <div className="absolute live-tag">live</div> : <></>}
+
+              {/* TOURNAMENT */}
               <div className="live-tournament-name">
                 <p>{live.tournament.name}</p>
               </div>
               <div className="flex-1 grid grid-cols-3 content-stretch py-[15px] px-[10px] w-full h-full">
+                {/* HOME */}
                 <div className="col-start-1 flex flex-col items-center justify-start  ">
                   <img
                     className="h-[60px] w-[60px]"
@@ -68,11 +71,23 @@ export const LivePage = (props: Props) => {
                   />
                   <p className="text-center text-[14px] font-live-item">{live.home.name}</p>
                 </div>
-                <div className="col-start-2 flex flex-col items-center justify-start font-live-item text-[23px] gap-[4px]">
-                  <p className="text-[16px]">{moment(live.timestamp).format('DD-MM-YYYY')}</p>
-                  <p className="text-[16px]">{moment(live.timestamp).format('HH:mm')}</p>
-                  <p>{`${live.scores.home} - ${live.scores.away}`}</p>
-                </div>
+                {/* SCORE */}
+                {live.is_live ? (
+                  <div className="mt-[12px] col-start-2 flex flex-col items-center justify-start font-live-item text-[23px] gap-[4px]">
+                    <p>{`${live.scores.home} - ${live.scores.away}`}</p>
+                    <p className="text-[12px] text-green-500">{live.parse_data?.time}</p>
+                  </div>
+                ) : (
+                  <div className="mt-[12px] col-start-2 flex flex-col items-center justify-start font-live-item text-[23px] gap-[4px]">
+                    <p className="text-[16px]">
+                      {moment(live.timestamp).add(3, 'hours').format('DD-MM-YYYY')}
+                    </p>
+                    <p className="text-[16px]">
+                      {moment(live.timestamp).add(3, 'hours').format('HH:mm')}
+                    </p>
+                  </div>
+                )}
+                {/* AWAY */}
                 <div className="col-start-3 flex flex-col items-center justify-start">
                   <img
                     className="h-[60px] w-[60px]"
@@ -93,6 +108,9 @@ export interface Live {
   date: string;
   is_live: boolean;
   timestamp: number;
+  parse_data?: {
+    time?: string;
+  };
   tournament: {
     name: string;
   };

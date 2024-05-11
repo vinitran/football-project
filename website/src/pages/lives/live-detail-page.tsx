@@ -5,6 +5,9 @@ import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
 import { Loading } from '../../components/commons/loading';
 import { localStorageKey } from '../../consts/local-storage-key.const';
+import { database, ref, push, onValue } from './../../configs/firebase';
+import { RandomBgColor, RandomColor } from '../../utils';
+import moment from 'moment';
 
 interface Meta {
   name: string;
@@ -42,9 +45,12 @@ export const LiveDetailPage = (props: Props) => {
 
   return (
     <>
-      <div className="p-[30px] live-detail">
+      <div className="live-detail-page p-[30px] live-detail">
         {!!meta.length ? (
-          <LiveDetailContent meta={meta} />
+          <div className=" flex gap-[12px]">
+            <LiveDetailContent meta={meta} />
+            {params.id ? <ChatBox liveId={params.id} /> : <></>}
+          </div>
         ) : (
           <div className="flex items-center justify-center">
             <Loading />
@@ -75,7 +81,7 @@ const LiveDetailContent = ({ meta }: { meta: Meta[] }) => {
   }, []);
 
   return (
-    <div className="live-detail-item flex flex-col gap-[16px]">
+    <div className="flex-1 live-detail-item flex flex-col gap-[16px]">
       <h4 className="align-middle pl-4 border-l-4 border-green-500 border-solid leading-[28px] text-[20px] uppercase">
         <p>
           {`${localStorage.getItem(localStorageKey.liveTournamentName)} : ${localStorage.getItem(localStorageKey.liveHomeName)} VS ${localStorage.getItem(localStorageKey.liveAwayName)}`}
@@ -108,3 +114,95 @@ const LiveDetailContent = ({ meta }: { meta: Meta[] }) => {
     </div>
   );
 };
+
+const ChatBox = ({ liveId }: { liveId: string }) => {
+  const [messages, setMessages] = useState<IMessageLive[]>([]);
+  const [inputMessage, setInputMessage] = useState<string | undefined>();
+
+  useEffect(() => {
+    onValue(ref(database, 'football-chat'), (data) => {
+      let getMsg: IMessageLive[] = [];
+      data.forEach((d) => {
+        getMsg.push(d.val());
+      });
+      setMessages(getMsg);
+    });
+  }, []);
+
+  const handleSendMessage = () => {
+    push(ref(database, 'football-chat'), {
+      liveId: liveId,
+      name: JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '')?.name,
+      chat: inputMessage,
+      timestamp: moment().format()
+    });
+    setInputMessage('');
+  };
+  return (
+    <>
+      <div className="chat-bo mt-[44px] flex flex-col items-start justify-start gap-[12px] w-[400px] h-[496px]">
+        <div className="flex-1 flex flex-col items-start justify-start w-full p-[12px] border-solid border-[2px] gap-[12px] border-[--color-three] rounded-[8px] overflow-x-hidden overflow-y-auto">
+          {messages.map((message) => (
+            <ChatItem
+              liveId={message.liveId}
+              name={message.name}
+              chat={message.chat}
+              timestamp={message.timestamp}
+            />
+          ))}
+        </div>
+
+        <div className="flex w-full gap-[8px]">
+          <input
+            className="flex-1 outline-none border-solid border-[1px] border-[--color-three] p-[8px] rounded-[8px] h-[40px]"
+            type="text"
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+          />
+          <button
+            className={`w-[100px] h-[40px] rounded-[8px] text-white bg-[--color-three] flex items-center justify-center`}
+            onClick={handleSendMessage}>
+            Gửi
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const ChatItem = ({ liveId, name, chat, timestamp }: IMessageLive) => {
+  const [isUser, setIsUser] = useState<boolean>(false);
+  useEffect(() => {
+    setIsUser(
+      name === JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '{"name":""}')?.name
+    );
+  }, []);
+  return (
+    <>
+      <div
+        className={`flex gap-[4px] w-full ${isUser ? 'flex-row-reverse items-start justify-start' : 'flex-row'}`}>
+        {/* NAME */}
+        <div
+          className={`flex items-center justify-center text-bold h-[32px] w-[32px] rounded-[8px] bg-[--color-three] text-white`}>
+          <p>{name.slice(0, 1).toUpperCase()}</p>
+        </div>
+        {/* CHAT */}
+        <div className={`flex flex-col w-fit  ${isUser ? 'items-end' : ''}`}>
+          <p className="px-[8px] py-[4px] rounded-md bg-blue-400 text-white w-fit min-h-[32px] break-all">
+            {chat}
+          </p>
+          <div className={`italic text-[12px] text-gray-600 w-fit`}>
+            {moment(timestamp).format('HH:mm')}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+interface IMessageLive {
+  liveId: string;
+  name: string;
+  chat: string;
+  timestamp?: string;
+}
