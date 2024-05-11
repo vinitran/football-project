@@ -107,7 +107,7 @@ export const NewPage = (props: Props) => {
         <SearchBar placeholder="Tìm kiếm tin tức" onSearch={(value) => setSearching(value)} />
         {resListNews && resListNews.length > 0 && !loading ? (
           <>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 p-[24px]">
               <div className="flex-1 flex flex-col items-center justify-start gap-1 h-full">
                 <div className="grid grid-cols-3 w-fit gap-2">
                   {resListNews.map((item: INews, index: number) => (
@@ -123,7 +123,7 @@ export const NewPage = (props: Props) => {
                 />
               </div>
 
-              <div className="flex flex-col w-[400px]">
+              <div className="flex flex-col w-[350px]">
                 {!!resRecommentNews.length ? (
                   <HotBar
                     title="Tin đề xuất"

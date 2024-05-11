@@ -64,7 +64,14 @@ export const RewatchDetailPage = () => {
     if (token) {
       console.log(`send feed back ${feedbackType} - ${params.id}`);
       axiosConfiguration.setAxiosToken(token, true);
-      _axios.post(apis.feedback(), {
+      _axios.post(apis.feedback.feedbackUser(), {
+        FeedbackType: feedbackType,
+        ItemId: params.id
+      });
+    } else {
+      console.log('feed by anonymous');
+      
+      _axios.post(apis.feedback.feedbackAnonymous(), {
         FeedbackType: feedbackType,
         ItemId: params.id
       });
@@ -115,7 +122,7 @@ export const RewatchDetailPage = () => {
             <div className="main-left w-full bg-[--color-background-content] mr-[24px]">
               <RewatchDetailContent rewatch={resDetailRewatch} />
             </div>
-            <div className="flex flex-col w-[400px]">
+            <div className="flex flex-col w-[350px]">
               {!!resRecommentRewatch.length ? (
                 <HotBar
                   title="Trận đấu đề xuất"
