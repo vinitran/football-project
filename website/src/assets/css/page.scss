@@ -178,3 +178,29 @@
     box-shadow: 0 0 20px rgba(251, 8, 64, 0.5);
   }
 }
+
+.live-detail-page {
+  /* width */
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-three);
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-three);
+  }
+  .chat-box {
+
+  }
+}
