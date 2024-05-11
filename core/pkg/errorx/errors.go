@@ -12,6 +12,11 @@ import (
 
 type Kind uint8
 
+func (k Kind) Error() string {
+	// TODO implement me
+	panic("implement me")
+}
+
 const (
 	Other Kind = iota
 	Invalid

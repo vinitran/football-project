@@ -2,6 +2,9 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    fontFamily: {
+      'live-item': ['Roboto', 'Arial']
+    },
     extend: {},
   },
   plugins: [],

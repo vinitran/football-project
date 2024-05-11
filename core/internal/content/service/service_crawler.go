@@ -177,10 +177,19 @@ func (service *ServiceCrawler) CrawlMatch() error {
 	return nil
 }
 
-func (service *ServiceCrawler) CrawlNews() error {
-	index := 1
-	for {
-		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/news/%d", index)
+func (service *ServiceCrawler) CrawlNews(from, to *int) error {
+	fromPage := 1
+	toPage := 10000
+	if from != nil {
+		fromPage = *from
+	}
+
+	if to != nil {
+		toPage = *to
+	}
+
+	for i := fromPage; i < toPage; i++ {
+		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/news/%d", i)
 		resp, err := service.httpClient(3).Get(url, http.Header{
 			"content-type": []string{"application/json"},
 		})
@@ -207,8 +216,8 @@ func (service *ServiceCrawler) CrawlNews() error {
 			}
 		}
 
-		index++
 	}
+	return nil
 }
 
 func (service *ServiceCrawler) CrawlNewsDetail(id string) error {
@@ -254,10 +263,19 @@ func (service *ServiceCrawler) CrawlNewsDetail(id string) error {
 	return nil
 }
 
-func (service *ServiceCrawler) CrawlReviewMatch() error {
-	index := 1
-	for {
-		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/xemlai/%d", index)
+func (service *ServiceCrawler) CrawlReviewMatch(from, to *int) error {
+	fromPage := 1
+	toPage := 10000
+	if from != nil {
+		fromPage = *from
+	}
+
+	if to != nil {
+		toPage = *to
+	}
+
+	for i := fromPage; i < toPage; i++ {
+		url := fmt.Sprintf("https://api.vebo.xyz/api/news/vebotv/list/xemlai/%d", i)
 		resp, err := service.httpClient(3).Get(url, http.Header{
 			"content-type": []string{"application/json"},
 		})
@@ -283,9 +301,8 @@ func (service *ServiceCrawler) CrawlReviewMatch() error {
 				return err
 			}
 		}
-
-		index++
 	}
+	return nil
 }
 
 func (service *ServiceCrawler) CrawlReviewMatchDetail(id string) error {
@@ -315,7 +332,7 @@ func (service *ServiceCrawler) CrawlReviewMatchDetail(id string) error {
 		VideoURL:     payload.VideoURL,
 		FeatureImage: payload.FeatureImage,
 		Category:     payload.Category,
-		Label:        payload.Label,
+		Labels:       payload.Label,
 		Content:      payload.Content,
 		Title:        payload.Title,
 		H1:           payload.H1,

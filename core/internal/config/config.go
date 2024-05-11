@@ -17,9 +17,12 @@ const (
 	FlagMigrateAction = "action"
 	FlagUpAction      = "up"
 	FlagDownAction    = "down"
+	FlagOn            = "on"
+	FlagOff           = "off"
 	FlagCfg           = "cfg"
 	FlagEnvironment   = "environment"
 	FlagTable         = "table"
+	FlagSchedule      = "schedule"
 	FlagNews          = "news"
 	FlagReviewMatch   = "review_match"
 	FlagMatchs        = "matchs"
@@ -50,6 +53,7 @@ func Default() (*Config, error) {
 
 // Load loads the configuration
 func Load(configFilePath string) (*Config, error) {
+	log.Println("config", configFilePath)
 	cfg, err := Default()
 	if err != nil {
 		return nil, err

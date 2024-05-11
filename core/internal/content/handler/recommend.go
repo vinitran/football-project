@@ -1,6 +1,12 @@
 package handler
 
 import (
+	"time"
+
+	"github.com/google/uuid"
+
+	"core/pkg/auth"
+
 	"core/internal/content/service"
 	"core/pkg/errorx"
 	"github.com/labstack/echo/v4"
@@ -13,7 +19,7 @@ type GroupRecommend struct {
 
 func (group *GroupRecommend) CreateFeedback(c echo.Context) error {
 	ctx := c.Request().Context()
-	var payload service.Feedback
+	var payload FeedbackPayload
 	if err := c.Bind(&payload); err != nil {
 		return restAbort(c, nil, errorx.Wrap(err, errorx.Invalid))
 	}
@@ -23,7 +29,42 @@ func (group *GroupRecommend) CreateFeedback(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{payload})
+	sub, err := auth.ResolveValidSubjectUUID(ctx)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	feedback := service.Feedback{
+		FeedbackType: payload.FeedbackType,
+		UserId:       sub.String(),
+		ItemId:       payload.ItemId,
+		Timestamp:    time.Now().String(),
+	}
+
+	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{feedback})
+	return restAbort(c, "inserted feedback", err)
+}
+
+func (group *GroupRecommend) CreateFeedbackWithoutAuth(c echo.Context) error {
+	ctx := c.Request().Context()
+	var payload FeedbackPayload
+	if err := c.Bind(&payload); err != nil {
+		return restAbort(c, nil, errorx.Wrap(err, errorx.Invalid))
+	}
+
+	serviceRecommender, err := do.Invoke[*service.ServiceRecommender](group.cfg.Container)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	feedback := service.Feedback{
+		FeedbackType: payload.FeedbackType,
+		UserId:       uuid.New().String(),
+		ItemId:       payload.ItemId,
+		Timestamp:    time.Now().String(),
+	}
+
+	err = serviceRecommender.InsertFeedback(ctx, []service.Feedback{feedback})
 	return restAbort(c, "inserted feedback", err)
 }
 
@@ -45,7 +86,6 @@ func (group *GroupRecommend) GetByUser(c echo.Context) error {
 func (group *GroupRecommend) GetByUserAndCategory(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	userId := c.Param("id")
 	category := c.Param("category")
 
 	limit := queryParamInt(c, "limit", 10)
@@ -55,7 +95,12 @@ func (group *GroupRecommend) GetByUserAndCategory(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	items, err := serviceRecommender.GetRecommend(ctx, userId, category, limit)
+	sub, err := auth.ResolveValidSubjectUUID(ctx)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	items, err := serviceRecommender.GetRecommend(ctx, sub.String(), category, limit)
 	return restAbort(c, items, err)
 }
 
@@ -90,4 +135,25 @@ func (group *GroupRecommend) GetByItemAndCategory(c echo.Context) error {
 
 	items, err := serviceRecommender.GetNeighborsItem(ctx, itemId, category, limit)
 	return restAbort(c, items, err)
+}
+
+func (group *GroupRecommend) GetPopularByItem(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	category := c.Param("category")
+
+	limit := queryParamInt(c, "limit", 10)
+
+	serviceRecommender, err := do.Invoke[*service.ServiceRecommender](group.cfg.Container)
+	if err != nil {
+		return restAbort(c, nil, err)
+	}
+
+	items, err := serviceRecommender.GetPopularItem(ctx, category, limit)
+	return restAbort(c, items, err)
+}
+
+type FeedbackPayload struct {
+	FeedbackType string `json:"FeedbackType"`
+	ItemId       string `json:"ItemId"`
 }

@@ -3,6 +3,8 @@ package content
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	b "core/internal/content/bob"
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql/dialect"
@@ -16,15 +18,17 @@ type CommonListParams struct {
 
 type MatchListParams struct {
 	CommonListParams
-	Search     string
-	Status     MatchStatus
-	IsFeatured bool
+	Search      string
+	Status      MatchStatus
+	IsFeatured  bool
+	IsNullLabel bool
 }
 
 type NewsListParams struct {
 	CommonListParams
-	Search  string
-	NewsIDs []string
+	Search      string
+	NewsIDs     []string
+	IsNullLabel bool
 }
 
 type DatastoreTeam interface {
@@ -57,6 +61,7 @@ type DatastoreNews interface {
 	List(ctx context.Context, params NewsListParams) ([]*News, error)
 	FindByID(ctx context.Context, id string) (*News, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*News, error)
+	Count(ctx context.Context) (int, error)
 }
 
 type DatastoreReviewMatch interface {
@@ -66,4 +71,15 @@ type DatastoreReviewMatch interface {
 	Upsert(ctx context.Context, params *b.ReviewMatchSetter) (*ReviewMatch, error)
 	UpsertMany(ctx context.Context, params []*b.ReviewMatchSetter) ([]*ReviewMatch, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*ReviewMatch, error)
+	Count(ctx context.Context) (int, error)
+}
+
+type DatastoreUser interface {
+	FindByID(ctx context.Context, id uuid.UUID) (*User, error)
+	FindByUsername(ctx context.Context, username string) (*User, error)
+	FindByEmail(ctx context.Context, email string) (*User, error)
+	Create(ctx context.Context, params *b.UserInforSetter) (*User, error)
+	ExistByEmail(ctx context.Context, email string) (bool, error)
+	PasswordByUsername(ctx context.Context, username string) (string, error)
+	ExistByUsername(ctx context.Context, username string) (bool, error)
 }

@@ -45,7 +45,7 @@ type ReviewMatchTemplate struct {
 	VideoURL     func() string
 	FeatureImage func() string
 	Category     func() types.JSON[json.RawMessage]
-	Label        func() null.Val[types.JSON[json.RawMessage]]
+	Labels       func() null.Val[types.JSON[json.RawMessage]]
 	Content      func() string
 	Title        func() string
 	H1           func() string
@@ -88,8 +88,8 @@ func (o ReviewMatchTemplate) toModel() *models.ReviewMatch {
 	if o.Category != nil {
 		m.Category = o.Category()
 	}
-	if o.Label != nil {
-		m.Label = o.Label()
+	if o.Labels != nil {
+		m.Labels = o.Labels()
 	}
 	if o.Content != nil {
 		m.Content = o.Content()
@@ -152,8 +152,8 @@ func (o ReviewMatchTemplate) BuildSetter() *models.ReviewMatchSetter {
 	if o.Category != nil {
 		m.Category = omit.From(o.Category())
 	}
-	if o.Label != nil {
-		m.Label = omitnull.FromNull(o.Label())
+	if o.Labels != nil {
+		m.Labels = omitnull.FromNull(o.Labels())
 	}
 	if o.Content != nil {
 		m.Content = omit.From(o.Content())
@@ -320,7 +320,7 @@ func (m reviewMatchMods) RandomizeAllColumns(f *faker.Faker) ReviewMatchMod {
 		ReviewMatchMods.RandomVideoURL(f),
 		ReviewMatchMods.RandomFeatureImage(f),
 		ReviewMatchMods.RandomCategory(f),
-		ReviewMatchMods.RandomLabel(f),
+		ReviewMatchMods.RandomLabels(f),
 		ReviewMatchMods.RandomContent(f),
 		ReviewMatchMods.RandomTitle(f),
 		ReviewMatchMods.RandomH1(f),
@@ -631,43 +631,43 @@ func (m reviewMatchMods) ensureCategory(f *faker.Faker) ReviewMatchMod {
 }
 
 // Set the model columns to this value
-func (m reviewMatchMods) Label(val null.Val[types.JSON[json.RawMessage]]) ReviewMatchMod {
+func (m reviewMatchMods) Labels(val null.Val[types.JSON[json.RawMessage]]) ReviewMatchMod {
 	return ReviewMatchModFunc(func(o *ReviewMatchTemplate) {
-		o.Label = func() null.Val[types.JSON[json.RawMessage]] { return val }
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] { return val }
 	})
 }
 
 // Set the Column from the function
-func (m reviewMatchMods) LabelFunc(f func() null.Val[types.JSON[json.RawMessage]]) ReviewMatchMod {
+func (m reviewMatchMods) LabelsFunc(f func() null.Val[types.JSON[json.RawMessage]]) ReviewMatchMod {
 	return ReviewMatchModFunc(func(o *ReviewMatchTemplate) {
-		o.Label = f
+		o.Labels = f
 	})
 }
 
 // Clear any values for the column
-func (m reviewMatchMods) UnsetLabel() ReviewMatchMod {
+func (m reviewMatchMods) UnsetLabels() ReviewMatchMod {
 	return ReviewMatchModFunc(func(o *ReviewMatchTemplate) {
-		o.Label = nil
+		o.Labels = nil
 	})
 }
 
 // Generates a random value for the column using the given faker
 // if faker is nil, a default faker is used
-func (m reviewMatchMods) RandomLabel(f *faker.Faker) ReviewMatchMod {
+func (m reviewMatchMods) RandomLabels(f *faker.Faker) ReviewMatchMod {
 	return ReviewMatchModFunc(func(o *ReviewMatchTemplate) {
-		o.Label = func() null.Val[types.JSON[json.RawMessage]] {
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] {
 			return randomNull[types.JSON[json.RawMessage]](f)
 		}
 	})
 }
 
-func (m reviewMatchMods) ensureLabel(f *faker.Faker) ReviewMatchMod {
+func (m reviewMatchMods) ensureLabels(f *faker.Faker) ReviewMatchMod {
 	return ReviewMatchModFunc(func(o *ReviewMatchTemplate) {
-		if o.Label != nil {
+		if o.Labels != nil {
 			return
 		}
 
-		o.Label = func() null.Val[types.JSON[json.RawMessage]] {
+		o.Labels = func() null.Val[types.JSON[json.RawMessage]] {
 			return randomNull[types.JSON[json.RawMessage]](f)
 		}
 	})

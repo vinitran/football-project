@@ -1,0 +1,58 @@
+.nav-bar {
+  .logo {
+    font-family: myLogo3Font;
+  }
+
+  background-image: linear-gradient(to right bottom,
+    #006600,
+    #007400,
+    #008200,
+    #009000,
+    #009f00,
+    #009f00,
+    #009f00,
+    #009f00,
+    #009000,
+    #008200,
+    #007400,
+    #006600);
+
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.login-modal-content-backgournd {
+  background-image: linear-gradient(to right bottom,
+      #006600,
+      #007400,
+      #008200,
+      #009000,
+      #009f00,
+      #009f00,
+      #009f00,
+      #009f00,
+      #009000,
+      #008200,
+      #007400,
+      #006600);
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+
+.boxshadow-main {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.live-detail {
+  .live-detail-item {
+    .button-selected-server {
+      background-color: var(--color-four);
+      box-shadow:
+        var(--color-four) 0px 0px 10px,
+        var(--color-four) 0px 0px 1px;
+    }
+  }
+}

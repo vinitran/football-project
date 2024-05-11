@@ -4,16 +4,15 @@ Environment = "development" # "production" or "development"
     User = "postgres"
     Password = "123456"
     Name = "postgres"
-    Host = "localhost"
-    Port = "5433"
+    Host = "postgres"
+    Port = "5432"
 
 [Redis]
     Password = ""
     Name = "redis"
-    Host = "localhost"
-    Port = "6380"
-
+    Host = "redis"
+    Port = "6379"
 
 [Recommender]
-    Host = "http://127.0.0.1"
+    Host = "http://gorse"
     Port = "8088"

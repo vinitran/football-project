@@ -1,7 +1,16 @@
 package container
 
 import (
+	"context"
 	"net/http"
+	"time"
+
+	"core/pkg/auth"
+	"core/pkg/cert"
+	"github.com/MicahParks/keyfunc"
+	"github.com/golang-jwt/jwt/v4"
+
+	"core/pkg/jwtx"
 
 	"core/internal/content"
 	"core/internal/content/datastore"
@@ -35,16 +44,20 @@ func NewContainer(cfg *config.Config) *do.Injector {
 	do.Provide(injector, ProvideDatastoreTeam)
 	do.Provide(injector, ProvideDatastoreTournament)
 	do.Provide(injector, ProvideDatastoreNews)
+	do.Provide(injector, ProvideDatastoreUsers)
 
 	do.Provide(injector, ProvideServiceMatch)
 	do.Provide(injector, ProvideServiceReviewMatch)
 	do.Provide(injector, ProvideServiceTeam)
 	do.Provide(injector, ProvideServiceTournament)
 	do.Provide(injector, ProvideServiceNews)
+	do.Provide(injector, ProvideServiceUsers)
 
 	do.Provide(injector, ProvideServiceCrawler)
 	do.Provide(injector, ProvideServiceRecommender)
 	do.Provide(injector, ProvideServiceExtracter)
+	do.Provide(injector, ProvideJWTAuthority)
+	do.Provide(injector, ProvideGuard)
 
 	return injector
 }
@@ -101,8 +114,21 @@ func ProvideDatastoreNews(i *do.Injector) (content.DatastoreNews, error) {
 	return datastore.NewDatastoreNews(pool)
 }
 
+func ProvideDatastoreUsers(i *do.Injector) (content.DatastoreUser, error) {
+	pool, err := do.Invoke[*pgxpool.Pool](i)
+	if err != nil {
+		return nil, err
+	}
+
+	return datastore.NewDatastoreUser(pool)
+}
+
 func ProvideServiceMatch(i *do.Injector) (*service.ServiceMatch, error) {
 	return service.NewServiceMatch(i)
+}
+
+func ProvideServiceUsers(i *do.Injector) (*service.ServiceUser, error) {
+	return service.NewServiceUser(i)
 }
 
 func ProvideServiceReviewMatch(i *do.Injector) (*service.ServiceReviewMatch, error) {
@@ -131,4 +157,46 @@ func ProvideServiceExtracter(i *do.Injector) (*service.ServiceExtractKeywords, e
 
 func ProvideServiceTournament(i *do.Injector) (*service.ServiceTournament, error) {
 	return service.NewServiceTournament(i)
+}
+
+func ProvideJWTAuthority(i *do.Injector) (*jwtx.Authority, error) {
+	certBytes := do.MustInvokeNamed[[]byte](i, "cert-bytes")
+	pub, priv, err := cert.LoadED25519Pair(certBytes, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return jwtx.NewAuthority("vinitran", time.Hour*24*7, pub, priv)
+}
+
+func ProvideGuard(i *do.Injector) (*auth.Guard, error) {
+	certBytes := do.MustInvokeNamed[[]byte](i, "cert-bytes")
+
+	pub, _, err := cert.LoadED25519Pair(certBytes, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	authority, err := do.Invoke[*jwtx.Authority](i)
+	if err != nil {
+		return nil, err
+	}
+
+	jwk, err := authority.PublicJWK(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	jwks := keyfunc.NewGiven(map[string]keyfunc.GivenKey{
+		jwk.ID: keyfunc.NewGivenEdDSACustomWithOptions(pub, keyfunc.GivenKeyOptions{
+			Algorithm: jwt.SigningMethodEdDSA.Alg(),
+		}),
+	})
+
+	authz, err := auth.NewLadon(content.DefaultPolicies)
+	if err != nil {
+		return nil, err
+	}
+
+	return auth.NewGuard(jwks, authz)
 }

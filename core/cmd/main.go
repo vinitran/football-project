@@ -4,6 +4,9 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
+
+	"github.com/joho/godotenv"
 
 	"core/internal/config"
 	"core/internal/content/container"
@@ -12,8 +15,7 @@ import (
 
 const (
 	appName = "football-core"
-	// cfgPath = "/app/config.toml"
-	cfgPath = "./internal/config/test.config.toml"
+	envPath = ".env.local,.env"
 )
 
 var (
@@ -31,10 +33,14 @@ var (
 		Required: true,
 	}
 	configExtracterActionFlag = cli.StringFlag{
-		Name:     config.FlagTable,
-		Value:    "news",
-		Usage:    "Configuration up or down in migration",
-		Required: true,
+		Name:  config.FlagTable,
+		Value: "news",
+		Usage: "Configuration up or down in migration",
+	}
+	configScheduleFlag = cli.StringFlag{
+		Name:  config.FlagSchedule,
+		Value: "off",
+		Usage: "Configuration on or off in schedule",
 	}
 	configFileFlag = cli.StringFlag{
 		Name:     config.FlagCfg,
@@ -44,8 +50,15 @@ var (
 	}
 )
 
+func init() {
+	err := godotenv.Load(strings.Split(envPath, ",")...)
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
-	cfg, err := config.Load(cfgPath)
+	cfg, err := config.Load(os.Getenv("CONFIG_PATH"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,14 +92,14 @@ func main() {
 			Aliases: []string{},
 			Usage:   "Run the crawler",
 			Action:  startCrawler,
-			Flags:   append(flags, &configExtracterActionFlag),
+			Flags:   append(flags, &configExtracterActionFlag, &configScheduleFlag),
 		},
 		{
 			Name:    "extracter",
 			Aliases: []string{},
 			Usage:   "Run the crawler",
 			Action:  startExtracter,
-			Flags:   append(flags, &configExtracterActionFlag),
+			Flags:   append(flags, &configExtracterActionFlag, &configScheduleFlag),
 		},
 	}
 

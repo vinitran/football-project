@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
-	"core/pkg/arr"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+
+	"core/pkg/arr"
 
 	"core/internal/config"
 
@@ -52,6 +53,21 @@ func (service *ServiceRecommender) GetRecommend(ctx context.Context, userId, cat
 
 func (service *ServiceRecommender) GetNeighborsItem(ctx context.Context, itemId, category string, n int) ([]string, error) {
 	url := fmt.Sprintf("%s:%s/api/item/%s/neighbors/%s?n=%d", service.cfg.Recommender.Host, service.cfg.Recommender.Port, itemId, category, n)
+	items, err := request[[]Score, any](ctx, service.httpClient(3), "GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []string
+	arr.ArrEach(items, func(item Score) {
+		result = append(result, item.Id)
+	})
+
+	return result, nil
+}
+
+func (service *ServiceRecommender) GetPopularItem(ctx context.Context, category string, n int) ([]string, error) {
+	url := fmt.Sprintf("%s:%s/api/popular/%s?n=%d", service.cfg.Recommender.Host, service.cfg.Recommender.Port, category, n)
 	items, err := request[[]Score, any](ctx, service.httpClient(3), "GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -114,8 +130,8 @@ type RowAffected struct {
 }
 
 type Score struct {
-	Id    string `json:"Id"`
-	Score int    `json:"Score"`
+	Id    string  `json:"Id"`
+	Score float64 `json:"Score"`
 }
 
 type User struct {

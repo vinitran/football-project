@@ -19,6 +19,7 @@ var TableNames = struct {
 	ReviewMatchs    string
 	Teams           string
 	Tournaments     string
+	UserInfors      string
 	Users           string
 }{
 	Feedbacks:       "feedback",
@@ -29,6 +30,7 @@ var TableNames = struct {
 	ReviewMatchs:    "review_matchs",
 	Teams:           "teams",
 	Tournaments:     "tournaments",
+	UserInfors:      "user_infor",
 	Users:           "users",
 }
 
@@ -41,6 +43,7 @@ var ColumnNames = struct {
 	ReviewMatchs    reviewMatchColumnNames
 	Teams           teamColumnNames
 	Tournaments     tournamentColumnNames
+	UserInfors      userInforColumnNames
 	Users           userColumnNames
 }{
 	Feedbacks: feedbackColumnNames{
@@ -113,7 +116,7 @@ var ColumnNames = struct {
 		VideoURL:     "video_url",
 		FeatureImage: "feature_image",
 		Category:     "category",
-		Label:        "label",
+		Labels:       "labels",
 		Content:      "content",
 		Title:        "title",
 		H1:           "h1",
@@ -141,6 +144,15 @@ var ColumnNames = struct {
 		CreatedAt:  "created_at",
 		UpdatedAt:  "updated_at",
 	},
+	UserInfors: userInforColumnNames{
+		ID:        "id",
+		Username:  "username",
+		Name:      "name",
+		Email:     "email",
+		Password:  "password",
+		CreatedAt: "created_at",
+		UpdatedAt: "updated_at",
+	},
 	Users: userColumnNames{
 		UserID:    "user_id",
 		Labels:    "labels",
@@ -165,6 +177,7 @@ func Where[Q psql.Filterable]() struct {
 	ReviewMatchs    reviewMatchWhere[Q]
 	Teams           teamWhere[Q]
 	Tournaments     tournamentWhere[Q]
+	UserInfors      userInforWhere[Q]
 	Users           userWhere[Q]
 } {
 	return struct {
@@ -176,6 +189,7 @@ func Where[Q psql.Filterable]() struct {
 		ReviewMatchs    reviewMatchWhere[Q]
 		Teams           teamWhere[Q]
 		Tournaments     tournamentWhere[Q]
+		UserInfors      userInforWhere[Q]
 		Users           userWhere[Q]
 	}{
 		Feedbacks:       FeedbackWhere[Q](),
@@ -186,6 +200,7 @@ func Where[Q psql.Filterable]() struct {
 		ReviewMatchs:    ReviewMatchWhere[Q](),
 		Teams:           TeamWhere[Q](),
 		Tournaments:     TournamentWhere[Q](),
+		UserInfors:      UserInforWhere[Q](),
 		Users:           UserWhere[Q](),
 	}
 }

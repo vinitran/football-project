@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
+
+	"github.com/jackc/pgx/v5"
 
 	"core/internal/content"
 	"core/pkg/arr"
@@ -37,6 +38,8 @@ func (ds DatastoreNewsPgx) List(ctx context.Context, params content.NewsListPara
 		mods = append(mods, sm.Offset(int64(params.Offset)))
 	}
 
+	mods = append(mods, sm.OrderBy(b.NewsInforColumns.CreatedAt).Desc())
+
 	if params.Compact {
 		mods = append(mods,
 			sm.Columns(
@@ -67,6 +70,10 @@ func (ds DatastoreNewsPgx) List(ctx context.Context, params content.NewsListPara
 
 	if len(params.NewsIDs) > 0 {
 		mods = append(mods, b.SelectWhere.NewsInfors.ID.In(params.NewsIDs...))
+	}
+
+	if params.IsNullLabel {
+		mods = append(mods, b.SelectWhere.NewsInfors.Labels.IsNull())
 	}
 
 	itemsBob, err := b.NewsInfors(ctx, ds.bobExecutor, mods...).All()
@@ -117,8 +124,6 @@ func (ds *DatastoreNewsPgx) UpdateLabelByID(ctx context.Context, id string, labe
 		return nil, err
 	}
 
-	log.Println("complete", item.ID)
-
 	return NewsBobToRaw(item), nil
 }
 
@@ -129,6 +134,21 @@ func (ds *DatastoreNewsPgx) UpsertMany(ctx context.Context, params []*b.NewsInfo
 	}
 
 	return arr.ArrMap(item, NewsBobToRaw), nil
+}
+
+func (ds *DatastoreNewsPgx) Count(ctx context.Context) (int, error) {
+	query := fmt.Sprintf(`SELECT count(*) AS count FROM "%s" `, b.TableNames.NewsInfors)
+	rows, err := ds.pool.Query(ctx, query)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := pgx.CollectOneRow(rows, pgx.RowTo[int])
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func NewDatastoreNews(pool PGXPool) (*DatastoreNewsPgx, error) {

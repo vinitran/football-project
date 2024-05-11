@@ -3,11 +3,15 @@ package datastore
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"log"
+
+	"github.com/jackc/pgx/v5"
+
 	"github.com/aarondl/opt/omitnull"
 	"github.com/stephenafamo/bob/dialect/psql/um"
 	"github.com/stephenafamo/bob/types"
 	"github.com/stephenafamo/scan"
-	"log"
 
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql"
@@ -34,6 +38,12 @@ func (ds DatastoreReviewMatchPgx) List(ctx context.Context, params content.Match
 		mods = append(mods, sm.Offset(int64(params.Offset)))
 	}
 
+	if params.IsNullLabel {
+		mods = append(mods, b.SelectWhere.ReviewMatchs.Labels.IsNull())
+	}
+
+	mods = append(mods, sm.OrderBy(b.ReviewMatchColumns.CreatedAt).Desc())
+
 	itemsBob, err := b.ReviewMatchs(ctx, ds.bobExecutor, mods...).All()
 	if err != nil {
 		return nil, err
@@ -49,6 +59,21 @@ func (ds *DatastoreReviewMatchPgx) FindByID(ctx context.Context, id string) (*co
 	}
 
 	return ReviewMatchBobToRaw(item), nil
+}
+
+func (ds *DatastoreReviewMatchPgx) Count(ctx context.Context) (int, error) {
+	query := fmt.Sprintf(`SELECT count(*) AS count FROM "%s" `, b.TableNames.ReviewMatchs)
+	rows, err := ds.pool.Query(ctx, query)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := pgx.CollectOneRow(rows, pgx.RowTo[int])
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 func (ds *DatastoreReviewMatchPgx) Exists(ctx context.Context, id string) (bool, error) {

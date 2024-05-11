@@ -1,0 +1,206 @@
+.news-detail {
+  .main-left {
+    text-align: left;
+    font-family: Roboto, Arial;
+    font-size: 14px;
+    line-height: 1.4em;
+    font-weight: 400;
+    -webkit-text-size-adjust: none;
+    box-sizing: border-box;
+    float: left;
+
+    .article-news {
+      text-align: left;
+      font-family: Roboto, Arial;
+      -webkit-text-size-adjust: none;
+      box-sizing: border-box;
+      font-size: 1.1em;
+      font-weight: 400;
+      line-height: 1.6;
+
+      img {
+        text-align: left;
+        font-family: Roboto, Arial;
+        -webkit-text-size-adjust: none;
+        font-size: 1.1em;
+        font-weight: 400;
+        line-height: 1.6;
+        box-sizing: border-box;
+        vertical-align: middle;
+        border-style: none;
+        max-width: 100%;
+        margin: 0 auto;
+        display: block;
+      }
+
+      ul,
+      p,
+      figure {
+        margin-bottom: 16px;
+      }
+
+      ul {
+        padding-left: 40px;
+        list-style-type: circle;
+        list-style-position: outside;
+      }
+
+      #logo {
+        top: -5px;
+        margin: 0;
+      }
+      #logo img {
+        height: 54px;
+      }
+      #logo span {
+        display: none;
+      }
+      @media (max-width: 1200px) {
+        #logo img {
+          height: 42px;
+        }
+        #logo {
+          margin: 0 0 0 40px;
+        }
+      }
+    }
+  }
+
+  // .sidebar-right {
+  //   // text-align: left;
+  //   font-family: Roboto,Arial;
+  //   font-size: 14px;
+  //   // line-height: 1.4em;
+  //   font-weight: 400;
+  //   -webkit-text-size-adjust: none;
+  //   box-sizing: border-box;
+  //   float: right;
+  //   width: 350px;
+  // }
+
+  -webkit-tap-highlight-color: transparent;
+  --blue: #007bff;
+  --indigo: #6610f2;
+  --purple: #6f42c1;
+  --pink: #e83e8c;
+  --red: #dc3545;
+  --orange: #fd7e14;
+  --yellow: #ffc107;
+  --green: #28a745;
+  --teal: #20c997;
+  --cyan: #17a2b8;
+  --white: #fff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+  --primary: #007bff;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --info: #17a2b8;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  --fa-style-family-brands: 'Font Awesome 6 Brands';
+  --fa-font-brands: normal 400 1em/1 'Font Awesome 6 Brands';
+  --fa-font-regular: normal 400 1em/1 'Font Awesome 6 Free';
+  --fa-style-family-classic: 'Font Awesome 6 Free';
+  --fa-font-solid: normal 900 1em/1 'Font Awesome 6 Free';
+}
+
+.schedule-battle {
+  .content-list-battle {
+    font-family: Roboto, Arial;
+    min-height: 100%;
+    color: #eee;
+    font-size: 14px;
+    line-height: 1.4em;
+    font-weight: 400;
+    padding: 0;
+    margin: 0;
+    text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+
+    width: 100% !important;
+    margin-right: auto;
+    margin-left: auto;
+
+    @media (min-width: 1200px) {
+      max-width: 1100px;
+    }
+
+    @media (min-width: 576px) {
+      max-width: 540px;
+    }
+
+    @media (min-width: 768px) {
+      max-width: 750px;
+    }
+
+    @media (min-width: 992px) {
+      max-width: 980px;
+    }
+  }
+}
+
+.live-page {
+  font-family: Roboto, Arial;
+  .live-tournament-name {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 8px 8px;
+    display: inline-block;
+    line-height: 24px;
+    padding: 0 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .live-tag {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    font-size: 11px;
+    line-height: 1em;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 20px;
+    z-index: 4;
+    background: #f2152d;
+    color: #fff;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(251, 8, 64, 0.5);
+  }
+}
+
+.live-detail-page {
+  /* width */
+  ::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-three);
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-three);
+  }
+  .chat-box {
+
+  }
+}
