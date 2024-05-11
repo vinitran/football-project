@@ -1,76 +1,21 @@
-// const [matchDocId, setMatchDocId] = useState<string>();
-//   const [comments, setComments] = useState<Comment[]>([]);
-//   const [content, setContent] = useState('');
-//   const name = useAppSelector((state) => state.user.user)?.name;
-//   const [isOpen, setOpen] = useState(false);
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-//   const theme = useTheme();
-//   const styles = initStyles(theme);
-//   const { t } = useTranslation();
-//   const bottomSheetRef = useRef<BottomSheet>(null);
-//   const navigation = useNavigation();
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAEH-cXHKnG30N1NctK55YPyyqAKN4-a4s",
+  authDomain: "football-61ccb.firebaseapp.com",
+  projectId: "football-61ccb",
+  storageBucket: "football-61ccb.appspot.com",
+  messagingSenderId: "1027985649693",
+  appId: "1:1027985649693:web:2465ffc0676e70695f56f4",
+  measurementId: "G-W5MLFJJEF0"
+};
 
-//   const initMatchComment = async () => {
-//     firestore()
-//       .collection('matchs')
-//       .where('matchId', '==', matchId)
-//       .get()
-//       .then((matchs) => {
-//         if (!matchs.size) {
-//           firestore()
-//             .collection('matchs')
-//             .add({
-//               matchId: matchId,
-//             })
-//             .then((data) => {
-//               setMatchDocId(data.id);
-//             });
-//         } else {
-//           setMatchDocId(matchs.docs[0].id);
-//         }
-//       });
-//   };
-
-//   useEffect(() => {
-//     initMatchComment();
-//   }, []);
-
-//   useEffect(() => {
-//     if (!matchDocId) return;
-
-//     const subscriber = firestore()
-//       .collection('matchs')
-//       .doc(matchDocId)
-//       .collection('comments')
-//       .orderBy('timestamp', 'asc')
-//       .onSnapshot((snapShot) => {
-//         setComments((snapShot.docs.map((doc) => doc.data()) ?? []) as unknown as Comment[]);
-//       });
-
-//     return () => subscriber();
-//   }, [matchDocId]);
-
-//   const renderItem = useCallback(({ item }: { item: Comment }) => {
-//     return <CommentComponent comment={item} />;
-//   }, []);
-
-//   const sendComment = async () => {
-//     if (!content || !content.length) return;
-
-//     Keyboard.dismiss();
-//     const payload = {
-//       sender: name,
-//       timestamp: new Date().getTime(),
-//       content: content,
-//     };
-
-//     setContent('');
-//     firestore()
-//       .collection('matchs')
-//       .doc(matchDocId)
-//       .collection('comments')
-//       .add(payload)
-//       .then((data) => {
-//         console.log(data.id);
-//       });
-//   };
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
