@@ -1,0 +1,69 @@
+{
+  "language": {
+    "vi": "Tiếng Việt",
+    "en": "English"
+  },
+  "tabName": {
+    "match": "Trận đấu",
+    "highlight": "Nổi bật",
+    "news": "Tin tức",
+    "account": "Tài khoản"
+  },
+  "match": {
+    "live": "Trực tiếp",
+    "rematch": "Xem lại",
+    "another_match": "Các trận đấu khác",
+    "hot_match": "Trận đấu Hot",
+    "related_match": "Trận đấu tương tự",
+    "no_data": "Không có trận đấu",
+    "placeholder": "Tìm kiếm trận đấu",
+    "comment": "Bình luận",
+    "comment_placeholder": "Nhập bình luận",
+    "login_to_comment": "Đăng nhập để bình luận",
+    "schedule": "Lịch thi đấu"
+  },
+  "highlight": {
+    "highlight_hot": "Video nổi bật",
+    "highlight_related": "Video liên quan",
+    "no_data": "Không có video nổi bật",
+    "placeholder": "Tìm kiếm video nổi bật"
+  },
+  "screen_title": {
+    "match_live": "Trực tiếp",
+    "highlight": "Nổi bật",
+    "account": "Tài khoản"
+  },
+  "news": {
+    "placeholder": "Tìm kiếm tin tức",
+    "no_data": "Không có tin tức"
+  },
+  "account": {
+    "login": "Đăng nhập",
+    "account": "Tài khoản",
+    "register": "Đăng ký",
+    "username_placeholder": "Nhập tên đăng nhập",
+    "password_placeholder": "Nhập mật khẩu",
+    "username": "Tên đăng nhập",
+    "password": "Mật khẩu",
+    "no_account": "Chưa có tài khoản. Vui lòng ",
+    "name": "Tên tài khoản",
+    "email": "Địa chỉ email",
+    "name_placeholder": "Nhập tên tài khoản",
+    "email_placeholder": "Nhập địa chỉ email",
+    "logout": "Đăng xuất",
+    "setting": "Cài đặt",
+    "register_success": "Đăng ký thành công",
+    "login_success": "Đăng nhập thành công",
+    "login_again": "Vui lòng đăng nhập",
+    "language": "Ngôn ngữ",
+    "choose_language": "Chọn ngôn ngữ"
+  },
+  "validation": {
+    "short_password": "Mật khẩu tối thiểu 8 kí tự",
+    "no_password": "Vui lòng nhập mật khẩu",
+    "no_username": "Vui lòng nhập tên đăng nhập",
+    "no_name": "Vui lòng nhập tên tài khoản",
+    "no_email": "Vui lòng nhập địa chỉ email",
+    "invalid_email": "Địa chỉ email không hợp lệ"
+  }
+}

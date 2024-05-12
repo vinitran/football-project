@@ -1,0 +1,35 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Description of what the lane does"
+  lane :beta do
+    
+  enable_automatic_code_signing
+
+    build_app(scheme: "mobile",
+             workspace: "mobile.xcworkspace",
+             export_method: "development"
+             )
+
+    firebase_app_distribution(
+      app: "1:1033436295853:ios:a81775118199fd9b684c24",
+      groups: "tester",
+      service_credentials_file: File.expand_path("../firebase-connect.json", __FILE__).shellescape.to_s
+    )
+  end
+end
