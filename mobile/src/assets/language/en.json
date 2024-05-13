@@ -2,5 +2,68 @@
   "language": {
     "vi": "Tiếng Việt",
     "en": "English"
+  },
+  "tabName": {
+    "match": "Matches",
+    "highlight": "Highlights",
+    "news": "News",
+    "account": "Account"
+  },
+  "match": {
+    "live": "Live",
+    "rematch": "Rematch",
+    "another_match": "Other Matches",
+    "hot_match": "Hot Matches",
+    "related_match": "Related Matches",
+    "no_data": "No matches",
+    "placeholder": "Search matches",
+    "comment": "Comment",
+    "comment_placeholder": "Enter comment",
+    "login_to_comment": "Login to comment",
+    "schedule": "Schedule"
+  },
+  "highlight": {
+    "highlight_hot": "Featured Videos",
+    "highlight_related": "Related Videos",
+    "no_data": "No featured videos",
+    "placeholder": "Search featured videos"
+  },
+  "screen_title": {
+    "match_live": "Live",
+    "highlight": "Highlights",
+    "account": "Account"
+  },
+  "news": {
+    "placeholder": "Search news",
+    "no_data": "No news"
+  },
+  "account": {
+    "login": "Log In",
+    "account": "Account",
+    "register": "Register",
+    "username_placeholder": "Enter username",
+    "password_placeholder": "Enter password",
+    "username": "Username",
+    "password": "Password",
+    "no_account": "Don't have an account? ",
+    "name": "Account name",
+    "email": "Email address",
+    "name_placeholder": "Enter account name",
+    "email_placeholder": "Enter email address",
+    "logout": "Log Out",
+    "setting": "Settings",
+    "register_success": "Registration successful",
+    "login_success": "Login successful",
+    "login_again": "Please log in",
+    "language": "Language",
+    "choose_language": "Choose language"
+  },
+  "validation": {
+    "short_password": "Minimum password length is 8 characters",
+    "no_password": "Please enter password",
+    "no_username": "Please enter username",
+    "no_name": "Please enter account name",
+    "no_email": "Please enter email address",
+    "invalid_email": "Invalid email address"
   }
 }

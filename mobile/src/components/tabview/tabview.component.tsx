@@ -138,7 +138,6 @@ const initStyles = (theme: AppTheme) => {
     tabItemText: {
       textAlign: 'center',
       color: theme.textColor,
-      fontSize: theme.fontS,
     },
     activeTabItem: {
       color: theme.primaryColor,

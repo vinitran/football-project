@@ -144,7 +144,12 @@ export const LiveMatchComment = () => {
         </TouchableOpacity>
       </TouchableOpacity>
       {isOpen ? (
-        <BottomSheet snapPoints={['60%']} enablePanDownToClose onClose={() => setOpen(false)}>
+        <BottomSheet
+          snapPoints={['60%']}
+          enablePanDownToClose
+          onClose={() => setOpen(false)}
+          backgroundStyle={styles.bottomSheet}
+        >
           <Text style={styles.header}>{t('match.login_to_comment')}</Text>
           <TouchableOpacity onPress={goToLogin} style={[styles.login]}>
             <Text style={styles.loginText}>{t('account.login')}</Text>
@@ -229,6 +234,12 @@ const initStyles = (theme: AppTheme) => {
       fontWeight: '500',
       color: theme.textColor,
       fontSize: theme.fontM,
+    },
+    bottomSheet: {
+      backgroundColor: theme.neutralColor50,
+      flex: 1,
+      borderColor: theme.neutralColor200,
+      borderWidth: 1,
     },
   });
 };

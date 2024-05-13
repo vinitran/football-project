@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../hook/theme.hook';
 import { AppTheme } from '../../../theme/theme';
 import { useTranslation } from '../../../hook/translate.hook';
@@ -150,6 +150,11 @@ export const RegisterScreen = () => {
   return (
     <View style={styles.screen}>
       <View style={styles.wrapper}>
+        <Image
+          resizeMode="contain"
+          source={require('../../../assets/images/app-photo.png')}
+          style={{ height: 2 * theme.spaceXXL, width: 'auto' }}
+        />
         <Text style={styles.label}>{t('account.name')}</Text>
         <View style={styles.inputWrapper}>
           <TextInput

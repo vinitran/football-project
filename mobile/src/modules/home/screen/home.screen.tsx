@@ -1,8 +1,10 @@
+import { View } from 'react-native';
 import { TabView } from '../../../components/tabview/tabview.component';
 import { useTranslation } from '../../../hook/translate.hook';
 import { MatchListScreen } from './match-list.screen';
 import { MatchReviewScreen } from './match-review.screen';
 import { MatchScheduleScreen } from './match-schedule.screen';
+import { useTheme } from '../../../hook/theme.hook';
 
 enum HomeTab {
   LIVE,
@@ -12,6 +14,7 @@ enum HomeTab {
 
 export const HomeScreen = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const routes = [
     {
       key: HomeTab.LIVE,
@@ -34,12 +37,14 @@ export const HomeScreen = () => {
   };
 
   return (
-    <TabView
-      renderScene={renderScene}
-      navigationState={{
-        index: 0,
-        routes: routes as any[],
-      }}
-    />
+    <View style={{ flex: 1, paddingTop: theme.spaceS, backgroundColor: theme.backgroundColor }}>
+      <TabView
+        renderScene={renderScene}
+        navigationState={{
+          index: 0,
+          routes: routes as any[],
+        }}
+      />
+    </View>
   );
 };
