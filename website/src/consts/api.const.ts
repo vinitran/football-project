@@ -1,3 +1,5 @@
+import { feedbackEnum } from './feedback-type.const';
+
 // export const baseURL: string = 'https://api.vebo.xyz/api/';
 export const baseURL: string = 'http://94.72.119.5:3030/api/v1/';
 
@@ -73,5 +75,8 @@ export const apis: any = {
     register: () => `auth/register`,
     me: () => `me`
   },
-  feedback: () => `recommend/feedback`
+  feedback: {
+    feedbackUser: () => `recommend/feedback`,
+    feedbackAnonymous: () => `recommend/anonymous/feedback`
+  }
 };

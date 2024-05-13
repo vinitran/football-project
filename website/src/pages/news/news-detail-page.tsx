@@ -61,9 +61,15 @@ export const NewsDetailPage = () => {
   };
   const fetchFeedback = (feedbackType: feedbackEnum) => {
     if (token) {
-      console.log(`send feed back ${feedbackType} - ${params.id}`);
       axiosConfiguration.setAxiosToken(token, true);
-      _axios.post(apis.feedback(), {
+      _axios.post(apis.feedback.feedbackUser(), {
+        FeedbackType: feedbackType,
+        ItemId: params.id
+      });
+    } else {
+      console.log('feed by anonymous');
+      
+      _axios.post(apis.feedback.feedbackAnonymous(), {
         FeedbackType: feedbackType,
         ItemId: params.id
       });
@@ -119,7 +125,7 @@ export const NewsDetailPage = () => {
                 <NewsDetailContent news={resDetailNews} />
               </div>
             </div>
-            <div className="flex flex-col w-[400px]">
+            <div className="flex flex-col w-[350px]">
               {!!resRecommentNews.length ? (
                 <HotBar
                   title="Tin đề xuất"
