@@ -131,7 +131,7 @@ export const LoginScreen = () => {
           />
           {!!password.length && (
             <TouchableOpacity activeOpacity={1} onPress={() => setSecure(!secure)}>
-              <Icon style={styles.iconRight} name={secure ? 'eye' : 'eye-slash'} />
+              <Icon style={styles.iconRight} name={secure ? 'eye' : 'eye-slash'} disable />
             </TouchableOpacity>
           )}
         </View>

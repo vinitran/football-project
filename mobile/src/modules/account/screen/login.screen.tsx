@@ -27,7 +27,7 @@ export const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [error1, setError1] = useState('');
   const [error2, setError2] = useState('');
-  const [secure, setSecure] = useState(false);
+  const [secure, setSecure] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
   const goToRegister = () => {
@@ -136,7 +136,7 @@ export const LoginScreen = () => {
           />
           {!!password.length && (
             <TouchableOpacity activeOpacity={1} onPress={() => setSecure(!secure)}>
-              <Icon style={styles.iconRight} name={secure ? 'eye' : 'eye-slash'} />
+              <Icon style={styles.iconRight} name={secure ? 'eye' : 'eye-slash'} disable />
             </TouchableOpacity>
           )}
         </View>
