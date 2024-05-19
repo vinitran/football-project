@@ -93,7 +93,7 @@ cache_expire = "10s"
 cache_size = 100
 
 # Recommended cache expire time. The default value is 72h.
-cache_expire = "72h"
+cache_expire = "1m"
 
 [recommend.data_source]
 
