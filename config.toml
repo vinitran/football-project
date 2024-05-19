@@ -207,7 +207,7 @@ enable_popular_recommend = false
 enable_user_based_recommend = false
 
 # Enable item-based similarity recommendation during offline recommendation. The default value is false.
-enable_item_based_recommend = true
+enable_item_based_recommend = false
 
 # Enable collaborative filtering recommendation during offline recommendation. The default value is true.
 enable_collaborative_recommend = false
