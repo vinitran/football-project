@@ -56,7 +56,7 @@ services:
       --log-path /var/log/gorse/master.log 
       --cache-path /var/lib/gorse/master_cache.data
     volumes:
-      - ./config.toml:/etc/gorse/config.toml
+      - ./core/internal/config/gorse.config.toml:/etc/gorse/config.toml
     depends_on:
       - redis
       - postgres
