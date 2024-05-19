@@ -201,16 +201,16 @@ refresh_recommend_period = "1m"
 enable_latest_recommend = true
 
 # Enable popular recommendation during offline recommendation. The default value is false.
-enable_popular_recommend = false
+enable_popular_recommend = true
 
 # Enable user-based similarity recommendation during offline recommendation. The default value is false.
-enable_user_based_recommend = true
+enable_user_based_recommend = false
 
 # Enable item-based similarity recommendation during offline recommendation. The default value is false.
-enable_item_based_recommend = false
+enable_item_based_recommend = true
 
 # Enable collaborative filtering recommendation during offline recommendation. The default value is true.
-enable_collaborative_recommend = true
+enable_collaborative_recommend = false
 
 # Enable click-though rate prediction during offline recommendation. Otherwise, results from multi-way recommendation
 # would be merged randomly. The default value is false.
@@ -220,7 +220,7 @@ enable_click_through_prediction = true
 #   popular: Recommend popular items to cold-start users.
 #   latest: Recommend latest items to cold-start users.
 # The default values is { popular = 0.0, latest = 0.0 }.
-explore_recommend = { popular = 0.1, latest = 0.2 }
+explore_recommend = { popular = 0.1, latesst = 0.2 }
 
 [recommend.online]
 
