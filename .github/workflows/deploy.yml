@@ -3,7 +3,8 @@ name: Go
 on:
   push:
     branches: [ "main" ]
-
+    paths:
+      - 'core/**'
 jobs:
   build:
     runs-on: ubuntu-latest
