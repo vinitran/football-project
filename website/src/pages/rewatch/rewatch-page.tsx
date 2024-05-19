@@ -134,7 +134,7 @@ export const RewatchPage = (props: Props) => {
               <div className="flex flex-col w-[350px]">
                 {!!resRecommentRewatch.length ? (
                   <HotBar
-                    title="Tin đề xuất"
+                    title="Trận đấu đề xuất"
                     ids={resRecommentRewatch}
                     urlDetail={apis.rewatch.detail}
                     urlClick="/rewatch-detail/"
@@ -151,7 +151,7 @@ export const RewatchPage = (props: Props) => {
                 )}
                 {!!resHotRewatch.length ? (
                   <HotBar
-                    title="Trận nổi bật"
+                    title="Trận đấu nổi bật"
                     ids={resHotRewatch}
                     urlDetail={apis.rewatch.detail}
                     urlClick="/rewatch-detail/"
