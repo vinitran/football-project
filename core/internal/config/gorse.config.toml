@@ -198,7 +198,7 @@ check_recommend_period = "1m"
 refresh_recommend_period = "1m"
 
 # Enable latest recommendation during offline recommendation. The default value is false.
-enable_latest_recommend = true
+enable_latest_recommend = false
 
 # Enable popular recommendation during offline recommendation. The default value is false.
 enable_popular_recommend = false
@@ -207,14 +207,14 @@ enable_popular_recommend = false
 enable_user_based_recommend = false
 
 # Enable item-based similarity recommendation during offline recommendation. The default value is false.
-enable_item_based_recommend = false
+enable_item_based_recommend = true
 
 # Enable collaborative filtering recommendation during offline recommendation. The default value is true.
 enable_collaborative_recommend = false
 
 # Enable click-though rate prediction during offline recommendation. Otherwise, results from multi-way recommendation
 # would be merged randomly. The default value is false.
-enable_click_through_prediction = true
+enable_click_through_prediction = false
 
 # The explore recommendation method is used to inject popular items or latest items into recommended result:
 #   popular: Recommend popular items to cold-start users.
