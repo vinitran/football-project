@@ -8,13 +8,31 @@ export const HotBar = ({
   title,
   ids,
   urlDetail,
-  urlClick
+  urlClick,
+  urlList
 }: {
   title: string;
   ids: string[];
   urlDetail: string;
   urlClick: string;
+  urlList?: string;
 }) => {
+  const fetchListItemHot = () => {
+    // _axios
+    //   .get(urlList({ id: id }))
+    //   .then((res) => {
+    //     if (res) {
+    //       setData(res.data?.data ?? undefined);
+    //     }
+    //   })
+    //   .catch(() => {});
+  };
+
+  useEffect(() => {
+    if (urlList) {
+    }
+  }, []);
+
   return (
     <>
       <div className="flex items-center mt-[12px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
@@ -35,12 +53,14 @@ const HotItem = ({ id, urlDetail, urlClick }: { id: string; urlDetail: any; urlC
   const navigate = useNavigate();
   const [data, setData] = useState<IHotItem | undefined>();
   const fetchData = () => {
-    _axios.get(urlDetail({ id: id })).then((res) => {
-      if (res) {
-        setData(res.data?.data ?? undefined);
-      }
-    }).catch(() => {})
-   
+    _axios
+      .get(urlDetail({ id: id }))
+      .then((res) => {
+        if (res) {
+          setData(res.data?.data ?? undefined);
+        }
+      })
+      .catch(() => {});
   };
   useEffect(() => {
     fetchData();
