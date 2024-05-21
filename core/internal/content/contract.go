@@ -22,6 +22,7 @@ type MatchListParams struct {
 	Status      MatchStatus
 	IsFeatured  bool
 	IsNullLabel bool
+	Ids         []string
 }
 
 type NewsListParams struct {
