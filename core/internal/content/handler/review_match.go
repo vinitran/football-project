@@ -2,6 +2,9 @@ package handler
 
 import (
 	"errors"
+	"strings"
+
+	"core/pkg/arr"
 
 	"core/internal/content"
 	"core/internal/content/service"
@@ -60,6 +63,15 @@ func (group *GroupReviewMatch) Index(c echo.Context) error {
 
 	if c.QueryParams().Has("is_featured") {
 		params.IsFeatured = true
+	}
+
+	if c.QueryParams().Has("rematch_ids") {
+		var rematchIds []string
+		parts := strings.Split(c.QueryParam("rematch_ids"), ",")
+		arr.ArrEach(parts, func(part string) {
+			rematchIds = append(rematchIds, part)
+		})
+		params.Ids = rematchIds
 	}
 
 	items, err := serviceReviewMatch.List(ctx, params)
