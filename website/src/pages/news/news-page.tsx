@@ -8,7 +8,7 @@ import { Loading } from '../../components/commons/loading';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import axios from 'axios';
 import { apis } from '../../consts/api.const';
-import { HotBar } from '../../components/hot-bar';
+import { HotBar } from '../../components/hot-bar-list';
 import { SearchBar } from '../../components/search-bar';
 import { localStorageKey } from '../../consts/local-storage-key.const';
 
@@ -127,9 +127,8 @@ export const NewPage = (props: Props) => {
                 {!!resRecommentNews.length ? (
                   <HotBar
                     title="Tin đề xuất"
-                    ids={resRecommentNews}
-                    urlDetail={apis.news.detail}
                     urlClick="/new-detail/"
+                    urlList={getUrlListNewsHot(resRecommentNews)}
                   />
                 ) : (
                   <div className="flex flex-col items-start justify-center w-full">
@@ -144,9 +143,8 @@ export const NewPage = (props: Props) => {
                 {!!resHotNews.length ? (
                   <HotBar
                     title="Tin nổi bật"
-                    ids={resHotNews}
-                    urlDetail={apis.news.detail}
                     urlClick="/new-detail/"
+                    urlList={getUrlListNewsHot(resHotNews)}
                   />
                 ) : (
                   <div className="flex items-center justify-center">
@@ -182,4 +180,8 @@ const ItemNews = ({ news }: { news: INews }) => {
       <p className="w-full text-ellipsis truncate ">{news.name}</p>
     </div>
   );
+};
+
+const getUrlListNewsHot = (news_ids: string[]) => {
+  return apis.news.list({ news_ids: news_ids });
 };
