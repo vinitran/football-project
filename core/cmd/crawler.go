@@ -28,6 +28,7 @@ func startCrawler(c *cli.Context) error {
 	if c.String(config.FlagSchedule) == config.FlagOn {
 		schedule := cron.New()
 		_, err := schedule.AddFunc("@every 30s", func() {
+			log.Println("crawling match")
 			errMatch := crawler.CrawlMatch()
 			if errMatch != nil {
 				log.Println(errMatch)
@@ -40,6 +41,7 @@ func startCrawler(c *cli.Context) error {
 		_, err = schedule.AddFunc("@midnight", func() {
 			from := 1
 			to := 3
+			log.Println("crawling news")
 			errNews := crawler.CrawlNews(&from, &to)
 			if errNews != nil {
 				log.Println(errNews)
@@ -52,6 +54,7 @@ func startCrawler(c *cli.Context) error {
 		_, err = schedule.AddFunc("@midnight", func() {
 			from := 1
 			to := 3
+			log.Println("crawling rematchs")
 			errReMatch := crawler.CrawlReviewMatch(&from, &to)
 			if errReMatch != nil {
 				log.Println(errReMatch)
