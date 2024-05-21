@@ -3,34 +3,34 @@ import { apis } from '../consts/api.const';
 import { useAxios } from '../hooks/use-axios';
 import { useEffect, useState } from 'react';
 import { _axios } from '../configs/axiosconfiguartor';
+import { Loading } from './commons/loading';
+import { NoData } from './commons/nodata';
 
 export const HotBar = ({
   title,
-  ids,
-  urlDetail,
   urlClick,
   urlList
 }: {
   title: string;
-  ids: string[];
-  urlDetail: string;
   urlClick: string;
-  urlList?: string;
+  urlList: string;
 }) => {
+  const [listHot, setListHot] = useState<IHotItem[]>([]);
   const fetchListItemHot = () => {
-    // _axios
-    //   .get(urlList({ id: id }))
-    //   .then((res) => {
-    //     if (res) {
-    //       setData(res.data?.data ?? undefined);
-    //     }
-    //   })
-    //   .catch(() => {});
+    if (urlList) {
+      _axios
+        .get(urlList)
+        .then((res) => {
+          if (res?.data?.data) {
+            setListHot(res?.data?.data);
+          }
+        })
+        .catch(() => {});
+    }
   };
 
   useEffect(() => {
-    if (urlList) {
-    }
+    fetchListItemHot();
   }, []);
 
   return (
@@ -38,33 +38,24 @@ export const HotBar = ({
       <div className="flex items-center mt-[12px] ml-4 mb-[18px] pl-4 border-l-4 border-green-500 border-solid uppercase">
         <h4 className="leading-5 text-[20px]">{title}</h4>
       </div>
-      {ids
-        ? ids.map((item, index) => (
-            <>
-              <HotItem id={item} urlDetail={urlDetail} urlClick={urlClick} />
-            </>
-          ))
-        : ''}
+      {!!listHot.length ? (
+        listHot.map((item, index) => (
+          <>
+            <HotItem data={item} urlClick={urlClick} />
+          </>
+        ))
+      ) : (
+        <div className="flex items-center justify-center">
+          <NoData />
+        </div>
+      )}
     </>
   );
 };
 
-const HotItem = ({ id, urlDetail, urlClick }: { id: string; urlDetail: any; urlClick: string }) => {
+const HotItem = ({ data, urlClick }: { data: IHotItem; urlClick: string }) => {
   const navigate = useNavigate();
-  const [data, setData] = useState<IHotItem | undefined>();
-  const fetchData = () => {
-    _axios
-      .get(urlDetail({ id: id }))
-      .then((res) => {
-        if (res) {
-          setData(res.data?.data ?? undefined);
-        }
-      })
-      .catch(() => {});
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
+
   return (
     <>
       {data ? (

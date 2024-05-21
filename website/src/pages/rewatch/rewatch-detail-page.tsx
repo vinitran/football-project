@@ -6,7 +6,7 @@ import moment from 'moment';
 import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
-import { HotBar } from '../../components/hot-bar';
+import { HotBar } from '../../components/hot-bar-list';
 import VideoPlayer from '../../components/video-player';
 import { localStorageKey } from '../../consts/local-storage-key.const';
 import { feedbackEnum } from '../../consts/feedback-type.const';
@@ -126,9 +126,8 @@ export const RewatchDetailPage = () => {
               {!!resRecommentRewatch.length ? (
                 <HotBar
                   title="Trận đấu đề xuất"
-                  ids={resRecommentRewatch}
-                  urlDetail={apis.rewatch.detail}
                   urlClick="/rewatch-detail/"
+                  urlList={getUrlListRewatchHot(resRecommentRewatch)}
                 />
               ) : (
                 <div className="flex flex-col items-start justify-center w-full">
@@ -143,9 +142,8 @@ export const RewatchDetailPage = () => {
               {!!resHotRewatch.length ? (
                 <HotBar
                   title="Trận đấu nổi bật"
-                  ids={resHotRewatch}
-                  urlDetail={apis.rewatch.detail}
                   urlClick="/rewatch-detail/"
+                  urlList={getUrlListRewatchHot(resHotRewatch)}
                 />
               ) : (
                 <div className="flex items-center justify-center">
@@ -203,6 +201,10 @@ const filterUrl = (url?: string) => {
 const filterUrl2 = (url?: string) => {
   const updatedUrl = url ? url.replace(/playlist\.m3u8|index\.m3u8/g, 'chunklist.m3u8') : '';
   return `https://stream.vinitran1245612.workers.dev?apiurl=${updatedUrl}&is_m3u8=true`;
+};
+
+const getUrlListRewatchHot = (rematch_ids: string[]) => {
+  return apis.rewatch.list({ rematch_ids: rematch_ids });
 };
 
 interface IRewatchDetail {

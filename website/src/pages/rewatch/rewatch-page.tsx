@@ -8,7 +8,7 @@ import { Loading } from '../../components/commons/loading';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
 import axios from 'axios';
 import { apis } from '../../consts/api.const';
-import { HotBar } from '../../components/hot-bar';
+import { HotBar } from '../../components/hot-bar-list';
 import { SearchBar } from '../../components/search-bar';
 import { localStorageKey } from '../../consts/local-storage-key.const';
 import { toast } from 'react-toastify';
@@ -135,9 +135,8 @@ export const RewatchPage = (props: Props) => {
                 {!!resRecommentRewatch.length ? (
                   <HotBar
                     title="Trận đấu đề xuất"
-                    ids={resRecommentRewatch}
-                    urlDetail={apis.rewatch.detail}
                     urlClick="/rewatch-detail/"
+                    urlList={getUrlListRewatchHot(resRecommentRewatch)}
                   />
                 ) : (
                   <div className="flex flex-col items-start justify-center w-full">
@@ -152,9 +151,8 @@ export const RewatchPage = (props: Props) => {
                 {!!resHotRewatch.length ? (
                   <HotBar
                     title="Trận đấu nổi bật"
-                    ids={resHotRewatch}
-                    urlDetail={apis.rewatch.detail}
                     urlClick="/rewatch-detail/"
+                    urlList={getUrlListRewatchHot(resHotRewatch)}
                   />
                 ) : (
                   <div className="flex items-center justify-center">
@@ -190,6 +188,10 @@ const ItemRewatch = ({ rewatchItem }: { rewatchItem: IRewatchItem }) => {
       <p className="w-full text-ellipsis truncate">{rewatchItem.name}</p>
     </div>
   );
+};
+
+const getUrlListRewatchHot = (rematch_ids: string[]) => {
+  return apis.rewatch.list({ rematch_ids: rematch_ids });
 };
 
 interface IRewatchItem {

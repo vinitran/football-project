@@ -35,19 +35,19 @@ export const apis: any = {
       limit,
       page,
       search,
-      news_ids
+      rematch_ids
     }: {
       limit?: string;
       page?: number;
       search?: string;
-      news_ids?: string;
+      rematch_ids?: string;
     }) => {
       return (
         'rematchs?' +
         (limit !== undefined ? `limit=${limit}` : ``) +
         (page !== undefined ? `&page=${page}` : ``) +
         (search !== undefined ? `&search=${search}` : ``) +
-        (news_ids !== undefined ? `&news_ids=${news_ids}` : ``)
+        (rematch_ids !== undefined ? `&rematch_ids=${rematch_ids}` : ``)
       );
     },
     count: () => 'rematchs/count',

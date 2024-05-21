@@ -5,7 +5,7 @@ import moment from 'moment';
 import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
 import { _axios, axiosConfiguration } from '../../configs/axiosconfiguartor';
-import { HotBar } from '../../components/hot-bar';
+import { HotBar } from '../../components/hot-bar-list';
 import { localStorageKey } from '../../consts/local-storage-key.const';
 import { feedbackEnum } from '../../consts/feedback-type.const';
 import { toast } from 'react-toastify';
@@ -129,9 +129,8 @@ export const NewsDetailPage = () => {
               {!!resRecommentNews.length ? (
                 <HotBar
                   title="Tin đề xuất"
-                  ids={resRecommentNews}
-                  urlDetail={apis.news.detail}
                   urlClick="/new-detail/"
+                  urlList={getUrlListNewsHot(resRecommentNews)}
                 />
               ) : (
                 <div className="flex flex-col items-start justify-center w-full">
@@ -146,9 +145,8 @@ export const NewsDetailPage = () => {
               {resRelativeNews.length ? (
                 <HotBar
                   title="Tin liên quan"
-                  ids={resRelativeNews}
-                  urlDetail={apis.news.detail}
                   urlClick="/new-detail/"
+                  urlList={getUrlListNewsHot(resRelativeNews)}
                 />
               ) : (
                 <div className="flex items-center justify-center">
@@ -194,6 +192,10 @@ const NewsDetailContent = ({ news }: { news: INewsDetail }) => {
       </div>
     </>
   );
+};
+
+const getUrlListNewsHot = (news_ids: string[]) => {
+  return apis.news.list({ news_ids: news_ids });
 };
 
 interface INewsDetail {
