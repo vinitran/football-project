@@ -62,7 +62,7 @@ type DatastoreNews interface {
 	List(ctx context.Context, params NewsListParams) ([]*News, error)
 	FindByID(ctx context.Context, id string) (*News, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*News, error)
-	Count(ctx context.Context) (int, error)
+	Count(ctx context.Context, params NewsListParams) (int, error)
 }
 
 type DatastoreReviewMatch interface {
@@ -72,7 +72,7 @@ type DatastoreReviewMatch interface {
 	Upsert(ctx context.Context, params *b.ReviewMatchSetter) (*ReviewMatch, error)
 	UpsertMany(ctx context.Context, params []*b.ReviewMatchSetter) ([]*ReviewMatch, error)
 	UpdateLabelByID(ctx context.Context, id string, label []string) (*ReviewMatch, error)
-	Count(ctx context.Context) (int, error)
+	Count(ctx context.Context, params MatchListParams) (int, error)
 }
 
 type DatastoreUser interface {

@@ -32,7 +32,12 @@ func (group *GroupNews) Total(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	countUser, err := serviceNews.Total(ctx)
+	var params content.NewsListParams
+	if c.QueryParams().Has("search") {
+		params.Search = c.QueryParam("search")
+	}
+
+	countUser, err := serviceNews.Total(ctx, params)
 	return restAbort(c, countUser, err)
 }
 

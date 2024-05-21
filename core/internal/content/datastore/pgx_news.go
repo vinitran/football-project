@@ -136,8 +136,19 @@ func (ds *DatastoreNewsPgx) UpsertMany(ctx context.Context, params []*b.NewsInfo
 	return arr.ArrMap(item, NewsBobToRaw), nil
 }
 
-func (ds *DatastoreNewsPgx) Count(ctx context.Context) (int, error) {
+func (ds *DatastoreNewsPgx) Count(ctx context.Context, params content.NewsListParams) (int, error) {
 	query := fmt.Sprintf(`SELECT count(*) AS count FROM "%s" `, b.TableNames.NewsInfors)
+
+	if params.Search != "" {
+		params.Search = strings.ReplaceAll(params.Search, "%", "")
+		params.Search = strings.ToValidUTF8(params.Search, "")
+		query = fmt.Sprintf(`SELECT count(*) AS count FROM "%s" where name ILIKE '%s' or description ILIKE '%s'`,
+			b.TableNames.NewsInfors,
+			fmt.Sprintf("%%%s%%", params.Search),
+			fmt.Sprintf("%%%s%%", params.Search),
+		)
+	}
+
 	rows, err := ds.pool.Query(ctx, query)
 	if err != nil {
 		return 0, err
