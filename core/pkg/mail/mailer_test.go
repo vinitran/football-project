@@ -17,12 +17,12 @@ import (
 var srv *httptest.Server
 
 func TestMailerSendgridSend(t *testing.T) {
-	key := "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"
+	key := "API_KEY_INVALID"
 	clientMock := sendgrid.NewSendClient(key)
 	clientMock.BaseURL = srv.URL
 	mailer := mail.MailerSendgrid{}
 
-	err := mailer.SendWithClient(context.Background(), clientMock, "vinitran124@gmail.com", []string{"20020503@vnu.edu.vn"}, "subject", []byte("foobar"), nil)
+	err := mailer.SendWithClient(context.Background(), clientMock, "foo@example.com", []string{"bar@example.com"}, "subject", []byte("foobar"), nil)
 	assert.NoError(t, err)
 }
 
