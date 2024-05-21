@@ -192,23 +192,27 @@ export const NavBar = (props: Props) => {
 
   return (
     <>
-      <div className="nav-bar grid grid-cols-3 gap-4 place-items-stretch">
-        <img
-          className="h-[48px] w-[235px] ml-[8px] col-start-1 cursor-pointer"
-          src={require('../assets/image/logo.png')}
-          alt=""
+      <div className="nav-bar text-white grid grid-cols-3 gap-4 place-items-stretch px-[4px]">
+        <div
+          className="flex items-center cursor-pointer gap-[8px] my-[2px]"
           onClick={() => {
-            navigate('/schedule-battle');
-          }}
-        />
+            navigate('/');
+          }}>
+          <div className="text-[28px] logo italic flex items-center">TIN BÓNG ĐÁ</div>
+          <img className="h-[40px]" src={require('../assets/image/logo4.png')} alt="" />
+        </div>
         <div className="flex-1 flex items-center justify-center uppercase col-start-2">
-          <Box sx={{ fontSize: '20px', bgcolor: '--color-main' }}>
-            <StyledTabs value={nav} aria-label="styled tabs example" onChange={handleNavChange}>
-              {navBarList.map((item, index) => (
-                <StyledTab key={index} label={item.label} />
-              ))}
-            </StyledTabs>
-          </Box>
+          {navBarList.map((item) => {
+            return (
+              <button
+                className="min-w-[120px] h-full py-[2px] bg-transparent text-bold text-[20px] text-white"
+                onClick={() => {
+                  navigate(item.url);
+                }}>
+                {item.label}
+              </button>
+            );
+          })}
         </div>
         <div className="flex items-center justify-end gap-2 mr-[8px] col-start-3">
           {!localStorage.getItem(localStorageKey.token) ? (

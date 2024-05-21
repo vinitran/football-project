@@ -92,6 +92,7 @@ export const RewatchPage = (props: Props) => {
 
   useEffect(() => {
     fetchListRewatch();
+    fetchTotalListRewatch();
   }, [searching, pagination]);
 
   useEffect(() => {
