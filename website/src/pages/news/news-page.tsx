@@ -87,6 +87,7 @@ export const NewPage = (props: Props) => {
 
   useEffect(() => {
     fetchListNews();
+    fetchTotalListNews();
   }, [searching, pagination]);
 
   useEffect(() => {
