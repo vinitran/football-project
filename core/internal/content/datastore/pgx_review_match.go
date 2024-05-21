@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 
@@ -44,6 +45,15 @@ func (ds DatastoreReviewMatchPgx) List(ctx context.Context, params content.Match
 
 	if len(params.Ids) > 0 {
 		mods = append(mods, b.SelectWhere.ReviewMatchs.ID.In(params.Ids...))
+	}
+
+	if params.Search != "" {
+		params.Search = strings.ReplaceAll(params.Search, "%", "")
+		params.Search = strings.ToValidUTF8(params.Search, "")
+		mods = append(mods, sm.Where(psql.Or(
+			b.ReviewMatchColumns.Name.ILike(psql.Arg(fmt.Sprintf("%%%s%%", params.Search))),
+			b.ReviewMatchColumns.Description.ILike(psql.Arg(fmt.Sprintf("%%%s%%", params.Search))),
+		)))
 	}
 
 	mods = append(mods, sm.OrderBy(b.ReviewMatchColumns.CreatedAt).Desc())
