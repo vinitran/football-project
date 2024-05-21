@@ -59,8 +59,12 @@ func (service *ServiceReviewMatch) List(ctx context.Context, params content.Matc
 	return items, err
 }
 
-func (service *ServiceReviewMatch) Total(ctx context.Context) (int, error) {
-	return db.UseCache(ctx, service.cache, cacheKeyReviewMatchByIDOrSlug("total"), time.Minute, func() (int, error) {
-		return service.datastoreReviewMatch.Count(ctx)
+func (service *ServiceReviewMatch) Total(ctx context.Context, params content.MatchListParams) (int, error) {
+	cacheKey := cacheKeyReviewMatchByIDOrSlug("total")
+	if params.Search != "" {
+		cacheKey = cacheKeyReviewMatchByIDOrSlug(fmt.Sprintf("total, search %s", params.Search))
+	}
+	return db.UseCache(ctx, service.cache, cacheKey, time.Minute, func() (int, error) {
+		return service.datastoreReviewMatch.Count(ctx, params)
 	})
 }

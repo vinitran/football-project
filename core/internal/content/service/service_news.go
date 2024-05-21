@@ -54,8 +54,12 @@ func (service *ServiceNews) FindByID(ctx context.Context, id string) (*content.N
 	})
 }
 
-func (service *ServiceNews) Total(ctx context.Context) (int, error) {
-	return db.UseCache(ctx, service.cache, cacheKeyNewsByIDOrSlug("total"), time.Minute, func() (int, error) {
-		return service.dataStoreNews.Count(ctx)
+func (service *ServiceNews) Total(ctx context.Context, params content.NewsListParams) (int, error) {
+	cacheKey := cacheKeyNewsByIDOrSlug("total")
+	if params.Search != "" {
+		cacheKey = cacheKeyNewsByIDOrSlug(fmt.Sprintf("total, search %s", params.Search))
+	}
+	return db.UseCache(ctx, service.cache, cacheKey, time.Minute, func() (int, error) {
+		return service.dataStoreNews.Count(ctx, params)
 	})
 }

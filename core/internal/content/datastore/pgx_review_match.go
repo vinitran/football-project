@@ -75,8 +75,19 @@ func (ds *DatastoreReviewMatchPgx) FindByID(ctx context.Context, id string) (*co
 	return ReviewMatchBobToRaw(item), nil
 }
 
-func (ds *DatastoreReviewMatchPgx) Count(ctx context.Context) (int, error) {
+func (ds *DatastoreReviewMatchPgx) Count(ctx context.Context, params content.MatchListParams) (int, error) {
 	query := fmt.Sprintf(`SELECT count(*) AS count FROM "%s" `, b.TableNames.ReviewMatchs)
+
+	if params.Search != "" {
+		params.Search = strings.ReplaceAll(params.Search, "%", "")
+		params.Search = strings.ToValidUTF8(params.Search, "")
+		query = fmt.Sprintf(`SELECT count(*) AS count FROM "%s" where name ILIKE '%s' or description ILIKE '%s'`,
+			b.TableNames.ReviewMatchs,
+			fmt.Sprintf("%%%s%%", params.Search),
+			fmt.Sprintf("%%%s%%", params.Search),
+		)
+	}
+
 	rows, err := ds.pool.Query(ctx, query)
 	if err != nil {
 		return 0, err

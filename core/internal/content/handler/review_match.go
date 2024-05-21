@@ -85,6 +85,11 @@ func (group *GroupReviewMatch) Total(c echo.Context) error {
 		return restAbort(c, nil, err)
 	}
 
-	countUser, err := serviceReviewMatch.Total(ctx)
+	var params content.MatchListParams
+	if c.QueryParams().Has("search") {
+		params.Search = c.QueryParam("search")
+	}
+
+	countUser, err := serviceReviewMatch.Total(ctx, params)
 	return restAbort(c, countUser, err)
 }
