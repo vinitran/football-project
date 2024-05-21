@@ -43,6 +43,8 @@ func (ds DatastoreMatchPgx) List(ctx context.Context, params content.MatchListPa
 		mods = append(mods, sm.Where(b.MatchColumns.IsFeatured.EQ(psql.Arg(true))))
 	}
 
+	mods = append(mods, sm.OrderBy(b.MatchColumns.CreatedAt).Desc())
+
 	mods = append(mods,
 		b.ThenLoadMatchHomeTeam(
 			sm.Columns(
