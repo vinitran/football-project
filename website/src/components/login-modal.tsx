@@ -61,6 +61,7 @@ export const LoginModal = (props: Props) => {
                 alt=""
               />
               <input
+                type="password"
                 onChange={(e) => setFormLogin({ ...formLogin, password: e.target.value })}
                 className="bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Mật khẩu"
