@@ -14,7 +14,7 @@ export const LivePage = (props: Props) => {
   // API
   const fetchLive = () => {
     _axios
-      .get(apis.live.list({ limit: 12, page: 1, isLive: true }))
+      .get(apis.live.list({ limit: 12, page: 1, isLive: true, isFeatured: true }))
       .then((res) => {
         if (res) {
           setResLives(res?.data?.data ?? []);
