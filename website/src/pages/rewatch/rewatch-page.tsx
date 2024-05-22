@@ -47,8 +47,9 @@ export const RewatchPage = (props: Props) => {
       });
   };
   const fetchTotalListRewatch = async () => {
+    
     _axios
-      .get(apis.rewatch.count())
+      .get(apis.rewatch.count({ search: searching }))
       .then((res) => {
         if (res) {
           setResTotalListRewatch(res.data?.data ?? 0);
