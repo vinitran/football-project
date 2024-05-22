@@ -10,9 +10,9 @@ type Props = {
 export const LayoutWithNavBar = (props: Props) => {
   return (
     <>
-      <div className="relative app">
+      <div className="relative app h-[100dvh] overflow-hidden">
         <NavBar />
-        <div className="py-[24px] overflow-hidden">
+        <div className="py-[24px]  overflow-auto h-full">
           <Outlet />
         </div>
       </div>

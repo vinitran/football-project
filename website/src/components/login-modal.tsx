@@ -2,11 +2,14 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import { Loading } from './commons/loading';
+import { localStorageKey } from '../consts/local-storage-key.const';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   isLoading?: boolean;
   onCancel: () => void;
   onSubmit: (username: string, password: string) => void;
+  onForgotPassword: () => void;
   children?: any;
 };
 
@@ -49,7 +52,7 @@ export const LoginModal = (props: Props) => {
               />
               <input
                 onChange={(e) => setFormLogin({ ...formLogin, username: e.target.value })}
-                className="text-white bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
+                className="placeholder-white text-white bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Tài khoản"
               />
             </div>
@@ -63,7 +66,7 @@ export const LoginModal = (props: Props) => {
               <input
                 type="password"
                 onChange={(e) => setFormLogin({ ...formLogin, password: e.target.value })}
-                className="bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
+                className="bg-transparent placeholder-white outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Mật khẩu"
               />
             </div>
@@ -76,11 +79,18 @@ export const LoginModal = (props: Props) => {
             </div>
           ) : (
             <button
-              className="w-[180px] h-[50px] bg-[#008A00] rounded-[8px] mb-[20px]"
+              className="w-[180px] h-[50px] bg-[#008A00] rounded-[8px] mt-[-20px]"
               onClick={() => props.onSubmit(formLogin.username, formLogin.password)}>
               ĐĂNG NHẬP
             </button>
           )}
+
+          {/* Forgot password */}
+          <div
+            className="mt-[-30px] mb-[-10px] hover:text-red-200"
+            onClick={() => props.onForgotPassword()}>
+            Quên mật khẩu ?
+          </div>
         </div>
         <div className="z-[100] absolute top-0 left-0 right-0 bottom-0 opacity-[0.3] bg-white"></div>
       </div>

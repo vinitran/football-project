@@ -25,7 +25,6 @@ export const apis: any = {
       );
     },
     count: ({ search }: { search?: string }) =>{
-      console.log(`count: ${search}`);
       return `news/count${search ? '&search=' + search : ''}`
     },
     detail: ({ id }: { id: string }) => `news/${id}`,
@@ -77,10 +76,12 @@ export const apis: any = {
   auth: {
     login: () => `auth/login`,
     register: () => `auth/register`,
-    me: () => `me`
+    me: () => `me`,
+    submitForgotPassword: () => `news/count`,
+    resetPassword: () => `news/count`,
   },
   feedback: {
     feedbackUser: () => `recommend/feedback`,
     feedbackAnonymous: () => `recommend/anonymous/feedback`
-  }
+  },
 };

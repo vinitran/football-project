@@ -14,6 +14,7 @@ import { UserInforModal } from './user-info-modal';
 import { IUserInfo } from '../interfaces/entites/user-info';
 import { apis } from '../consts/api.const';
 import { localStorageKey } from '../consts/local-storage-key.const';
+import { ForgotPasswordModal } from './forgot-password-modal';
 
 type Props = {
   children?: any;
@@ -25,6 +26,7 @@ export const NavBar = (props: Props) => {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
   const [isOpenRegister, setIsOpenRegister] = useState(false);
   const [isOpenUserInfo, setIsOpenUserInfo] = useState(false);
+  const [isOpenForgotPasswordModal, setIsOpenForgotPasswordModal] = useState(false);
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>({
     username: '',
     name: '',
@@ -189,6 +191,18 @@ export const NavBar = (props: Props) => {
       })
       .catch(() => {});
   };
+  const fetchSubmitForgotPassword = (email: string) => {
+    _axios
+      .get(apis.auth.submitForgotPassword())
+      .then((res) => {
+        // _dung res cần trả về lỗi
+        if (res) {
+          setIsOpenForgotPasswordModal(false);
+          navigate('/submited-forgot-password');
+        }
+      })
+      .catch(() => {});
+  };
 
   return (
     <>
@@ -261,8 +275,10 @@ export const NavBar = (props: Props) => {
           onSubmit={(username: string, password: string) => {
             fetchLogin(username, password);
           }}
-          onCancel={() => {
+          onCancel={() => setIsOpenLogin(false)}
+          onForgotPassword={() => {
             setIsOpenLogin(false);
+            setIsOpenForgotPasswordModal(true);
           }}
         />
       ) : (
@@ -294,7 +310,14 @@ export const NavBar = (props: Props) => {
           }}
           onCancel={() => {
             setIsOpenUserInfo(false);
-            console.log('isOpenUserInfo:', isOpenUserInfo);
+          }}
+        />
+      )}
+      {isOpenForgotPasswordModal && (
+        <ForgotPasswordModal
+          onSubmit={(email: string) => fetchSubmitForgotPassword(email)}
+          onCancel={() => {
+            setIsOpenForgotPasswordModal(false);
           }}
         />
       )}
