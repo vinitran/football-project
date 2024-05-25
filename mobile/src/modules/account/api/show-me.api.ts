@@ -9,5 +9,5 @@ interface Response {
 }
 
 export const showme = (api: ApiService): Observable<Response> => {
-  return api.get(`http://94.72.119.5:3030/api/v1/me`).pipe(take(1), pluck('data'));
+  return api.get(`https://api.bongdaviet247.com/api/v1/me`).pipe(take(1), pluck('data'));
 };
