@@ -16,5 +16,5 @@ interface LoginPayload {
 }
 
 export const register = (api: ApiService, payload: LoginPayload): Observable<Response> => {
-  return api.post(`http://94.72.119.5:3030/api/v1/auth/register`, payload).pipe(take(1));
+  return api.post(`https://api.bongdaviet247.com/api/v1/auth/register`, payload).pipe(take(1));
 };
