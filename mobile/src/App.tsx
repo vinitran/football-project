@@ -10,7 +10,7 @@ import { AppWrapper } from './components/app-wrapper/app-wrapper.component';
 import { AppProvider } from './providers/app.provider';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { screens } from './navigations/const/screens.const';
-import { useService } from './hook/service.hook';
+import BootSplash from 'react-native-bootsplash';
 
 GoogleSignin.configure({
   webClientId: '1027985649693-qbibsoqi1tgjoh49sn5s1pp7cndg1gq2.apps.googleusercontent.com',
@@ -18,7 +18,9 @@ GoogleSignin.configure({
 
 function Layout(): React.JSX.Element {
   useEffect(() => {
+    const hideSplash = async () => await BootSplash.hide({ fade: true });
     Appearance.setColorScheme('light');
+    hideSplash();
   }, []);
 
   const linking: LinkingOptions<{}> = {
