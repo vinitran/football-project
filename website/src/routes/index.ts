@@ -17,17 +17,17 @@ export const router = createBrowserRouter([
     path: '/',
     Component: LayoutWithNavBar,
     children: [
-      { path: '/', Component: LivePage },
+      { path: '/', Component: HomePage },
       { path: '/watch/:id', Component: LiveDetailPage },
-      { path: '/home', Component: LivePage },
-      { path: '/schedule-battle', Component: LivePage },
+      { path: '/home', Component: HomePage },
+      { path: '/schedule-battle', Component: HomePage },
       { path: '/new', Component: NewPage },
       { path: '/new-detail/:id', Component: NewsDetailPage },
       { path: '/rewatch', Component: RewatchPage },
       { path: '/rewatch-detail/:id', Component: RewatchDetailPage },
       { path: '/forgot-password', Component: ForgotPasswordPage },
       { path: '/submited-forgot-password', Component: SubmitedForgotPasswordPage },
-      { path: '/test', Component: LivePage },
+      { path: '/test', Component: HomePage },
       { path: '/test2', Component: Test2Page }
     ]
   }
