@@ -9,7 +9,8 @@ import { AccountNavigation } from './account.navigation';
 import { useService } from '../hook/service.hook';
 import { useTranslation } from '../hook/translate.hook';
 import { useAppDispatch } from '../store/store';
-import { setAccessToken } from '../store/user.slice';
+import { setAccessToken, setUser } from '../store/user.slice';
+import { showme } from '../modules/account/api/show-me.api';
 
 interface TabNavigatorProps {
   name: string;
@@ -21,7 +22,7 @@ interface TabNavigatorProps {
 const TabNavigator = createBottomTabNavigator();
 
 export const MainNavigation = () => {
-  const { translateService, storageService } = useService();
+  const { translateService, storageService, apiService: api } = useService();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -68,6 +69,8 @@ export const MainNavigation = () => {
     }
 
     dispatch(setAccessToken(accessToken));
+    api.setHeaderToken(accessToken);
+    showme(api).subscribe((data) => dispatch(setUser(data)));
   };
 
   useEffect(() => {
