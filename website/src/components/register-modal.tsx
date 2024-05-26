@@ -52,7 +52,7 @@ export const RegisterModal = (props: Props) => {
               />
               <input
                 onChange={(e) => setFormLogin({ ...formLogin, username: e.target.value })}
-                className="text-white bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
+                className="text-white placeholder-white bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Tài khoản"
               />
             </div>
@@ -65,7 +65,7 @@ export const RegisterModal = (props: Props) => {
               />
               <input
                 onChange={(e) => setFormLogin({ ...formLogin, name: e.target.value })}
-                className="bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
+                className="bg-transparent placeholder-white outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Tên tài khoản"
               />
             </div>
@@ -78,7 +78,7 @@ export const RegisterModal = (props: Props) => {
               />
               <input
                 onChange={(e) => setFormLogin({ ...formLogin, email: e.target.value })}
-                className="bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
+                className="bg-transparent placeholder-white outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Email"
               />
             </div>
@@ -90,8 +90,9 @@ export const RegisterModal = (props: Props) => {
                 alt=""
               />
               <input
+                type="password"
                 onChange={(e) => setFormLogin({ ...formLogin, password: e.target.value })}
-                className="bg-transparent outline-none border-solid border-b-[2px] border-[#21FF00]"
+                className="bg-transparent placeholder-white outline-none border-solid border-b-[2px] border-[#21FF00]"
                 placeholder="Mật khẩu"
               />
             </div>

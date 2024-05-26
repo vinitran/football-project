@@ -43,7 +43,7 @@ export const NewPage = (props: Props) => {
   };
   const fetchTotalListNews = async () => {
     _axios
-      .get(apis.rewatch.count())
+      .get(apis.news.count({search: searching}))
       .then((res) => {
         if (res) {
           setResTotalListNews(res.data?.data ?? 0);

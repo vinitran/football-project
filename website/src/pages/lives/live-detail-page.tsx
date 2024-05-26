@@ -8,6 +8,7 @@ import { localStorageKey } from '../../consts/local-storage-key.const';
 import { database, ref, push, onValue } from './../../configs/firebase';
 import { RandomBgColor, RandomColor } from '../../utils';
 import moment from 'moment';
+import { toast } from 'react-toastify';
 
 interface Meta {
   name: string;
@@ -130,13 +131,17 @@ const ChatBox = ({ liveId }: { liveId: string }) => {
   }, []);
 
   const handleSendMessage = () => {
-    push(ref(database, 'football-chat'), {
-      liveId: liveId,
-      name: JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '')?.name,
-      chat: inputMessage,
-      timestamp: moment().format()
-    });
-    setInputMessage('');
+    if (localStorage.getItem(localStorageKey.userInfo)) {
+      push(ref(database, 'football-chat'), {
+        liveId: liveId,
+        name: JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '')?.name,
+        chat: inputMessage,
+        timestamp: moment().format()
+      });
+      setInputMessage('');
+    } else {
+      toast.warning('Bạn cần đăng nhập để bình luận');
+    }
   };
   return (
     <>
@@ -179,7 +184,7 @@ const ChatItem = ({ liveId, name, chat, timestamp }: IMessageLive) => {
     setIsUser(
       name === JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '{"name":""}')?.name
     );
-  }, []);
+  }, [localStorage.getItem(localStorageKey.userInfo)]);
   return (
     <>
       <div
