@@ -49,7 +49,7 @@ export const RewatchDetailPage = () => {
     if (token) {
       axiosConfiguration.setAxiosToken(token, true);
       await _axios
-        .get(apis.news.recomment())
+        .get(apis.rewatch.recomment())
         .then((res) => {
           if (res) {
             setResRecommentRewatch(res.data?.data ?? []);
@@ -70,7 +70,7 @@ export const RewatchDetailPage = () => {
       });
     } else {
       console.log('feed by anonymous');
-      
+
       _axios.post(apis.feedback.feedbackAnonymous(), {
         FeedbackType: feedbackType,
         ItemId: params.id
