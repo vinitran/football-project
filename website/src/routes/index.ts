@@ -17,9 +17,9 @@ export const router = createBrowserRouter([
     path: '/',
     Component: LayoutWithNavBar,
     children: [
-      { path: '/', Component: HomePage },
+      { path: '/', Component: LivePage },
       { path: '/watch/:id', Component: LiveDetailPage },
-      { path: '/home', Component: HomePage },
+      { path: '/home', Component: LivePage },
       { path: '/schedule-battle', Component: LivePage },
       { path: '/new', Component: NewPage },
       { path: '/new-detail/:id', Component: NewsDetailPage },
@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
       { path: '/rewatch-detail/:id', Component: RewatchDetailPage },
       { path: '/forgot-password', Component: ForgotPasswordPage },
       { path: '/submited-forgot-password', Component: SubmitedForgotPasswordPage },
-      { path: '/test', Component: HomePage },
+      { path: '/test', Component: LivePage },
       { path: '/test2', Component: Test2Page }
     ]
   }
