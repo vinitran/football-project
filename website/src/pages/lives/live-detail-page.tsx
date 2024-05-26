@@ -221,7 +221,6 @@ const ChatBox = ({ liveId }: { liveId: string }) => {
   };
   return (
     <>
-      {matchDocId}
       <div className="chat-bo mt-[44px] flex flex-col items-start justify-start gap-[12px] w-[400px] h-[496px]">
         <div className="flex-1 flex flex-col items-start justify-start w-full p-[12px] border-solid border-[2px] gap-[12px] border-[--color-three] rounded-[8px] overflow-x-hidden overflow-y-auto">
           {commentsCollection?.map((comment) => (
