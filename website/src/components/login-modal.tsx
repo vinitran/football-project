@@ -86,11 +86,11 @@ export const LoginModal = (props: Props) => {
           )}
 
           {/* Forgot password */}
-          <div
+          {/* <div
             className="mt-[-30px] mb-[-10px] hover:text-red-200"
             onClick={() => props.onForgotPassword()}>
             Quên mật khẩu ?
-          </div>
+          </div> */}
         </div>
         <div className="z-[100] absolute top-0 left-0 right-0 bottom-0 opacity-[0.3] bg-white"></div>
       </div>
