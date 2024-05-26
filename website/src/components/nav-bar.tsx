@@ -212,7 +212,7 @@ export const NavBar = (props: Props) => {
           onClick={() => {
             navigate('/');
           }}>
-          <div className="text-[28px] logo italic flex items-center">TIN BÓNG ĐÁ</div>
+          <div className="text-[28px] logo italic flex items-center">BÓNG ĐÁ VIỆT 247</div>
           <img className="h-[40px]" src={require('../assets/image/logo4.png')} alt="" />
         </div>
         <div className="flex-1 flex items-center justify-center uppercase col-start-2">
