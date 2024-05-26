@@ -5,10 +5,26 @@ import { apis } from '../../consts/api.const';
 import { useEffect, useState } from 'react';
 import { Loading } from '../../components/commons/loading';
 import { localStorageKey } from '../../consts/local-storage-key.const';
-import { database, ref, push, onValue } from './../../configs/firebase';
+// import { database, ref, push, onValue } from './../../configs/firebase';
 import { RandomBgColor, RandomColor } from '../../utils';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { db } from '../../configs/firebase';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  where,
+  query,
+  DocumentData,
+  doc,
+  getDoc,
+  setDoc,
+  orderBy,
+  onSnapshot,
+  updateDoc
+} from 'firebase/firestore';
+import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore';
 
 interface Meta {
   name: string;
@@ -117,27 +133,88 @@ const LiveDetailContent = ({ meta }: { meta: Meta[] }) => {
 };
 
 const ChatBox = ({ liveId }: { liveId: string }) => {
-  const [messages, setMessages] = useState<IMessageLive[]>([]);
+  // const [messages, setMessages] = useState<IMessageLive[]>([]);
+  const [matchDocId, setMatchDocId] = useState<string>('8jO1Hm7cCK79vWAM7a33');
   const [inputMessage, setInputMessage] = useState<string | undefined>();
+  const [comments, setComments] = useState<IComment[]>([]);
+  const listenerQuery = query(collection(db, `matchs/${liveId}/comments`));
+  const [listenerSnapshot] = useCollectionData(listenerQuery);
+  const [commentsCollection] = useCollectionData(
+    query(collection(db, `matchs/${matchDocId}/comments`), orderBy('timestamp', 'asc'))
+  );
+
+  const fetchComments = async () => {
+    // Get match from collection matchs
+    const matchsQuery = query(collection(db, 'matchs'), where('matchId', '==', liveId));
+    getDocs(matchsQuery).then((matchsSnapshot) => {
+      console.log('matchsSnapshot:', matchsSnapshot);
+
+      // const commentsArray: any[] = [];
+      if (matchsSnapshot && !matchsSnapshot.empty) {
+        // toast.success('old doc');
+        // // Get matchId and list comments of match Id
+        // for (const matchDoc of matchsSnapshot.docs) {
+        //   const commentsQuery = query(
+        //     collection(db, `matchs/${matchDoc.id}/comments`),
+        //     orderBy('timestamp', 'asc')
+        //   );
+        //   const commentsSnapshot = await getDocs(commentsQuery);
+
+        //   commentsSnapshot.forEach((commentDoc) => {
+        //     commentsArray.push(commentDoc.data());
+        //   });
+        // }
+        setMatchDocId(matchsSnapshot.docs[0].id);
+      } else {
+        // Create the live if it does not exist
+        addDoc(collection(db, 'matchs'), { matchId: liveId }).then().catch();
+        toast.success('new doc');
+
+        // getDocs(query(collection(db, 'matchs'), where('matchId', '==', liveId))).then((docs) => {
+        //   docs.forEach((doc) => {
+        //     console.log('new doc: ', doc.id, ' - ', doc.data());
+        //   });
+        // });
+        // const liveDocRef = doc(db, 'matchs', liveId);
+        // const liveDoc = await getDoc(liveDocRef);
+
+        // if (!liveDoc.exists()) {
+        //   setDoc(liveDocRef, { matchId: liveId }).then().catch();
+        // }
+      }
+      // setComments(commentsArray);
+    });
+  };
 
   useEffect(() => {
-    onValue(ref(database, 'football-chat'), (data) => {
-      let getMsg: IMessageLive[] = [];
-      data.forEach((d) => {
-        getMsg.push(d.val());
-      });
-      setMessages(getMsg);
-    });
-  }, []);
+    // onValue(ref(database, 'football-chat'), (data) => {
+    //   let getMsg: IMessageLive[] = [];
+    //   data.forEach((d) => {
+    //     getMsg.push(d.val());
+    //   });
+    //   setMessages(getMsg);
+    // });
+    fetchComments();
+  }, [listenerSnapshot]);
+  useEffect(() => {
+    console.log('matchDocId: ', matchDocId);
+  }, [matchDocId]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (localStorage.getItem(localStorageKey.userInfo)) {
-      push(ref(database, 'football-chat'), {
-        liveId: liveId,
-        name: JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '')?.name,
-        chat: inputMessage,
-        timestamp: moment().format()
-      });
+      // push(ref(database, 'football-chat'), {
+      //   liveId: liveId,
+      //   name: JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '')?.name,
+      //   chat: inputMessage,
+      //   timestamp: moment().format()
+      // });
+      addDoc(collection(db, `matchs/${matchDocId}/comments`), {
+        sender: JSON.parse(localStorage.getItem(localStorageKey.userInfo) ?? '')?.name,
+        content: inputMessage,
+        timestamp: new Date().getTime()
+      })
+        .then(() => {})
+        .catch(() => {});
       setInputMessage('');
     } else {
       toast.warning('Bạn cần đăng nhập để bình luận');
@@ -145,19 +222,20 @@ const ChatBox = ({ liveId }: { liveId: string }) => {
   };
   return (
     <>
+      {matchDocId}
       <div className="chat-bo mt-[44px] flex flex-col items-start justify-start gap-[12px] w-[400px] h-[496px]">
         <div className="flex-1 flex flex-col items-start justify-start w-full p-[12px] border-solid border-[2px] gap-[12px] border-[--color-three] rounded-[8px] overflow-x-hidden overflow-y-auto">
-          {messages.map(
-            (message) =>
-              liveId === message.liveId && (
-                <ChatItem
-                  liveId={message.liveId}
-                  name={message.name}
-                  chat={message.chat}
-                  timestamp={message.timestamp}
-                />
-              )
-          )}
+          {commentsCollection?.map((comment) => (
+            // liveId === message.liveId && (
+            //   <ChatItem
+            //     liveId={message.liveId}
+            //     name={message.name}
+            //     chat={message.chat}
+            //     timestamp={message.timestamp}
+            //   />
+            // )
+            <ChatItem name={comment.sender} chat={comment.content} timestamp={comment.timestamp} />
+          ))}
         </div>
 
         <div className="flex w-full gap-[8px]">
@@ -178,7 +256,7 @@ const ChatBox = ({ liveId }: { liveId: string }) => {
   );
 };
 
-const ChatItem = ({ liveId, name, chat, timestamp }: IMessageLive) => {
+const ChatItem = ({ name, chat, timestamp }: IMessageLive) => {
   const [isUser, setIsUser] = useState<boolean>(false);
   useEffect(() => {
     setIsUser(
@@ -192,7 +270,7 @@ const ChatItem = ({ liveId, name, chat, timestamp }: IMessageLive) => {
         {/* NAME */}
         <div
           className={`flex items-center justify-center text-bold h-[32px] w-[32px] rounded-[8px] bg-[--color-three] text-white`}>
-          <p>{name.slice(0, 1).toUpperCase()}</p>
+          <p>{name && name.length > 0 ? name.slice(0, 1).toUpperCase() : ''}</p>
         </div>
         {/* CHAT */}
         <div className={`flex flex-col w-fit  ${isUser ? 'items-end' : ''}`}>
@@ -209,8 +287,13 @@ const ChatItem = ({ liveId, name, chat, timestamp }: IMessageLive) => {
 };
 
 interface IMessageLive {
-  liveId: string;
   name: string;
   chat: string;
   timestamp?: string;
+}
+
+interface IComment {
+  sender: string;
+  content: string;
+  timestamp: string;
 }
