@@ -168,7 +168,6 @@ const ChatBox = ({ liveId }: { liveId: string }) => {
       } else {
         // Create the live if it does not exist
         addDoc(collection(db, 'matchs'), { matchId: liveId }).then().catch();
-        toast.success('new doc');
 
         // getDocs(query(collection(db, 'matchs'), where('matchId', '==', liveId))).then((docs) => {
         //   docs.forEach((doc) => {
