@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../hook/theme.hook';
 import { AppTheme } from '../../../theme/theme';
 import { useTranslation } from '../../../hook/translate.hook';
@@ -27,7 +27,7 @@ export const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [error1, setError1] = useState('');
   const [error2, setError2] = useState('');
-  const [secure, setSecure] = useState(false);
+  const [secure, setSecure] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
   const goToRegister = () => {
@@ -108,6 +108,11 @@ export const LoginScreen = () => {
   return (
     <View style={styles.screen}>
       <View style={styles.wrapper}>
+        <Image
+          resizeMode="contain"
+          source={require('../../../assets/images/app-photo.png')}
+          style={{ height: 2 * theme.spaceXXL, width: 'auto' }}
+        />
         <Text style={styles.label}>{t('account.username')}</Text>
         <View style={styles.inputWrapper}>
           <TextInput
@@ -131,7 +136,7 @@ export const LoginScreen = () => {
           />
           {!!password.length && (
             <TouchableOpacity activeOpacity={1} onPress={() => setSecure(!secure)}>
-              <Icon style={styles.iconRight} name={secure ? 'eye' : 'eye-slash'} />
+              <Icon style={styles.iconRight} name={secure ? 'eye' : 'eye-slash'} disable />
             </TouchableOpacity>
           )}
         </View>

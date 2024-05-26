@@ -4,14 +4,18 @@ import { useService } from '../../../hook/service.hook';
 import { AppTheme } from '../../../theme/theme';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { News } from '../../../interface/news.interface';
-import { getNewsList } from '../api/get-news-list.api';
 import { NewsItem } from '../components/news-item.component';
 import { NewsHighlightItem } from '../components/news-highlight-item.component';
 import { useNavigation } from '@react-navigation/native';
 import { newsScreens } from '../const/route.const';
-import { getNewsSearch } from '../api/get-news-search.api';
 import { useTranslation } from '../../../hook/translate.hook';
 import { Icon } from '../../../components/icon/icon.component';
+import { getPopularNews } from '../api/get-popular-news.api';
+import { switchMap } from 'rxjs';
+import { getNewsListByIds } from '../api/get-news-list-by-ids.api';
+import { useAppSelector } from '../../../store/store';
+import { getRecommendNews } from '../api/get-recommend-news-for-user.api';
+import { LoadingSpinner } from '../../../components/loading-indicator/loading-indicator.component';
 
 interface RenderItemProps {
   item: News;
@@ -33,36 +37,65 @@ export const NewsListScreen = () => {
   const newsListRef = useRef<News[]>([]);
   const ITEM_HEIGHT = (theme.fullWidth - 64) / 2 + 24;
 
+  const accessToken = useAppSelector((state) => state.user.accessToken);
+
   const getData = () => {
     if (isLoading) return;
 
     setLoading(true);
 
-    getNewsList(api, pageNum.current).subscribe((data) => {
-      setNewsList([...newsList, ...data.list]);
-      newsListRef.current = [...newsList, ...data.list];
-      pageNum.current == 1 && setNewsHighlight(data.highlight);
-      pageNum.current = pageNum.current + 1;
+    const observable$ = !!accessToken
+      ? getRecommendNews(api, { limit: pageNum.current * 10 })
+      : getPopularNews(api, { limit: pageNum.current * 10 });
 
-      setLoading(false);
-      setInitData(true);
-    });
+    observable$
+      .pipe(
+        switchMap((newsIds) => {
+          const ids = pageNum.current == 1 ? newsIds : newsIds.slice((pageNum.current - 1) * 10);
+          return getNewsListByIds(api, ids);
+        })
+      )
+      .subscribe((data) => {
+        setNewsList([...newsList, ...data]);
+        newsListRef.current = [...newsList, ...(pageNum.current == 1 ? data.slice(1) : data)];
+        pageNum.current == 1 && setNewsHighlight(data[0]);
+        pageNum.current = pageNum.current + 1;
+
+        setLoading(false);
+        setInitData(true);
+      });
   };
 
   const getSearchData = (searchText?: string) => {
     setLoading(true);
-    getNewsSearch(api, searchText).subscribe({
-      next: (data) => {
-        setNewsList(data.list);
-        setLoading(false);
-      },
-      complete: () => setLoading(false),
-    });
+
+    const observable$ = !!accessToken
+      ? getRecommendNews(api, { limit: 30, search: searchText })
+      : getPopularNews(api, { limit: 30, search: searchText });
+
+    observable$
+      .pipe(
+        switchMap((newsIds) => {
+          return getNewsListByIds(api, newsIds);
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          setNewsList(data);
+          setLoading(false);
+        },
+        complete: () => setLoading(false),
+      });
   };
 
   useEffect(() => {
+    setNewsList([]);
+    setNewsHighlight(undefined);
+    pageNum.current = 1;
+    newsListRef.current = [];
+
     getData();
-  }, []);
+  }, [accessToken]);
 
   const onChangeSearch = (value: string) => {
     setSearch(value);
@@ -114,25 +147,28 @@ export const NewsListScreen = () => {
         />
         <Icon name="search" />
       </View>
-      <FlatList
-        data={newsList}
-        renderItem={renderItem}
-        numColumns={2}
-        style={styles.flatList}
-        ListHeaderComponent={ListHeaderComponent}
-        onEndReachedThreshold={0.5}
-        onEndReached={getData}
-        keyExtractor={(item) => item.id}
-        removeClippedSubviews
-        maxToRenderPerBatch={12}
-        getItemLayout={(data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
-        refreshing={isLoading}
-        ListEmptyComponent={ListEmptyComponent}
-      />
+      <View style={styles.flatList}>
+        <LoadingSpinner isVisible={!isInitData} />
+        <FlatList
+          data={newsList}
+          renderItem={renderItem}
+          numColumns={2}
+          style={styles.flatList}
+          ListHeaderComponent={ListHeaderComponent}
+          onEndReachedThreshold={0.5}
+          onEndReached={getData}
+          keyExtractor={(item) => item.id}
+          removeClippedSubviews
+          maxToRenderPerBatch={12}
+          getItemLayout={(data, index) => ({
+            length: ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index,
+            index,
+          })}
+          refreshing={isLoading}
+          ListEmptyComponent={ListEmptyComponent}
+        />
+      </View>
     </View>
   );
 };
